@@ -1,8 +1,8 @@
 /* Topicos Website Styles */
 :root {
-  --primary-color: #6366f1;
-  --primary-dark: #4f46e5;
-  --secondary-color: #10b981;
+  --primary-color: #3E9B92;
+  --primary-dark: #358a82;
+  --secondary-color: #daf5ca;
   --text-dark: #1f2937;
   --text-light: #6b7280;
   --bg-light: #f9fafb;
@@ -45,6 +45,14 @@ body {
   font-weight: 700;
   color: var(--primary-color);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 32px;
+  width: auto;
 }
 
 .nav-links {
