@@ -52,7 +52,10 @@ body {
 
 .logo-img {
   height: 32px;
-  width: auto;
+  width: 32px;
+  max-height: 32px;
+  max-width: 32px;
+  object-fit: contain;
 }
 
 .nav-links {
