@@ -13,13 +13,33 @@
   <nav class="navbar">
     <div class="nav-container">
       <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
-      <ul class="nav-links">
-        <li><a href="#features">Funktioner</a></li>
-        <li><a href="privacy.html">Integritetspolicy</a></li>
-        <li><a href="terms.html">Användarvillkor</a></li>
-      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Meny">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="privacy.html">Integritetspolicy</a>
+      <a href="terms.html">Användarvillkor</a>
     </div>
   </nav>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  </script>
 
   <!-- Hero Section -->
   <section class="hero">

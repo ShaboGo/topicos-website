@@ -58,20 +58,63 @@ body {
   object-fit: contain;
 }
 
-.nav-links {
+/* Hamburger Menu */
+.hamburger {
   display: flex;
-  gap: 2rem;
-  list-style: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  border: none;
+  background: transparent;
 }
 
-.nav-links a {
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--text-dark);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.hamburger:hover span {
+  background: var(--primary-color);
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 60px;
+  right: 2rem;
+  background: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+.mobile-menu a {
+  padding: 1rem 1.5rem;
   color: var(--text-dark);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s;
+  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid var(--bg-light);
 }
 
-.nav-links a:hover {
+.mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu a:hover {
+  background: var(--bg-light);
   color: var(--primary-color);
 }
 

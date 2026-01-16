@@ -13,13 +13,33 @@
   <nav class="navbar">
     <div class="nav-container">
       <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Hem</a></li>
-        <li><a href="privacy.html">Integritetspolicy</a></li>
-        <li><a href="terms.html">Användarvillkor</a></li>
-      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
-</nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </nav>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  </script>
 
   <!-- Terms of Service Content -->
   <main class="legal-content">
@@ -302,11 +322,11 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
-      <a href="privacy.html">Integritetspolicy</a>
-      <a href="terms.html">Användarvillkor</a>
-      <a href="mailto:kontakt@topicos.app">Kontakt</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="mailto:kontakt@topicos.app">Contact</a>
     </div>
-    <p>&copy; 2025 Topicos. Alla rättigheter förbehållna.</p>
+    <p>&copy; 2025 Topicos. All rights reserved.</p>
   </footer>
 </body>
 </html>
