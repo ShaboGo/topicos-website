@@ -191,6 +191,10 @@
           <input type="email" id="inv-email" placeholder="faktura@foretaget.se">
         </div>
         <div class="form-group">
+          <label>Bekräfta e-postadress</label>
+          <input type="email" id="inv-email-confirm" placeholder="faktura@foretaget.se">
+        </div>
+        <div class="form-group">
           <label>Gatuadress</label>
           <input type="text" id="inv-address" placeholder="Storgatan 1">
         </div>
@@ -743,8 +747,17 @@
         },
       };
 
-      if (!details.companyName || !details.orgNumber || !details.email || !details.address.line1) {
+      const emailConfirm = document.getElementById('inv-email-confirm').value.trim();
+
+      if (!details.companyName || !details.orgNumber || !details.email || !emailConfirm || !details.address.line1) {
         alert('Fyll i alla obligatoriska fält.');
+        btn.disabled = false;
+        btn.textContent = 'Skicka faktura';
+        return;
+      }
+
+      if (details.email !== emailConfirm) {
+        alert('E-postadresserna matchar inte. Kontrollera och försök igen.');
         btn.disabled = false;
         btn.textContent = 'Skicka faktura';
         return;
