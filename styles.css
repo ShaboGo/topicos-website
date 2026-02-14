@@ -120,30 +120,56 @@ body {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(150deg, #4db8ad 0%, var(--primary-color) 40%, var(--primary-dark) 100%);
   color: var(--white);
-  padding: 8rem 2rem 4rem;
+  padding: 8rem 2rem 0;
   text-align: center;
-  min-height: 80vh;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 680px;
+}
+
+.hero-tagline {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+  margin-bottom: 1.25rem;
+  background: rgba(255,255,255,0.15);
+  padding: 0.4rem 1.2rem;
+  border-radius: 50px;
 }
 
 .hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
+  font-size: 3.25rem;
+  margin-bottom: 0;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.hero-spacer {
+  height: 2.5rem;
 }
 
 .hero p {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+  font-size: 1.15rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.85;
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .app-badges {
@@ -154,19 +180,36 @@ body {
 }
 
 .app-badge {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
   background: var(--white);
   color: var(--primary-dark);
-  border-radius: 8px;
+  border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.95rem;
   transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .app-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+}
+
+.hero-wave svg {
+  width: 100%;
+  height: 80px;
 }
 
 /* Features Section */
@@ -193,23 +236,39 @@ body {
 .feature-card {
   background: var(--white);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
 }
 
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  display: inline-block;
+  background: rgba(62,155,146,0.08);
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  border-radius: 16px;
 }
 
 .feature-card h3 {
   margin-bottom: 0.5rem;
   color: var(--text-dark);
+  font-weight: 700;
 }
 
 .feature-card p {
   color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* Footer */
@@ -292,11 +351,19 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
   .hero p {
     font-size: 1rem;
+  }
+
+  .hero-tagline {
+    font-size: 0.75rem;
+  }
+
+  .hero-spacer {
+    height: 1.75rem;
   }
 
   .nav-links {
@@ -305,5 +372,13 @@ body {
 
   .navbar {
     padding: 1rem;
+  }
+
+  .hero-wave svg {
+    height: 50px;
+  }
+
+  .features {
+    padding: 4rem 1.5rem;
   }
 }
