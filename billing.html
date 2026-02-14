@@ -850,7 +850,7 @@
           if (error.code === 'auth/invalid-custom-token') {
             showError('Länken har gått ut. Gå tillbaka till appen och försök igen.', '&#128336;');
           } else {
-            showError('Kunde inte logga in. Försök igen från appen.', '&#128274;');
+            showError(`Kunde inte logga in (${error.code}). Försök igen från appen.`, '&#128274;');
           }
         });
     }
