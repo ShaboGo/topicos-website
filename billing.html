@@ -15,39 +15,14 @@
     <h1>Hantera abonnemang</h1>
   </header>
 
-  <!-- Auth Section -->
+  <!-- Auth Error Section (shown if opened without token) -->
   <div id="auth-section" class="section">
     <div class="auth-container">
       <div class="logo-area">
         <img src="logo.png" alt="Topicos">
-        <h2>Logga in</h2>
-        <p>Verifiera ditt telefonnummer för att hantera ditt abonnemang</p>
+        <h2>Hantera abonnemang</h2>
+        <p>Öppna den här sidan från appen för att hantera ditt abonnemang.</p>
       </div>
-
-      <!-- Phone input step -->
-      <div id="phone-step" class="auth-form">
-        <input type="tel" id="phone-input" placeholder="+46 70 123 4567" autocomplete="tel">
-        <button class="btn btn-primary" id="send-code-btn" onclick="handleSendCode()">
-          Skicka verifieringskod
-        </button>
-        <div id="recaptcha-container"></div>
-      </div>
-
-      <!-- Code verification step -->
-      <div id="code-step" class="auth-form" style="display:none;">
-        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:4px;">
-          Kod skickad till <strong id="phone-display"></strong>
-        </p>
-        <input type="text" id="code-input" placeholder="123456" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
-        <button class="btn btn-primary" id="verify-btn" onclick="handleVerifyCode()">
-          Verifiera
-        </button>
-        <button class="btn btn-secondary" onclick="resetAuth()" style="margin-top:4px;">
-          Byt nummer
-        </button>
-      </div>
-
-      <div id="auth-error" style="color:var(--danger);margin-top:12px;font-size:14px;display:none;"></div>
     </div>
   </div>
 
@@ -286,7 +261,7 @@
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js';
+    import { getAuth, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js';
     import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js';
     import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-functions.js';
     import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app-check.js';
@@ -348,7 +323,6 @@
     let currentTeam = null;
     let currentUser = null;
     let teamId = null;
-    let confirmationResult = null;
     let unsubscribeTeam = null;
     let paymentInterval = 'monthly';
     let storageInterval = 'monthly';
@@ -373,9 +347,9 @@
       return seats * PER_SEAT_CONFIG.pricePerSeat[interval];
     }
 
-    function getTeamId() {
+    function getParam(name) {
       const params = new URLSearchParams(window.location.search);
-      return params.get('teamId');
+      return params.get(name);
     }
 
     function showSection(id) {
@@ -388,78 +362,6 @@
       document.getElementById('error-message').textContent = message;
       showSection('error-section');
     }
-
-    // =====================================================
-    // Auth Flow
-    // =====================================================
-    let recaptchaVerifier = null;
-
-    function setupRecaptcha() {
-      if (recaptchaVerifier) return;
-      recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-      });
-    }
-
-    window.handleSendCode = async function() {
-      const phone = document.getElementById('phone-input').value.trim();
-      if (!phone) return;
-
-      const btn = document.getElementById('send-code-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>';
-      document.getElementById('auth-error').style.display = 'none';
-
-      try {
-        setupRecaptcha();
-        confirmationResult = await signInWithPhoneNumber(auth, phone, recaptchaVerifier);
-        document.getElementById('phone-step').style.display = 'none';
-        document.getElementById('code-step').style.display = 'flex';
-        document.getElementById('phone-display').textContent = phone;
-        document.getElementById('code-input').focus();
-      } catch (error) {
-        console.error('Send code error:', error);
-        const errEl = document.getElementById('auth-error');
-        errEl.textContent = error.code === 'auth/invalid-phone-number'
-          ? 'Ogiltigt telefonnummer. Använd format +46701234567'
-          : 'Kunde inte skicka kod. Försök igen.';
-        errEl.style.display = 'block';
-        // Reset reCAPTCHA on error
-        recaptchaVerifier = null;
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Skicka verifieringskod';
-      }
-    };
-
-    window.handleVerifyCode = async function() {
-      const code = document.getElementById('code-input').value.trim();
-      if (!code || !confirmationResult) return;
-
-      const btn = document.getElementById('verify-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>';
-      document.getElementById('auth-error').style.display = 'none';
-
-      try {
-        await confirmationResult.confirm(code);
-        // onAuthStateChanged will handle the rest
-      } catch (error) {
-        console.error('Verify error:', error);
-        const errEl = document.getElementById('auth-error');
-        errEl.textContent = 'Fel verifieringskod. Försök igen.';
-        errEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Verifiera';
-      }
-    };
-
-    window.resetAuth = function() {
-      document.getElementById('phone-step').style.display = 'flex';
-      document.getElementById('code-step').style.display = 'none';
-      document.getElementById('auth-error').style.display = 'none';
-      confirmationResult = null;
-    };
 
     // =====================================================
     // Data Loading
@@ -929,23 +831,28 @@
     // =====================================================
     // Init
     // =====================================================
-    teamId = getTeamId();
+    teamId = getParam('teamId');
+    const authToken = getParam('token');
 
-    if (!teamId) {
-      showError('Ingen teamId angiven. Öppna den här sidan från appen.', '&#128279;');
+    if (!teamId || !authToken) {
+      showSection('auth-section');
     } else {
       showSection('loading-section');
 
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
+      // Sign in with custom token from app, then load team data
+      signInWithCustomToken(auth, authToken)
+        .then((userCredential) => {
+          currentUser = userCredential.user;
           subscribeToTeam(teamId);
-        } else {
-          currentUser = null;
-          if (unsubscribeTeam) { unsubscribeTeam(); unsubscribeTeam = null; }
-          showSection('auth-section');
-        }
-      });
+        })
+        .catch((error) => {
+          console.error('Auth token error:', error);
+          if (error.code === 'auth/invalid-custom-token') {
+            showError('Länken har gått ut. Gå tillbaka till appen och försök igen.', '&#128336;');
+          } else {
+            showError('Kunde inte logga in. Försök igen från appen.', '&#128274;');
+          }
+        });
     }
   </script>
 </body>
