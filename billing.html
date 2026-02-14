@@ -453,7 +453,7 @@
       const cancelPendingCard = document.getElementById('cancel-pending-card');
       if (team.cancelAtPeriodEnd) {
         cancelPendingCard.style.display = 'block';
-        const cancelDate = team.cancelAt ? new Date(team.cancelAt).toLocaleDateString('sv-SE') : '';
+        const cancelDate = team.cancelAt ? (team.cancelAt.toDate ? team.cancelAt.toDate() : new Date(team.cancelAt)).toLocaleDateString('sv-SE') : '';
         document.getElementById('cancel-pending-text').textContent = cancelDate
           ? `Abonnemanget avslutas ${cancelDate}`
           : 'Abonnemanget avslutas vid periodens slut';
