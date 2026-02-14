@@ -758,7 +758,7 @@
           ...details,
         });
         closeModal('invoice-modal');
-        alert(`Faktura skapad! Ett mail skickas till ${details.email}.`);
+        alert(`Abonnemang aktiverat! Första fakturan skickas till ${details.email} när provperioden är slut.`);
       } catch (error) {
         console.error('Invoice error:', error);
         if (error.message?.includes('already-exists')) {
