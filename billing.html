@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Topicos - Hantera abonnemang</title>
+  <link rel="stylesheet" href="billing.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="billing-header">
+    <a href="/" class="back-link">&larr;</a>
+    <h1>Hantera abonnemang</h1>
+  </header>
+
+  <!-- Auth Section -->
+  <div id="auth-section" class="section">
+    <div class="auth-container">
+      <div class="logo-area">
+        <img src="logo.png" alt="Topicos">
+        <h2>Logga in</h2>
+        <p>Verifiera ditt telefonnummer för att hantera ditt abonnemang</p>
+      </div>
+
+      <!-- Phone input step -->
+      <div id="phone-step" class="auth-form">
+        <input type="tel" id="phone-input" placeholder="+46 70 123 4567" autocomplete="tel">
+        <button class="btn btn-primary" id="send-code-btn" onclick="handleSendCode()">
+          Skicka verifieringskod
+        </button>
+        <div id="recaptcha-container"></div>
+      </div>
+
+      <!-- Code verification step -->
+      <div id="code-step" class="auth-form" style="display:none;">
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:4px;">
+          Kod skickad till <strong id="phone-display"></strong>
+        </p>
+        <input type="text" id="code-input" placeholder="123456" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+        <button class="btn btn-primary" id="verify-btn" onclick="handleVerifyCode()">
+          Verifiera
+        </button>
+        <button class="btn btn-secondary" onclick="resetAuth()" style="margin-top:4px;">
+          Byt nummer
+        </button>
+      </div>
+
+      <div id="auth-error" style="color:var(--danger);margin-top:12px;font-size:14px;display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Loading Section -->
+  <div id="loading-section" class="section">
+    <div class="loading-center">
+      <div class="spinner dark large"></div>
+      <p>Laddar...</p>
+    </div>
+  </div>
+
+  <!-- Error Section -->
+  <div id="error-section" class="section">
+    <div class="error-container">
+      <div class="error-icon" id="error-icon">&#128274;</div>
+      <p id="error-message">Något gick fel</p>
+    </div>
+  </div>
+
+  <!-- Billing Section -->
+  <div id="billing-section" class="section">
+    <div class="billing-content">
+
+      <!-- Team Name -->
+      <h2 class="team-name" id="team-name"></h2>
+
+      <!-- Current Plan Card -->
+      <div class="card" id="plan-card">
+        <div class="card-header">
+          <span class="card-title">Aktuell plan</span>
+          <span class="status-badge" id="status-badge"></span>
+        </div>
+        <div class="plan-name">per plats</div>
+        <div class="plan-description" id="plan-description"></div>
+        <div class="price-container">
+          <span class="price-amount" id="price-amount"></span>
+          <span class="price-label" id="price-label"></span>
+        </div>
+      </div>
+
+      <!-- Grace Period Card -->
+      <div class="card card-grace" id="grace-card" style="display:none;">
+        <div class="info-card">
+          <span class="info-card-icon">&#9200;</span>
+          <div class="info-card-content">
+            <div class="info-card-title">Gratisperiod aktiv</div>
+            <div class="info-card-text" id="grace-text"></div>
+            <div class="info-card-text secondary" id="grace-info"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Cancellation Card -->
+      <div class="card card-cancel-pending" id="cancel-pending-card" style="display:none;">
+        <div class="info-card">
+          <span class="info-card-icon">&#9888;&#65039;</span>
+          <div class="info-card-content">
+            <div class="info-card-title">Inväntar avslut</div>
+            <div class="info-card-text" id="cancel-pending-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canceled Card -->
+      <div class="card card-canceled" id="canceled-card" style="display:none;">
+        <div class="info-card">
+          <span class="info-card-icon">&#10060;</span>
+          <div class="info-card-content">
+            <div class="info-card-title">Abonnemanget avslutat</div>
+            <div class="info-card-text">Starta ett nytt abonnemang för att fortsätta använda alla funktioner.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Member Usage Card -->
+      <div class="card" id="members-card">
+        <div class="card-title" style="margin-bottom:12px;">Platser</div>
+        <div class="usage-stats">
+          <span class="usage-number" id="member-count"></span>
+          <span class="usage-limit" id="member-limit"></span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-bar-fill" id="member-bar"></div>
+        </div>
+        <div class="usage-text" id="member-remaining"></div>
+      </div>
+
+      <!-- Storage Usage Card -->
+      <div class="card" id="storage-card">
+        <div class="card-title" style="margin-bottom:12px;">Lagring</div>
+        <div class="usage-stats">
+          <span class="usage-number small" id="storage-used"></span>
+          <span class="usage-limit small" id="storage-limit"></span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-bar-fill" id="storage-bar"></div>
+        </div>
+        <div class="usage-details" id="storage-details"></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions" id="actions-container"></div>
+
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Välj betalmetod</h2>
+        <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
+      </div>
+
+      <!-- Interval toggle -->
+      <div class="interval-toggle" id="payment-interval-toggle">
+        <button class="active" data-interval="monthly" onclick="setPaymentInterval('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="setPaymentInterval('yearly')">Årsvis <span class="discount-badge">-10%</span></button>
+      </div>
+
+      <!-- Price summary -->
+      <div class="summary-line" id="payment-summary"></div>
+
+      <!-- Payment methods -->
+      <div class="payment-method" onclick="handleCardPayment()">
+        <span class="payment-method-icon">&#128179;</span>
+        <div class="payment-method-info">
+          <h3>Betala med kort</h3>
+          <p>Visa, Mastercard, etc.</p>
+        </div>
+      </div>
+
+      <div class="payment-method" onclick="openInvoiceForm()">
+        <span class="payment-method-icon">&#128196;</span>
+        <div class="payment-method-info">
+          <h3>Betala med faktura</h3>
+          <p>Företagsfaktura med 30 dagars betalning</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice Form Modal -->
+  <div class="modal-overlay" id="invoice-modal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Fakturauppgifter</h2>
+        <button class="modal-close" onclick="closeModal('invoice-modal')">&times;</button>
+      </div>
+
+      <div class="summary-line" id="invoice-summary"></div>
+
+      <div id="invoice-form">
+        <div class="form-group">
+          <label>Företagsnamn</label>
+          <input type="text" id="inv-company" placeholder="AB Företaget">
+        </div>
+        <div class="form-group">
+          <label>Organisationsnummer</label>
+          <input type="text" id="inv-org" placeholder="556123-4567">
+        </div>
+        <div class="form-group">
+          <label>E-postadress för faktura</label>
+          <input type="email" id="inv-email" placeholder="faktura@foretaget.se">
+        </div>
+        <div class="form-group">
+          <label>Gatuadress</label>
+          <input type="text" id="inv-address" placeholder="Storgatan 1">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Postnummer</label>
+            <input type="text" id="inv-zip" placeholder="111 22">
+          </div>
+          <div class="form-group">
+            <label>Ort</label>
+            <input type="text" id="inv-city" placeholder="Stockholm">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="invoice-submit-btn" onclick="handleInvoicePayment()" style="margin-top:16px;">
+          Skicka faktura
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interval Change Modal -->
+  <div class="modal-overlay" id="interval-modal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Byt faktureringsintervall</h2>
+        <button class="modal-close" onclick="closeModal('interval-modal')">&times;</button>
+      </div>
+
+      <div class="interval-toggle" id="interval-change-toggle">
+        <button data-interval="monthly" onclick="confirmIntervalChange('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="confirmIntervalChange('yearly')">Årsvis</button>
+      </div>
+
+      <div class="card" style="margin-top:8px;">
+        <div class="card-title">Prisjämförelse</div>
+        <div class="comparison-row">
+          <span class="comparison-label">Månadsvis</span>
+          <span class="comparison-price" id="compare-monthly"></span>
+        </div>
+        <div class="comparison-row">
+          <span class="comparison-label">Årsvis <span class="discount-badge">-10%</span></span>
+          <span class="comparison-price" id="compare-yearly"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storage Addon Modal -->
+  <div class="modal-overlay" id="storage-modal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Välj lagringspaket</h2>
+        <button class="modal-close" onclick="closeModal('storage-modal')">&times;</button>
+      </div>
+
+      <div class="interval-toggle" id="storage-interval-toggle">
+        <button class="active" data-interval="monthly" onclick="setStorageInterval('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="setStorageInterval('yearly')">Årsvis (spara 10%)</button>
+      </div>
+
+      <div id="storage-tiers"></div>
+
+      <button class="btn btn-primary" id="storage-submit-btn" onclick="handlePurchaseStorage()" style="margin-top:8px;">
+        Gå till betalning
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js';
+    import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-functions.js';
+    import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app-check.js';
+
+    // =====================================================
+    // TODO: Fyll i din Firebase Web-config här
+    // Hämta från Firebase Console → Project Settings → Web App
+    // =====================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDlmPfR1ZI0ML1PzS5tmkuuXY05ROgHdic",
+      authDomain: "shabogo-c92eb.firebaseapp.com",
+      projectId: "shabogo-c92eb",
+      storageBucket: "shabogo-c92eb.firebasestorage.app",
+      messagingSenderId: "254968001035",
+      appId: "1:254968001035:web:4eb5dd08a3bf3af2f80d0e"
+    };
+
+    // TODO: Fyll i reCAPTCHA v3 site key från Firebase Console → App Check
+    const RECAPTCHA_SITE_KEY = "6LcNVGssAAAAALHg70c0g9ZMyMQ2Y234aEpvf2u0";
+
+    // =====================================================
+    // Config (matches app)
+    // =====================================================
+    const PER_SEAT_CONFIG = {
+      pricePerSeat: { monthly: 20, yearly: 216 },
+      minSeats: 3,
+      maxSeats: 200,
+      currency: 'SEK',
+      yearlyDiscountPercent: 10,
+    };
+
+    const STORAGE_TIERS = {
+      extra_10gb: { bytes: 10 * 1024 * 1024 * 1024, label: '10 GB', pricing: { monthly: 25, yearly: 269 } },
+      extra_50gb: { bytes: 50 * 1024 * 1024 * 1024, label: '50 GB', pricing: { monthly: 125, yearly: 1349 } },
+      extra_100gb: { bytes: 100 * 1024 * 1024 * 1024, label: '100 GB', pricing: { monthly: 225, yearly: 2429 } },
+    };
+
+    const BYTES_PER_SEAT = 2 * 1024 * 1024 * 1024; // 2 GB
+
+    // =====================================================
+    // Firebase Init
+    // =====================================================
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const functions = getFunctions(app);
+
+    // App Check (required for Cloud Functions)
+    if (RECAPTCHA_SITE_KEY !== "TODO_RECAPTCHA_V3_SITE_KEY") {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+        isTokenAutoRefreshEnabled: true,
+      });
+    }
+
+    // =====================================================
+    // State
+    // =====================================================
+    let currentTeam = null;
+    let currentUser = null;
+    let teamId = null;
+    let confirmationResult = null;
+    let unsubscribeTeam = null;
+    let paymentInterval = 'monthly';
+    let storageInterval = 'monthly';
+    let selectedStorageTier = 'extra_10gb';
+
+    // =====================================================
+    // Utilities
+    // =====================================================
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function calculateSeatCount(memberCount) {
+      return Math.max(memberCount, PER_SEAT_CONFIG.minSeats);
+    }
+
+    function calculateTotalPrice(seats, interval) {
+      return seats * PER_SEAT_CONFIG.pricePerSeat[interval];
+    }
+
+    function getTeamId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('teamId');
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showError(message, icon) {
+      document.getElementById('error-icon').innerHTML = icon || '&#128274;';
+      document.getElementById('error-message').textContent = message;
+      showSection('error-section');
+    }
+
+    // =====================================================
+    // Auth Flow
+    // =====================================================
+    let recaptchaVerifier = null;
+
+    function setupRecaptcha() {
+      if (recaptchaVerifier) return;
+      recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
+    }
+
+    window.handleSendCode = async function() {
+      const phone = document.getElementById('phone-input').value.trim();
+      if (!phone) return;
+
+      const btn = document.getElementById('send-code-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      document.getElementById('auth-error').style.display = 'none';
+
+      try {
+        setupRecaptcha();
+        confirmationResult = await signInWithPhoneNumber(auth, phone, recaptchaVerifier);
+        document.getElementById('phone-step').style.display = 'none';
+        document.getElementById('code-step').style.display = 'flex';
+        document.getElementById('phone-display').textContent = phone;
+        document.getElementById('code-input').focus();
+      } catch (error) {
+        console.error('Send code error:', error);
+        const errEl = document.getElementById('auth-error');
+        errEl.textContent = error.code === 'auth/invalid-phone-number'
+          ? 'Ogiltigt telefonnummer. Använd format +46701234567'
+          : 'Kunde inte skicka kod. Försök igen.';
+        errEl.style.display = 'block';
+        // Reset reCAPTCHA on error
+        recaptchaVerifier = null;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Skicka verifieringskod';
+      }
+    };
+
+    window.handleVerifyCode = async function() {
+      const code = document.getElementById('code-input').value.trim();
+      if (!code || !confirmationResult) return;
+
+      const btn = document.getElementById('verify-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      document.getElementById('auth-error').style.display = 'none';
+
+      try {
+        await confirmationResult.confirm(code);
+        // onAuthStateChanged will handle the rest
+      } catch (error) {
+        console.error('Verify error:', error);
+        const errEl = document.getElementById('auth-error');
+        errEl.textContent = 'Fel verifieringskod. Försök igen.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Verifiera';
+      }
+    };
+
+    window.resetAuth = function() {
+      document.getElementById('phone-step').style.display = 'flex';
+      document.getElementById('code-step').style.display = 'none';
+      document.getElementById('auth-error').style.display = 'none';
+      confirmationResult = null;
+    };
+
+    // =====================================================
+    // Data Loading
+    // =====================================================
+    function subscribeToTeam(tid) {
+      if (unsubscribeTeam) unsubscribeTeam();
+
+      unsubscribeTeam = onSnapshot(doc(db, 'teams', tid), (snap) => {
+        if (!snap.exists()) {
+          showError('Företaget hittades inte.', '&#128533;');
+          return;
+        }
+        currentTeam = { id: snap.id, ...snap.data() };
+
+        // Check admin access
+        const uid = currentUser?.uid;
+        const isAdmin = currentTeam.adminId === uid || (currentTeam.adminIds || []).includes(uid);
+        if (!isAdmin) {
+          showError('Bara administratörer kan hantera abonnemang.', '&#128274;');
+          return;
+        }
+
+        renderBilling(currentTeam);
+        showSection('billing-section');
+      }, (error) => {
+        console.error('Firestore error:', error);
+        showError('Kunde inte ladda företagsdata.', '&#128533;');
+      });
+    }
+
+    // =====================================================
+    // Rendering
+    // =====================================================
+    function renderBilling(team) {
+      // Team name
+      document.getElementById('team-name').textContent = team.name;
+
+      const status = team.subscriptionStatus;
+      const memberCount = team.memberIds?.length || 0;
+      const seats = calculateSeatCount(memberCount);
+      const interval = team.billingInterval || 'monthly';
+      const pricePerSeat = PER_SEAT_CONFIG.pricePerSeat[interval];
+      const totalPrice = team.currentPrice || (seats * pricePerSeat);
+      const memberLimit = team.memberLimit || PER_SEAT_CONFIG.maxSeats;
+      const hasSubscription = !!team.stripeSubscriptionId;
+
+      // Grace period
+      const gracePeriodEndsAt = team.gracePeriodEndsAt?.toDate ? team.gracePeriodEndsAt.toDate() : (team.gracePeriodEndsAt ? new Date(team.gracePeriodEndsAt) : null);
+      const inGracePeriod = gracePeriodEndsAt ? new Date() < gracePeriodEndsAt : false;
+      const graceDays = gracePeriodEndsAt ? Math.max(0, Math.ceil((gracePeriodEndsAt.getTime() - Date.now()) / (1000*60*60*24))) : 0;
+
+      // Status badge
+      const badge = document.getElementById('status-badge');
+      const statusMap = {
+        active: { label: 'Aktiv', color: '#10b981' },
+        canceled: { label: 'Avslutad', color: '#ef4444' },
+        expired: { label: 'Utgången', color: '#9ca3af' },
+        past_due: { label: 'Förfallen', color: '#f59e0b' },
+      };
+      const statusInfo = statusMap[status] || (inGracePeriod
+        ? { label: 'Provperiod', color: '#3b82f6' }
+        : { label: 'Inaktiv', color: '#6b7280' });
+      badge.textContent = statusInfo.label;
+      badge.style.background = statusInfo.color + '20';
+      badge.style.color = statusInfo.color;
+
+      // Plan description
+      const intervalLabel = interval === 'yearly' ? 'år' : 'mån';
+      const intervalLong = interval === 'yearly' ? 'per år' : 'per månad';
+      document.getElementById('plan-description').innerHTML =
+        `${seats} platser &times; ${pricePerSeat} ${PER_SEAT_CONFIG.currency}/${intervalLabel} = ${seats * pricePerSeat} ${PER_SEAT_CONFIG.currency}/${intervalLong}` +
+        (memberCount < PER_SEAT_CONFIG.minSeats ? `<br><small>(Minst ${PER_SEAT_CONFIG.minSeats} platser per abonnemang)</small>` : '');
+
+      document.getElementById('price-amount').textContent = `${totalPrice} ${PER_SEAT_CONFIG.currency}`;
+      document.getElementById('price-label').textContent =
+        (totalPrice === 0 && !hasSubscription) ? 'gratis' : intervalLong;
+
+      // Grace period card
+      const graceCard = document.getElementById('grace-card');
+      if (inGracePeriod) {
+        graceCard.style.display = 'block';
+        document.getElementById('grace-text').textContent = `${graceDays} dagar kvar av gratisperioden`;
+        document.getElementById('grace-info').textContent = hasSubscription
+          ? 'Du kan avsluta abonnemanget när som helst.'
+          : 'Välj en betalmetod för att fortsätta efter provperioden.';
+      } else {
+        graceCard.style.display = 'none';
+      }
+
+      // Pending cancellation
+      const cancelPendingCard = document.getElementById('cancel-pending-card');
+      if (team.cancelAtPeriodEnd) {
+        cancelPendingCard.style.display = 'block';
+        const cancelDate = team.cancelAt ? new Date(team.cancelAt).toLocaleDateString('sv-SE') : '';
+        document.getElementById('cancel-pending-text').textContent = cancelDate
+          ? `Abonnemanget avslutas ${cancelDate}`
+          : 'Abonnemanget avslutas vid periodens slut';
+      } else {
+        cancelPendingCard.style.display = 'none';
+      }
+
+      // Canceled card
+      const canceledCard = document.getElementById('canceled-card');
+      canceledCard.style.display = (status === 'canceled' && !team.cancelAtPeriodEnd) ? 'block' : 'none';
+
+      // Member usage
+      document.getElementById('member-count').textContent = memberCount;
+      document.getElementById('member-limit').textContent = `/ ${memberLimit}`;
+      document.getElementById('member-bar').style.width = `${Math.min((memberCount / memberLimit) * 100, 100)}%`;
+      document.getElementById('member-remaining').textContent = `${Math.max(memberLimit - memberCount, 0)} platser kvar`;
+
+      // Storage usage
+      const baseStorage = Math.max(memberCount, PER_SEAT_CONFIG.minSeats) * BYTES_PER_SEAT;
+      const addonBytes = team.storageAddonBytes || 0;
+      const totalStorage = baseStorage + addonBytes;
+      const usedBytes = team.storageUsedBytes || 0;
+      const usagePercent = totalStorage > 0 ? Math.round((usedBytes / totalStorage) * 100) : 0;
+      const barColor = usagePercent >= 120 ? '#ef4444' : usagePercent >= 80 ? '#f59e0b' : '#3E9B92';
+
+      document.getElementById('storage-used').textContent = formatBytes(usedBytes);
+      document.getElementById('storage-limit').textContent = `/ ${formatBytes(totalStorage)}`;
+      const storageBar = document.getElementById('storage-bar');
+      storageBar.style.width = `${Math.min(usagePercent, 100)}%`;
+      storageBar.style.backgroundColor = barColor;
+
+      let storageDetails = `<div class="usage-text">Bas: ${seats} &times; 2 GB = ${formatBytes(baseStorage)}</div>`;
+      if (addonBytes > 0) {
+        storageDetails += `<div class="usage-text">Tillägg: +${formatBytes(addonBytes)}</div>`;
+      }
+      storageDetails += `<div class="usage-text">Totalt: ${formatBytes(totalStorage)}</div>`;
+      document.getElementById('storage-details').innerHTML = storageDetails;
+
+      // Actions
+      renderActions(team, hasSubscription, status);
+    }
+
+    function renderActions(team, hasSubscription, status) {
+      const container = document.getElementById('actions-container');
+      container.innerHTML = '';
+
+      if (!hasSubscription) {
+        // Start subscription
+        container.innerHTML += `
+          <button class="btn btn-primary" onclick="openPaymentModal()">
+            &#128179; Starta prenumeration
+          </button>`;
+      }
+
+      if (hasSubscription) {
+        // Manage payment (Stripe Portal)
+        container.innerHTML += `
+          <button class="btn btn-primary" id="portal-btn" onclick="handleOpenPortal()">
+            &#9881;&#65039; Hantera betalning
+          </button>`;
+
+        // Change interval
+        if (status === 'active') {
+          container.innerHTML += `
+            <button class="btn btn-secondary" onclick="openIntervalModal()">
+              &#8596;&#65039; Byt faktureringsintervall
+            </button>`;
+        }
+      }
+
+      if (status === 'canceled') {
+        container.innerHTML = `
+          <button class="btn btn-primary" onclick="openPaymentModal()">
+            &#128260; Starta nytt abonnemang
+          </button>`;
+      }
+
+      // Storage actions
+      if (hasSubscription && status === 'active') {
+        if (!team.storageAddonSubscriptionId) {
+          container.innerHTML += `
+            <button class="btn btn-secondary" onclick="openStorageModal()">
+              &#9729;&#65039; Köp mer lagring
+            </button>`;
+        } else {
+          container.innerHTML += `
+            <button class="btn btn-secondary" onclick="openStorageModal()">
+              &#8596;&#65039; Ändra lagringspaket
+            </button>
+            <button class="btn btn-danger-outline btn-small" onclick="handleCancelStorage()">
+              &#10060; Avsluta lagringspaket
+            </button>`;
+        }
+      }
+    }
+
+    // =====================================================
+    // Modals
+    // =====================================================
+    window.closeModal = function(id) {
+      document.getElementById(id).classList.remove('active');
+    };
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('active');
+      });
+    });
+
+    // =====================================================
+    // Payment Modal
+    // =====================================================
+    window.openPaymentModal = function() {
+      paymentInterval = currentTeam?.billingInterval || 'monthly';
+      updatePaymentModal();
+      openModal('payment-modal');
+    };
+
+    window.setPaymentInterval = function(interval) {
+      paymentInterval = interval;
+      updatePaymentModal();
+    };
+
+    function updatePaymentModal() {
+      // Toggle buttons
+      document.querySelectorAll('#payment-interval-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === paymentInterval);
+      });
+
+      const memberCount = currentTeam?.memberIds?.length || 0;
+      const seats = calculateSeatCount(memberCount);
+      const price = PER_SEAT_CONFIG.pricePerSeat[paymentInterval];
+      const total = seats * price;
+      const label = paymentInterval === 'yearly' ? 'per år' : 'per månad';
+
+      document.getElementById('payment-summary').textContent =
+        `${seats} platser \u00D7 ${price} ${PER_SEAT_CONFIG.currency} = ${total} ${PER_SEAT_CONFIG.currency} ${label}`;
+      document.getElementById('invoice-summary').textContent =
+        `${seats} platser \u00D7 ${price} ${PER_SEAT_CONFIG.currency} = ${total} ${PER_SEAT_CONFIG.currency} ${label}`;
+    }
+
+    window.openInvoiceForm = function() {
+      closeModal('payment-modal');
+      openModal('invoice-modal');
+    };
+
+    // =====================================================
+    // Interval Change Modal
+    // =====================================================
+    window.openIntervalModal = function() {
+      const currentInterval = currentTeam?.billingInterval || 'monthly';
+      document.querySelectorAll('#interval-change-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === currentInterval);
+      });
+
+      const memberCount = currentTeam?.memberIds?.length || 0;
+      const seats = calculateSeatCount(memberCount);
+      document.getElementById('compare-monthly').textContent =
+        `${calculateTotalPrice(seats, 'monthly')} ${PER_SEAT_CONFIG.currency}/mån`;
+      document.getElementById('compare-yearly').textContent =
+        `${calculateTotalPrice(seats, 'yearly')} ${PER_SEAT_CONFIG.currency}/år`;
+
+      openModal('interval-modal');
+    };
+
+    window.confirmIntervalChange = async function(newInterval) {
+      if (newInterval === currentTeam?.billingInterval) return;
+
+      if (!confirm(`Vill du byta till ${newInterval === 'yearly' ? 'årsvis' : 'månadsvis'} fakturering?`)) return;
+
+      // Update toggle
+      document.querySelectorAll('#interval-change-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === newInterval);
+        btn.disabled = true;
+      });
+
+      try {
+        const updateSubscription = httpsCallable(functions, 'updateSubscription');
+        await updateSubscription({ teamId: currentTeam.id, newBillingInterval: newInterval });
+        closeModal('interval-modal');
+        alert('Faktureringsintervall uppdaterat!');
+      } catch (error) {
+        console.error('Interval change error:', error);
+        alert('Kunde inte byta intervall. Försök igen.');
+      } finally {
+        document.querySelectorAll('#interval-change-toggle button').forEach(btn => btn.disabled = false);
+      }
+    };
+
+    // =====================================================
+    // Storage Modal
+    // =====================================================
+    window.openStorageModal = function() {
+      storageInterval = 'monthly';
+      selectedStorageTier = 'extra_10gb';
+      renderStorageTiers();
+      openModal('storage-modal');
+    };
+
+    window.setStorageInterval = function(interval) {
+      storageInterval = interval;
+      document.querySelectorAll('#storage-interval-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === interval);
+      });
+      renderStorageTiers();
+    };
+
+    function renderStorageTiers() {
+      const container = document.getElementById('storage-tiers');
+      container.innerHTML = '';
+
+      for (const [key, tier] of Object.entries(STORAGE_TIERS)) {
+        const price = tier.pricing[storageInterval];
+        const isCurrent = currentTeam?.storageAddonTier === key;
+        const isSelected = selectedStorageTier === key;
+        const intervalLabel = storageInterval === 'yearly' ? '/år' : '/mån';
+
+        container.innerHTML += `
+          <div class="tier-card ${isSelected ? 'selected' : ''} ${isCurrent ? 'current' : ''}"
+               onclick="selectStorageTier('${key}')">
+            <div>
+              <div class="tier-name">+${tier.label}</div>
+              <div class="tier-price">${price} ${PER_SEAT_CONFIG.currency}${intervalLabel} (ex. moms)</div>
+            </div>
+          </div>`;
+      }
+    }
+
+    window.selectStorageTier = function(tier) {
+      selectedStorageTier = tier;
+      renderStorageTiers();
+    };
+
+    // =====================================================
+    // Stripe Action Handlers
+    // =====================================================
+    window.handleCardPayment = async function() {
+      const btn = document.querySelector('#payment-modal .payment-method:first-child');
+      btn.style.opacity = '0.6';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession');
+        const result = await createCheckoutSession({ teamId: currentTeam.id, billingInterval: paymentInterval });
+        if (result.data.url) {
+          window.location.href = result.data.url;
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        if (error.message?.includes('already-exists')) {
+          alert('Företaget har redan ett aktivt abonnemang.');
+        } else {
+          alert('Något gick fel. Försök igen.');
+        }
+      } finally {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      }
+    };
+
+    window.handleInvoicePayment = async function() {
+      const btn = document.getElementById('invoice-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      const details = {
+        companyName: document.getElementById('inv-company').value.trim(),
+        orgNumber: document.getElementById('inv-org').value.trim(),
+        email: document.getElementById('inv-email').value.trim(),
+        address: {
+          line1: document.getElementById('inv-address').value.trim(),
+          postalCode: document.getElementById('inv-zip').value.trim(),
+          city: document.getElementById('inv-city').value.trim(),
+          country: 'SE',
+        },
+      };
+
+      if (!details.companyName || !details.orgNumber || !details.email || !details.address.line1) {
+        alert('Fyll i alla obligatoriska fält.');
+        btn.disabled = false;
+        btn.textContent = 'Skicka faktura';
+        return;
+      }
+
+      try {
+        const createInvoiceSubscription = httpsCallable(functions, 'createInvoiceSubscription');
+        await createInvoiceSubscription({
+          teamId: currentTeam.id,
+          billingInterval: paymentInterval,
+          ...details,
+        });
+        closeModal('invoice-modal');
+        alert(`Faktura skapad! Ett mail skickas till ${details.email}.`);
+      } catch (error) {
+        console.error('Invoice error:', error);
+        if (error.message?.includes('already-exists')) {
+          alert('Företaget har redan ett aktivt abonnemang.');
+        } else {
+          alert('Något gick fel. Försök igen.');
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Skicka faktura';
+      }
+    };
+
+    window.handleOpenPortal = async function() {
+      const btn = document.getElementById('portal-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const createCustomerPortalSession = httpsCallable(functions, 'createCustomerPortalSession');
+        const result = await createCustomerPortalSession({ teamId: currentTeam.id });
+        if (result.data.url) {
+          window.location.href = result.data.url;
+        }
+      } catch (error) {
+        console.error('Portal error:', error);
+        alert('Kunde inte öppna betalningsportalen. Försök igen.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '&#9881;&#65039; Hantera betalning';
+      }
+    };
+
+    window.handlePurchaseStorage = async function() {
+      const btn = document.getElementById('storage-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const purchaseStorageAddon = httpsCallable(functions, 'purchaseStorageAddon');
+        const result = await purchaseStorageAddon({
+          teamId: currentTeam.id,
+          storageTier: selectedStorageTier,
+          billingInterval: storageInterval,
+        });
+        if (result.data.url) {
+          window.location.href = result.data.url;
+        }
+      } catch (error) {
+        console.error('Storage purchase error:', error);
+        if (error.message?.includes('already-exists')) {
+          alert('Företaget har redan ett lagringspaket. Använd "Ändra" istället.');
+        } else {
+          alert('Något gick fel. Försök igen.');
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gå till betalning';
+      }
+    };
+
+    window.handleCancelStorage = async function() {
+      if (!confirm('Vill du avsluta ditt lagringspaket? Lagringen minskar vid nästa faktureringsperiod.')) return;
+
+      try {
+        const cancelStorageAddon = httpsCallable(functions, 'cancelStorageAddon');
+        await cancelStorageAddon({ teamId: currentTeam.id });
+        alert('Lagringspaket avslutat.');
+      } catch (error) {
+        console.error('Cancel storage error:', error);
+        alert('Kunde inte avsluta lagringspaket. Försök igen.');
+      }
+    };
+
+    // =====================================================
+    // Init
+    // =====================================================
+    teamId = getTeamId();
+
+    if (!teamId) {
+      showError('Ingen teamId angiven. Öppna den här sidan från appen.', '&#128279;');
+    } else {
+      showSection('loading-section');
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user;
+          subscribeToTeam(teamId);
+        } else {
+          currentUser = null;
+          if (unsubscribeTeam) { unsubscribeTeam(); unsubscribeTeam = null; }
+          showSection('auth-section');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
