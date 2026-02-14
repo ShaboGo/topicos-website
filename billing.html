@@ -309,12 +309,15 @@
     const db = getFirestore(app);
     const functions = getFunctions(app);
 
-    // App Check (required for Cloud Functions)
-    if (RECAPTCHA_SITE_KEY !== "TODO_RECAPTCHA_V3_SITE_KEY") {
-      initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
-        isTokenAutoRefreshEnabled: true,
-      });
+    // App Check is initialized AFTER signInWithCustomToken to avoid
+    // invalid App Check tokens blocking the auth request.
+    function activateAppCheck() {
+      if (RECAPTCHA_SITE_KEY !== "TODO_RECAPTCHA_V3_SITE_KEY") {
+        initializeAppCheck(app, {
+          provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+          isTokenAutoRefreshEnabled: true,
+        });
+      }
     }
 
     // =====================================================
@@ -843,6 +846,7 @@
       signInWithCustomToken(auth, authToken)
         .then((userCredential) => {
           currentUser = userCredential.user;
+          activateAppCheck();
           subscribeToTeam(teamId);
         })
         .catch((error) => {
