@@ -264,12 +264,6 @@
     import { getAuth, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js';
     import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js';
     import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-functions.js';
-    import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app-check.js';
-
-    // =====================================================
-    // TODO: Fyll i din Firebase Web-config här
-    // Hämta från Firebase Console → Project Settings → Web App
-    // =====================================================
     const firebaseConfig = {
       apiKey: "AIzaSyDlmPfR1ZI0ML1PzS5tmkuuXY05ROgHdic",
       authDomain: "shabogo-c92eb.firebaseapp.com",
@@ -278,9 +272,6 @@
       messagingSenderId: "254968001035",
       appId: "1:254968001035:web:4eb5dd08a3bf3af2f80d0e"
     };
-
-    // TODO: Fyll i reCAPTCHA v3 site key från Firebase Console → App Check
-    const RECAPTCHA_SITE_KEY = "6LcNVGssAAAAALHg70c0g9ZMyMQ2Y234aEpvf2u0";
 
     // =====================================================
     // Config (matches app)
@@ -309,16 +300,6 @@
     const db = getFirestore(app);
     const functions = getFunctions(app);
 
-    // App Check is initialized AFTER signInWithCustomToken to avoid
-    // invalid App Check tokens blocking the auth request.
-    function activateAppCheck() {
-      if (RECAPTCHA_SITE_KEY !== "TODO_RECAPTCHA_V3_SITE_KEY") {
-        initializeAppCheck(app, {
-          provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
-          isTokenAutoRefreshEnabled: true,
-        });
-      }
-    }
 
     // =====================================================
     // State
@@ -846,7 +827,6 @@
       signInWithCustomToken(auth, authToken)
         .then((userCredential) => {
           currentUser = userCredential.user;
-          activateAppCheck();
           subscribeToTeam(teamId);
         })
         .catch((error) => {
