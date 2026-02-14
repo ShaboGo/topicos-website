@@ -852,25 +852,37 @@
     teamId = getParam('teamId');
     const authToken = getParam('token');
 
-    if (!teamId || !authToken) {
+    if (!teamId) {
       showSection('auth-section');
     } else {
       showSection('loading-section');
 
-      // Sign in with custom token from app, then load team data
-      signInWithCustomToken(auth, authToken)
-        .then((userCredential) => {
-          currentUser = userCredential.user;
-          subscribeToTeam(teamId);
-        })
-        .catch((error) => {
-          console.error('Auth token error:', error);
-          if (error.code === 'auth/invalid-custom-token') {
-            showError('Länken har gått ut. Gå tillbaka till appen och försök igen.', '&#128336;');
+      if (authToken) {
+        // Sign in with custom token from app
+        signInWithCustomToken(auth, authToken)
+          .then((userCredential) => {
+            currentUser = userCredential.user;
+            subscribeToTeam(teamId);
+          })
+          .catch((error) => {
+            console.error('Auth token error:', error);
+            if (error.code === 'auth/invalid-custom-token') {
+              showError('Länken har gått ut. Gå tillbaka till appen och försök igen.', '&#128336;');
+            } else {
+              showError(`Kunde inte logga in (${error.code}). Försök igen från appen.`, '&#128274;');
+            }
+          });
+      } else {
+        // No token — check if already signed in (e.g. returning from Stripe)
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            currentUser = user;
+            subscribeToTeam(teamId);
           } else {
-            showError(`Kunde inte logga in (${error.code}). Försök igen från appen.`, '&#128274;');
+            showSection('auth-section');
           }
         });
+      }
     }
   </script>
 </body>
