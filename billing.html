@@ -147,7 +147,7 @@
       <div class="summary-line" id="payment-summary"></div>
 
       <!-- Payment methods -->
-      <div class="payment-method" onclick="handleCardPayment()">
+      <div class="payment-method" id="card-payment-btn" onclick="handleCardPayment()">
         <span class="payment-method-icon">&#128179;</span>
         <div class="payment-method-info">
           <h3>Betala med kort</h3>
@@ -162,6 +162,8 @@
           <p>Företagsfaktura med 30 dagars betalning</p>
         </div>
       </div>
+
+      <div id="payment-error" style="display:none; color:#ef4444; text-align:center; padding:12px; font-size:14px;"></div>
     </div>
   </div>
 
@@ -690,26 +692,37 @@
     // Stripe Action Handlers
     // =====================================================
     window.handleCardPayment = async function() {
-      const btn = document.querySelector('#payment-modal .payment-method:first-child');
+      const btn = document.getElementById('card-payment-btn');
+      const errorEl = document.getElementById('payment-error');
+      errorEl.style.display = 'none';
+
+      // Show loading state
       btn.style.opacity = '0.6';
       btn.style.pointerEvents = 'none';
+      btn.querySelector('h3').textContent = 'Laddar...';
 
       try {
         const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession');
         const result = await createCheckoutSession({ teamId: currentTeam.id, billingInterval: paymentInterval });
         if (result.data.url) {
           window.location.href = result.data.url;
+        } else {
+          errorEl.textContent = 'Ingen checkout-URL returnerades.';
+          errorEl.style.display = 'block';
         }
       } catch (error) {
         console.error('Checkout error:', error);
-        if (error.message?.includes('already-exists')) {
-          alert('Företaget har redan ett aktivt abonnemang.');
+        const msg = error.message || '';
+        if (msg.includes('already-exists')) {
+          errorEl.textContent = 'Företaget har redan ett aktivt abonnemang.';
         } else {
-          alert('Något gick fel. Försök igen.');
+          errorEl.textContent = 'Fel: ' + (error.code || error.message || 'Okänt fel') + '. Försök igen.';
         }
+        errorEl.style.display = 'block';
       } finally {
         btn.style.opacity = '1';
         btn.style.pointerEvents = 'auto';
+        btn.querySelector('h3').textContent = 'Betala med kort';
       }
     };
 
