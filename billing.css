@@ -460,37 +460,30 @@ body {
 .select-wrapper {
   position: relative;
   width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.select-wrapper:focus-within {
+  border-color: var(--primary);
 }
 
 .select-wrapper select {
   width: 100%;
   padding: 12px 14px;
-  padding-right: 36px;
-  border: 2px solid var(--border);
-  border-radius: 10px;
+  border: none;
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s;
-  background: var(--card-bg);
+  background: transparent;
   color: var(--text-dark);
   cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.select-wrapper select:focus {
-  border-color: var(--primary);
 }
 
 .select-arrow {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  font-size: 14px;
-  pointer-events: none;
+  display: none;
 }
 
 .form-row {
