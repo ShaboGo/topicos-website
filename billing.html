@@ -315,9 +315,9 @@
     };
 
     const STORAGE_TIERS = {
-      extra_10gb: { bytes: 10 * 1024 * 1024 * 1024, label: '10 GB', pricing: { monthly: 25, yearly: 269 } },
-      extra_50gb: { bytes: 50 * 1024 * 1024 * 1024, label: '50 GB', pricing: { monthly: 125, yearly: 1349 } },
-      extra_100gb: { bytes: 100 * 1024 * 1024 * 1024, label: '100 GB', pricing: { monthly: 225, yearly: 2429 } },
+      extra_20gb: { bytes: 20 * 1024 * 1024 * 1024, label: '20 GB', pricing: { monthly: 35, yearly: 379 } },
+      extra_50gb: { bytes: 50 * 1024 * 1024 * 1024, label: '50 GB', pricing: { monthly: 75, yearly: 809 } },
+      extra_100gb: { bytes: 100 * 1024 * 1024 * 1024, label: '100 GB', pricing: { monthly: 125, yearly: 1349 } },
     };
 
     const BYTES_PER_SEAT = 10 * 1024 * 1024 * 1024; // 10 GB
@@ -346,7 +346,7 @@
     let unsubscribeTeam = null;
     let paymentInterval = 'monthly';
     let storageInterval = 'monthly';
-    let selectedStorageTier = 'extra_10gb';
+    let selectedStorageTier = 'extra_20gb';
 
     // =====================================================
     // Utilities
@@ -675,7 +675,7 @@
     // =====================================================
     window.openStorageModal = function() {
       storageInterval = 'monthly';
-      selectedStorageTier = 'extra_10gb';
+      selectedStorageTier = 'extra_20gb';
       renderStorageTiers();
       openModal('storage-modal');
     };
