@@ -625,6 +625,191 @@ body {
   color: var(--text-dark);
 }
 
+/* Compact usage card (Platser / Lagring / Samtal) — matchar appens SubscriptionScreen */
+.usage-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.metric-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.metric-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.metric-value .max {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.metric-value.unlimited {
+  color: var(--primary);
+}
+
+.metric-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--primary);
+  transition: width 0.5s ease;
+}
+
+.metric-sub {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.buy-storage-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Plans comparison (Free / Bas / Pro) */
+.plans-section-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.plans-section-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.plan-compare-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.plan-compare-card.featured {
+  border: 2px solid var(--primary);
+}
+
+.best-value {
+  position: absolute;
+  top: -1px;
+  right: 16px;
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 0 0 10px 10px;
+}
+
+.plan-compare-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.plan-compare-name {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.current-badge {
+  background: #f0fdf4;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.plan-compare-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.plan-compare-amount {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.plan-compare-unit {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.plan-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.plan-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.plan-feature .check {
+  color: var(--primary);
+  font-weight: 800;
+  width: 16px;
+  text-align: center;
+}
+
+.plan-feature.excluded {
+  color: var(--text-tertiary);
+}
+
+.plan-feature.excluded .check {
+  color: var(--text-tertiary);
+}
+
 /* Responsive */
 @media (min-width: 600px) {
   .modal-overlay {

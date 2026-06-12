@@ -55,7 +55,7 @@
           <span class="card-title">Aktuell plan</span>
           <span class="status-badge" id="status-badge"></span>
         </div>
-        <div class="plan-name">per plats</div>
+        <div class="plan-name" id="plan-name"></div>
         <div class="plan-description" id="plan-description"></div>
         <div class="price-container">
           <span class="price-amount" id="price-amount"></span>
@@ -92,36 +92,24 @@
           <span class="info-card-icon">&#10060;</span>
           <div class="info-card-content">
             <div class="info-card-title">Abonnemanget avslutat</div>
-            <div class="info-card-text">Starta ett nytt abonnemang för att fortsätta använda alla funktioner.</div>
+            <div class="info-card-text">Välj en plan nedan för att fortsätta använda alla funktioner.</div>
           </div>
         </div>
       </div>
 
-      <!-- Member Usage Card -->
-      <div class="card" id="members-card">
-        <div class="card-title" style="margin-bottom:12px;">Platser</div>
-        <div class="usage-stats">
-          <span class="usage-number" id="member-count"></span>
-          <span class="usage-limit" id="member-limit"></span>
-        </div>
-        <div class="usage-bar">
-          <div class="usage-bar-fill" id="member-bar"></div>
-        </div>
-        <div class="usage-text" id="member-remaining"></div>
+      <!-- Usage Summary Card (compact: Platser / Lagring / Samtal) -->
+      <div class="card usage-card" id="usage-card"></div>
+
+      <!-- Plans Comparison (Free / Bas / Pro) -->
+      <h3 class="plans-section-title">Planer</h3>
+      <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 10% rabatt.</p>
+
+      <div class="interval-toggle" id="plans-interval-toggle">
+        <button class="active" data-interval="monthly" onclick="setPlansInterval('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="setPlansInterval('yearly')">Årsvis <span class="discount-badge">-10%</span></button>
       </div>
 
-      <!-- Storage Usage Card -->
-      <div class="card" id="storage-card">
-        <div class="card-title" style="margin-bottom:12px;">Lagring</div>
-        <div class="usage-stats">
-          <span class="usage-number small" id="storage-used"></span>
-          <span class="usage-limit small" id="storage-limit"></span>
-        </div>
-        <div class="usage-bar">
-          <div class="usage-bar-fill" id="storage-bar"></div>
-        </div>
-        <div class="usage-details" id="storage-details"></div>
-      </div>
+      <div id="plans-container"></div>
 
       <!-- Actions -->
       <div class="actions" id="actions-container"></div>
@@ -135,12 +123,6 @@
       <div class="modal-header">
         <h2>Välj betalmetod</h2>
         <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
-      </div>
-
-      <!-- Interval toggle -->
-      <div class="interval-toggle" id="payment-interval-toggle">
-        <button class="active" data-interval="monthly" onclick="setPaymentInterval('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="setPaymentInterval('yearly')">Årsvis <span class="discount-badge">-10%</span></button>
       </div>
 
       <!-- Price summary -->
@@ -238,33 +220,6 @@
     </div>
   </div>
 
-  <!-- Interval Change Modal -->
-  <div class="modal-overlay" id="interval-modal">
-    <div class="modal-sheet">
-      <div class="modal-header">
-        <h2>Byt faktureringsintervall</h2>
-        <button class="modal-close" onclick="closeModal('interval-modal')">&times;</button>
-      </div>
-
-      <div class="interval-toggle" id="interval-change-toggle">
-        <button data-interval="monthly" onclick="confirmIntervalChange('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="confirmIntervalChange('yearly')">Årsvis</button>
-      </div>
-
-      <div class="card" style="margin-top:8px;">
-        <div class="card-title">Prisjämförelse</div>
-        <div class="comparison-row">
-          <span class="comparison-label">Månadsvis</span>
-          <span class="comparison-price" id="compare-monthly"></span>
-        </div>
-        <div class="comparison-row">
-          <span class="comparison-label">Årsvis <span class="discount-badge">-10%</span></span>
-          <span class="comparison-price" id="compare-yearly"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Storage Addon Modal -->
   <div class="modal-overlay" id="storage-modal">
     <div class="modal-sheet">
@@ -304,23 +259,50 @@
     };
 
     // =====================================================
-    // Config (matches app)
+    // Config (single source of truth — speglar appens tierConfig.ts)
     // =====================================================
-    const PER_SEAT_CONFIG = {
-      pricePerSeat: { monthly: 16, yearly: 173 },
-      minSeats: 3,
-      maxSeats: 200,
-      currency: 'SEK',
-      yearlyDiscountPercent: 10,
+    const GB = 1024 * 1024 * 1024;
+    const CURRENCY = 'SEK';
+    const SEAT_LIMITS = { MIN: 3, MAX: 200 };
+    const CALL_POTT_SEAT_CAP = 5; // Free-potten kapas vid 5 platser → max 5 × 40 = 200 min/mån
+
+    const TIER_ORDER = ['free', 'bas', 'pro'];
+
+    const TIER_CONFIG = {
+      free: {
+        name: 'Free',
+        pricePerSeat: { monthly: 0, yearly: 0 },
+        storageFlatBytes: 5 * GB,    // 5 GB totalt för hela org:en
+        storageBytesPerSeat: null,
+        callMinutesPerSeat: 40,      // poolat: min(seats,5) × 40 = max 200 min/mån
+        timeTracking: false,
+        storageAddons: false,
+      },
+      bas: {
+        name: 'Bas',
+        pricePerSeat: { monthly: 49, yearly: 529 },
+        storageFlatBytes: null,
+        storageBytesPerSeat: 10 * GB,
+        callMinutesPerSeat: null,    // obegränsat
+        timeTracking: false,
+        storageAddons: true,
+      },
+      pro: {
+        name: 'Pro',
+        pricePerSeat: { monthly: 69, yearly: 745 },
+        storageFlatBytes: null,
+        storageBytesPerSeat: 25 * GB,
+        callMinutesPerSeat: null,
+        timeTracking: true,
+        storageAddons: true,
+      },
     };
 
     const STORAGE_TIERS = {
-      extra_20gb: { bytes: 20 * 1024 * 1024 * 1024, label: '20 GB', pricing: { monthly: 35, yearly: 379 } },
-      extra_50gb: { bytes: 50 * 1024 * 1024 * 1024, label: '50 GB', pricing: { monthly: 75, yearly: 809 } },
-      extra_100gb: { bytes: 100 * 1024 * 1024 * 1024, label: '100 GB', pricing: { monthly: 125, yearly: 1349 } },
+      extra_20gb: { bytes: 20 * GB, label: '20 GB', pricing: { monthly: 35, yearly: 379 } },
+      extra_50gb: { bytes: 50 * GB, label: '50 GB', pricing: { monthly: 75, yearly: 809 } },
+      extra_100gb: { bytes: 100 * GB, label: '100 GB', pricing: { monthly: 125, yearly: 1349 } },
     };
-
-    const BYTES_PER_SEAT = 10 * 1024 * 1024 * 1024; // 10 GB
 
     // =====================================================
     // Firebase Init
@@ -336,7 +318,6 @@
       isTokenAutoRefreshEnabled: true,
     });
 
-
     // =====================================================
     // State
     // =====================================================
@@ -344,9 +325,11 @@
     let currentUser = null;
     let teamId = null;
     let unsubscribeTeam = null;
-    let paymentInterval = 'monthly';
+    let plansInterval = 'monthly';   // intervall vald i plan-jämförelsen
     let storageInterval = 'monthly';
     let selectedStorageTier = 'extra_20gb';
+    let selectedTier = null;         // nivå vald i betalflödet (bas/pro)
+    let pendingStorageDeepLink = false;
 
     // =====================================================
     // Utilities
@@ -359,12 +342,28 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    function calculateSeatCount(memberCount) {
-      return Math.max(memberCount, PER_SEAT_CONFIG.minSeats);
+    function getTier(team) {
+      const t = team?.tier;
+      return (t === 'bas' || t === 'pro') ? t : 'free';
     }
 
-    function calculateTotalPrice(seats, interval) {
-      return seats * PER_SEAT_CONFIG.pricePerSeat[interval];
+    function calculateSeatCount(memberCount) {
+      return Math.max(memberCount, SEAT_LIMITS.MIN);
+    }
+
+    // Inkluderad lagring (bytes) för nivån — fast pott (Free) eller per-seat (Bas/Pro).
+    function getBaseStorageBytes(tier, seats) {
+      const cfg = TIER_CONFIG[tier];
+      if (cfg.storageFlatBytes != null) return cfg.storageFlatBytes;
+      return seats * (cfg.storageBytesPerSeat || 0);
+    }
+
+    // Samtalspott (deltagar-min/mån). null = obegränsat.
+    function getCallLimit(tier, memberCount) {
+      const perSeat = TIER_CONFIG[tier].callMinutesPerSeat;
+      if (perSeat == null) return null;
+      const seats = Math.min(Math.max(memberCount, 1), CALL_POTT_SEAT_CAP);
+      return seats * perSeat;
     }
 
     function getParam(name) {
@@ -406,6 +405,12 @@
 
         renderBilling(currentTeam);
         showSection('billing-section');
+
+        // Djuplänk: ?product=storage → öppna lagringsmodalen direkt (en gång).
+        if (pendingStorageDeepLink) {
+          pendingStorageDeepLink = false;
+          handleStorageDeepLink();
+        }
       }, (error) => {
         console.error('Firestore error:', error);
         showError('Kunde inte ladda företagsdata.', '&#128533;');
@@ -416,22 +421,26 @@
     // Rendering
     // =====================================================
     function renderBilling(team) {
-      // Team name
-      document.getElementById('team-name').textContent = team.name;
-
+      const tier = getTier(team);
+      const cfg = TIER_CONFIG[tier];
       const status = team.subscriptionStatus;
       const memberCount = team.memberIds?.length || 0;
       const seats = calculateSeatCount(memberCount);
       const interval = team.billingInterval || 'monthly';
-      const pricePerSeat = PER_SEAT_CONFIG.pricePerSeat[interval];
-      const totalPrice = team.currentPrice || (seats * pricePerSeat);
-      const memberLimit = team.memberLimit || PER_SEAT_CONFIG.maxSeats;
+      const pricePerSeat = cfg.pricePerSeat[interval];
+      const totalPrice = team.currentPrice != null ? team.currentPrice : (seats * pricePerSeat);
+      const memberLimit = team.memberLimit || SEAT_LIMITS.MAX;
       const hasSubscription = !!team.stripeSubscriptionId;
+
+      // Förvald intervall i plan-jämförelsen = teamets nuvarande
+      plansInterval = interval;
+
+      document.getElementById('team-name').textContent = team.name;
 
       // Grace period
       const gracePeriodEndsAt = team.gracePeriodEndsAt?.toDate ? team.gracePeriodEndsAt.toDate() : (team.gracePeriodEndsAt ? new Date(team.gracePeriodEndsAt) : null);
       const inGracePeriod = gracePeriodEndsAt ? new Date() < gracePeriodEndsAt : false;
-      const graceDays = gracePeriodEndsAt ? Math.max(0, Math.ceil((gracePeriodEndsAt.getTime() - Date.now()) / (1000*60*60*24))) : 0;
+      const graceDays = gracePeriodEndsAt ? Math.max(0, Math.ceil((gracePeriodEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
 
       // Status badge
       const badge = document.getElementById('status-badge');
@@ -441,27 +450,36 @@
         expired: { label: 'Utgången', color: '#9ca3af' },
         past_due: { label: 'Förfallen', color: '#f59e0b' },
       };
-      const statusInfo = statusMap[status] || (inGracePeriod
-        ? { label: 'Provperiod', color: '#3b82f6' }
-        : { label: 'Inaktiv', color: '#6b7280' });
+      const statusInfo = tier === 'free'
+        ? { label: 'Gratis', color: '#10b981' }
+        : (statusMap[status] || (inGracePeriod
+          ? { label: 'Provperiod', color: '#3b82f6' }
+          : { label: 'Inaktiv', color: '#6b7280' }));
       badge.textContent = statusInfo.label;
       badge.style.background = statusInfo.color + '20';
       badge.style.color = statusInfo.color;
 
-      // Plan description
+      // Plan name + description + price
       const intervalLabel = interval === 'yearly' ? 'år' : 'mån';
       const intervalLong = interval === 'yearly' ? 'per år' : 'per månad';
-      document.getElementById('plan-description').innerHTML =
-        `${seats} platser &times; ${pricePerSeat} ${PER_SEAT_CONFIG.currency}/${intervalLabel} = ${seats * pricePerSeat} ${PER_SEAT_CONFIG.currency}/${intervalLong}` +
-        (memberCount < PER_SEAT_CONFIG.minSeats ? `<br><small>(Minst ${PER_SEAT_CONFIG.minSeats} platser per abonnemang)</small>` : '');
+      document.getElementById('plan-name').textContent = cfg.name;
 
-      document.getElementById('price-amount').textContent = `${totalPrice} ${PER_SEAT_CONFIG.currency}`;
-      document.getElementById('price-label').textContent =
-        (totalPrice === 0 && !hasSubscription) ? 'gratis' : intervalLong;
+      if (tier === 'free') {
+        document.getElementById('plan-description').textContent =
+          'Börja gratis. Uppgradera när organisationen växer.';
+        document.getElementById('price-amount').textContent = `0 ${CURRENCY}`;
+        document.getElementById('price-label').textContent = 'gratis';
+      } else {
+        document.getElementById('plan-description').innerHTML =
+          `${seats} platser &times; ${pricePerSeat} ${CURRENCY}/${intervalLabel} = ${seats * pricePerSeat} ${CURRENCY}/${intervalLong}` +
+          (memberCount < SEAT_LIMITS.MIN ? `<br><small>(Minst ${SEAT_LIMITS.MIN} platser per abonnemang)</small>` : '');
+        document.getElementById('price-amount').textContent = `${totalPrice} ${CURRENCY}`;
+        document.getElementById('price-label').textContent = intervalLong;
+      }
 
       // Grace period card
       const graceCard = document.getElementById('grace-card');
-      if (inGracePeriod) {
+      if (inGracePeriod && tier !== 'free') {
         graceCard.style.display = 'block';
         document.getElementById('grace-text').textContent = `${graceDays} dagar kvar av gratisperioden`;
         document.getElementById('grace-info').textContent = hasSubscription
@@ -487,88 +505,178 @@
       const canceledCard = document.getElementById('canceled-card');
       canceledCard.style.display = (status === 'canceled' && !team.cancelAtPeriodEnd) ? 'block' : 'none';
 
-      // Member usage
-      document.getElementById('member-count').textContent = memberCount;
-      document.getElementById('member-limit').textContent = `/ ${memberLimit}`;
-      document.getElementById('member-bar').style.width = `${Math.min((memberCount / memberLimit) * 100, 100)}%`;
-      document.getElementById('member-remaining').textContent = `${Math.max(memberLimit - memberCount, 0)} platser kvar`;
+      renderUsage(team, tier, seats, memberCount, memberLimit, hasSubscription);
+      renderPlans(team, tier, hasSubscription);
+      renderActions(team, tier, hasSubscription, status);
+    }
 
-      // Storage usage
-      const baseStorage = Math.max(memberCount, PER_SEAT_CONFIG.minSeats) * BYTES_PER_SEAT;
+    function renderUsage(team, tier, seats, memberCount, memberLimit, hasSubscription) {
+      const container = document.getElementById('usage-card');
+
+      // Platser
+      const memberPct = Math.min((memberCount / memberLimit) * 100, 100);
+
+      // Lagring
+      const baseStorage = getBaseStorageBytes(tier, seats);
       const addonBytes = team.storageAddonBytes || 0;
       const totalStorage = baseStorage + addonBytes;
       const usedBytes = team.storageUsedBytes || 0;
-      const usagePercent = totalStorage > 0 ? Math.round((usedBytes / totalStorage) * 100) : 0;
-      const barColor = usagePercent >= 120 ? '#ef4444' : usagePercent >= 80 ? '#f59e0b' : '#3E9B92';
-
-      document.getElementById('storage-used').textContent = formatBytes(usedBytes);
-      document.getElementById('storage-limit').textContent = `/ ${formatBytes(totalStorage)}`;
-      const storageBar = document.getElementById('storage-bar');
-      storageBar.style.width = `${Math.min(usagePercent, 100)}%`;
-      storageBar.style.backgroundColor = barColor;
-
-      let storageDetails = `<div class="usage-text">Bas: ${seats} &times; 10 GB = ${formatBytes(baseStorage)}</div>`;
+      const storagePct = totalStorage > 0 ? Math.min((usedBytes / totalStorage) * 100, 100) : 0;
+      const storageColor = storagePct >= 100 ? 'var(--danger)' : storagePct >= 80 ? 'var(--warning)' : 'var(--primary)';
+      let storageSub = '';
       if (addonBytes > 0) {
-        storageDetails += `<div class="usage-text">Tillägg: +${formatBytes(addonBytes)}</div>`;
+        storageSub = `<div class="metric-sub">Bas: ${formatBytes(baseStorage)} · Tillägg: +${formatBytes(addonBytes)}</div>`;
       }
-      storageDetails += `<div class="usage-text">Totalt: ${formatBytes(totalStorage)}</div>`;
-      document.getElementById('storage-details').innerHTML = storageDetails;
 
-      // Actions
-      renderActions(team, hasSubscription, status);
+      // Samtal
+      const callLimit = getCallLimit(tier, memberCount);
+
+      let callOrStorageBtn;
+      if (callLimit != null) {
+        // Free: visa samtalspotten
+        callOrStorageBtn = `
+          <div class="metric-row">
+            <div class="metric-top">
+              <span class="metric-label">Samtalsminuter</span>
+              <span class="metric-value"><span class="max">upp till ${callLimit} min/mån</span></span>
+            </div>
+          </div>`;
+      } else if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
+        // Bas/Pro: knapp för att köpa mer lagring
+        callOrStorageBtn = `
+          <button class="buy-storage-btn" onclick="openStorageModal()">
+            &#9729;&#65039; Köp mer lagring
+          </button>`;
+      } else {
+        callOrStorageBtn = '';
+      }
+
+      container.innerHTML = `
+        <div class="metric-row">
+          <div class="metric-top">
+            <span class="metric-label">Platser</span>
+            <span class="metric-value">${memberCount}<span class="max"> / ${memberLimit}</span></span>
+          </div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:${memberPct}%;"></div></div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-top">
+            <span class="metric-label">Lagring</span>
+            <span class="metric-value">${formatBytes(usedBytes)}<span class="max"> / ${formatBytes(totalStorage)}</span></span>
+          </div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:${storagePct}%; background:${storageColor};"></div></div>
+          ${storageSub}
+        </div>
+        ${callOrStorageBtn}
+      `;
     }
 
-    function renderActions(team, hasSubscription, status) {
+    function planFeatures(tier) {
+      const cfg = TIER_CONFIG[tier];
+      const perSeatGb = cfg.storageBytesPerSeat ? Math.round(cfg.storageBytesPerSeat / GB) : null;
+      const flatGb = cfg.storageFlatBytes ? Math.round(cfg.storageFlatBytes / GB) : null;
+      const callMax = cfg.callMinutesPerSeat != null ? cfg.callMinutesPerSeat * CALL_POTT_SEAT_CAP : null;
+
+      return [
+        { label: `Upp till ${SEAT_LIMITS.MAX} medlemmar`, included: true },
+        {
+          label: flatGb != null ? `${flatGb} GB lagring` : `${perSeatGb} GB per användare`,
+          included: true,
+        },
+        {
+          label: callMax != null ? `${callMax} samtalsmin/mån` : 'Obegränsade samtal',
+          included: true,
+        },
+        { label: 'Tidrapportering', included: cfg.timeTracking },
+      ];
+    }
+
+    function renderPlans(team, currentTier, hasSubscription) {
+      const container = document.getElementById('plans-container');
+      container.innerHTML = '';
+
+      // Toggle-knappar speglar vald intervall
+      document.querySelectorAll('#plans-interval-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === plansInterval);
+      });
+
+      for (const tier of TIER_ORDER) {
+        const cfg = TIER_CONFIG[tier];
+        const isCurrent = tier === currentTier;
+        const isFree = tier === 'free';
+        const isPro = tier === 'pro';
+        const price = cfg.pricePerSeat[plansInterval];
+
+        const features = planFeatures(tier).map(f => `
+          <div class="plan-feature ${f.included ? '' : 'excluded'}">
+            <span class="check">${f.included ? '✓' : '✕'}</span>
+            <span>${f.label}</span>
+          </div>`).join('');
+
+        // CTA-knapp
+        let cta = '';
+        if (isCurrent) {
+          cta = `<button class="btn btn-secondary" disabled>Nuvarande plan</button>`;
+        } else if (isFree) {
+          // Gå ner till Free = säg upp betald plan
+          if (hasSubscription) {
+            cta = `<button class="btn btn-danger-outline" onclick="selectPlan('free')">Säg upp abonnemang</button>`;
+          }
+        } else {
+          const verb = hasSubscription ? 'Byt till' : 'Välj';
+          cta = `<button class="btn ${isPro ? 'btn-primary' : 'btn-secondary'}" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
+        }
+
+        const priceUnit = isFree
+          ? 'gratis'
+          : (plansInterval === 'yearly' ? `${CURRENCY}/plats/år` : `${CURRENCY}/plats/mån`);
+
+        container.innerHTML += `
+          <div class="plan-compare-card ${isPro ? 'featured' : ''}">
+            ${isPro ? '<div class="best-value">BÄST VÄRDE</div>' : ''}
+            <div class="plan-compare-header">
+              <span class="plan-compare-name">${cfg.name}</span>
+              ${isCurrent ? '<span class="current-badge">Nuvarande</span>' : ''}
+            </div>
+            <div class="plan-compare-price">
+              <span class="plan-compare-amount">${isFree ? '0' : price}</span>
+              <span class="plan-compare-unit">${priceUnit}</span>
+            </div>
+            <div class="plan-features">${features}</div>
+            ${cta}
+          </div>`;
+      }
+    }
+
+    function renderActions(team, tier, hasSubscription, status) {
       const container = document.getElementById('actions-container');
       container.innerHTML = '';
 
-      if (!hasSubscription) {
-        // Start subscription
+      if (!hasSubscription) return;
+
+      // Hantera betalning (kort & kvitton) via Stripe-portalen
+      container.innerHTML += `
+        <button class="btn btn-secondary" id="portal-btn" onclick="handleOpenPortal()">
+          &#9881;&#65039; Hantera betalning (kort & kvitton)
+        </button>`;
+
+      // Ändra/avsluta lagringspaket
+      if (TIER_CONFIG[tier].storageAddons && status === 'active' && team.storageAddonSubscriptionId) {
         container.innerHTML += `
-          <button class="btn btn-primary" onclick="openPaymentModal()">
-            &#128179; Starta prenumeration
+          <button class="btn btn-secondary" onclick="openStorageModal()">
+            &#8596;&#65039; Ändra lagringspaket
+          </button>
+          <button class="btn btn-danger-outline btn-small" onclick="handleCancelStorage()">
+            &#10060; Avsluta lagringspaket
           </button>`;
       }
 
-      if (hasSubscription) {
-        // Manage payment (Stripe Portal)
+      // Säg upp abonnemang (om inte redan uppsagt)
+      if (!team.cancelAtPeriodEnd && status !== 'canceled') {
         container.innerHTML += `
-          <button class="btn btn-primary" id="portal-btn" onclick="handleOpenPortal()">
-            &#9881;&#65039; Hantera betalning
+          <button class="btn btn-danger-outline" onclick="handleOpenPortal()">
+            &#10060; Säg upp abonnemang
           </button>`;
-
-        // Change interval
-        if (status === 'active') {
-          container.innerHTML += `
-            <button class="btn btn-secondary" onclick="openIntervalModal()">
-              &#8596;&#65039; Byt faktureringsintervall
-            </button>`;
-        }
-      }
-
-      if (status === 'canceled') {
-        container.innerHTML = `
-          <button class="btn btn-primary" onclick="openPaymentModal()">
-            &#128260; Starta nytt abonnemang
-          </button>`;
-      }
-
-      // Storage actions
-      if (hasSubscription && status === 'active') {
-        if (!team.storageAddonSubscriptionId) {
-          container.innerHTML += `
-            <button class="btn btn-secondary" onclick="openStorageModal()">
-              &#9729;&#65039; Köp mer lagring
-            </button>`;
-        } else {
-          container.innerHTML += `
-            <button class="btn btn-secondary" onclick="openStorageModal()">
-              &#8596;&#65039; Ändra lagringspaket
-            </button>
-            <button class="btn btn-danger-outline btn-small" onclick="handleCancelStorage()">
-              &#10060; Avsluta lagringspaket
-            </button>`;
-        }
       }
     }
 
@@ -583,7 +691,6 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // Close modal on overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.classList.remove('active');
@@ -591,35 +698,53 @@
     });
 
     // =====================================================
-    // Payment Modal
+    // Plan selection (Free / Bas / Pro)
     // =====================================================
-    window.openPaymentModal = function() {
-      paymentInterval = currentTeam?.billingInterval || 'monthly';
-      updatePaymentModal();
+    window.setPlansInterval = function(interval) {
+      plansInterval = interval;
+      renderPlans(currentTeam, getTier(currentTeam), !!currentTeam.stripeSubscriptionId);
+    };
+
+    window.selectPlan = function(tier) {
+      const currentTier = getTier(currentTeam);
+      const hasSubscription = !!currentTeam.stripeSubscriptionId;
+
+      if (tier === currentTier) return;
+
+      if (tier === 'free') {
+        // Nedgradering till Free = säg upp betald plan (vid periodens slut via Stripe)
+        handleOpenPortal();
+        return;
+      }
+
+      if (!hasSubscription) {
+        // Nytt abonnemang → välj betalmetod
+        openPaymentModal(tier);
+      } else {
+        // Byt mellan Bas/Pro på befintligt abonnemang
+        confirmTierChange(tier);
+      }
+    };
+
+    // =====================================================
+    // Payment Modal (nytt abonnemang)
+    // =====================================================
+    window.openPaymentModal = function(tier) {
+      selectedTier = tier;
+      updatePaymentSummary();
       openModal('payment-modal');
     };
 
-    window.setPaymentInterval = function(interval) {
-      paymentInterval = interval;
-      updatePaymentModal();
-    };
-
-    function updatePaymentModal() {
-      // Toggle buttons
-      document.querySelectorAll('#payment-interval-toggle button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.interval === paymentInterval);
-      });
-
+    function updatePaymentSummary() {
+      const cfg = TIER_CONFIG[selectedTier];
       const memberCount = currentTeam?.memberIds?.length || 0;
       const seats = calculateSeatCount(memberCount);
-      const price = PER_SEAT_CONFIG.pricePerSeat[paymentInterval];
+      const price = cfg.pricePerSeat[plansInterval];
       const total = seats * price;
-      const label = paymentInterval === 'yearly' ? 'per år' : 'per månad';
-
-      document.getElementById('payment-summary').textContent =
-        `${seats} platser \u00D7 ${price} ${PER_SEAT_CONFIG.currency} = ${total} ${PER_SEAT_CONFIG.currency} ${label}`;
-      document.getElementById('invoice-summary').textContent =
-        `${seats} platser \u00D7 ${price} ${PER_SEAT_CONFIG.currency} = ${total} ${PER_SEAT_CONFIG.currency} ${label}`;
+      const label = plansInterval === 'yearly' ? 'per år' : 'per månad';
+      const summary = `${cfg.name} · ${seats} platser × ${price} ${CURRENCY} = ${total} ${CURRENCY} ${label}`;
+      document.getElementById('payment-summary').textContent = summary;
+      document.getElementById('invoice-summary').textContent = summary;
     }
 
     window.openInvoiceForm = function() {
@@ -628,54 +753,55 @@
     };
 
     // =====================================================
-    // Interval Change Modal
+    // Tier change på befintligt abonnemang (Bas <-> Pro)
     // =====================================================
-    window.openIntervalModal = function() {
-      const currentInterval = currentTeam?.billingInterval || 'monthly';
-      document.querySelectorAll('#interval-change-toggle button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.interval === currentInterval);
-      });
+    window.confirmTierChange = async function(newTier) {
+      const currentTier = getTier(currentTeam);
+      const isUpgrade = TIER_ORDER.indexOf(newTier) > TIER_ORDER.indexOf(currentTier);
+      const newName = TIER_CONFIG[newTier].name;
+      const curName = TIER_CONFIG[currentTier].name;
+      const interval = currentTeam.billingInterval || 'monthly';
 
-      const memberCount = currentTeam?.memberIds?.length || 0;
-      const seats = calculateSeatCount(memberCount);
-      document.getElementById('compare-monthly').textContent =
-        `${calculateTotalPrice(seats, 'monthly')} ${PER_SEAT_CONFIG.currency}/mån`;
-      document.getElementById('compare-yearly').textContent =
-        `${calculateTotalPrice(seats, 'yearly')} ${PER_SEAT_CONFIG.currency}/år`;
-
-      openModal('interval-modal');
-    };
-
-    window.confirmIntervalChange = async function(newInterval) {
-      if (newInterval === currentTeam?.billingInterval) return;
-
-      if (!confirm(`Vill du byta till ${newInterval === 'yearly' ? 'årsvis' : 'månadsvis'} fakturering?`)) return;
-
-      // Update toggle
-      document.querySelectorAll('#interval-change-toggle button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.interval === newInterval);
-        btn.disabled = true;
-      });
+      const msg = isUpgrade
+        ? `Uppgradera till ${newName}? Mellanskillnaden läggs på din nästa faktura.`
+        : `Byt till ${newName}? Ändringen börjar gälla vid nästa betalningsperiod — du behåller ${curName} tills dess.`;
+      if (!confirm(msg)) return;
 
       try {
         const updateSubscription = httpsCallable(functions, 'updateSubscription');
-        await updateSubscription({ teamId: currentTeam.id, newBillingInterval: newInterval });
-        closeModal('interval-modal');
-        alert('Faktureringsintervall uppdaterat!');
+        await updateSubscription({
+          teamId: currentTeam.id,
+          newBillingInterval: interval,
+          newTier,
+          // Nedgradering ska schemaläggas till periodens slut (hanteras i backend).
+          downgradeAtPeriodEnd: !isUpgrade,
+        });
+        alert(isUpgrade ? `Uppgraderat till ${newName}!` : `Byte till ${newName} sker vid periodens slut.`);
       } catch (error) {
-        console.error('Interval change error:', error);
-        alert('Kunde inte byta intervall. Försök igen.');
-      } finally {
-        document.querySelectorAll('#interval-change-toggle button').forEach(btn => btn.disabled = false);
+        console.error('Tier change error:', error);
+        alert('Kunde inte byta plan. Försök igen.');
       }
     };
 
     // =====================================================
     // Storage Modal
     // =====================================================
+    function handleStorageDeepLink() {
+      const tier = getTier(currentTeam);
+      const hasSubscription = !!currentTeam.stripeSubscriptionId;
+      if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
+        openStorageModal();
+      } else {
+        alert('Lagringstillägg kräver ett aktivt Bas- eller Pro-abonnemang. Välj en plan först.');
+      }
+    }
+
     window.openStorageModal = function() {
-      storageInterval = 'monthly';
-      selectedStorageTier = 'extra_20gb';
+      storageInterval = currentTeam?.billingInterval || 'monthly';
+      selectedStorageTier = currentTeam?.storageAddonTier || 'extra_20gb';
+      document.querySelectorAll('#storage-interval-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === storageInterval);
+      });
       renderStorageTiers();
       openModal('storage-modal');
     };
@@ -703,10 +829,14 @@
                onclick="selectStorageTier('${key}')">
             <div>
               <div class="tier-name">+${tier.label}</div>
-              <div class="tier-price">${price} ${PER_SEAT_CONFIG.currency}${intervalLabel} (ex. moms)</div>
+              <div class="tier-price">${price} ${CURRENCY}${intervalLabel} (ex. moms)</div>
             </div>
           </div>`;
       }
+
+      // Knapptext beror på om man redan har ett paket
+      const btn = document.getElementById('storage-submit-btn');
+      btn.textContent = currentTeam?.storageAddonSubscriptionId ? 'Ändra paket' : 'Gå till betalning';
     }
 
     window.selectStorageTier = function(tier) {
@@ -722,14 +852,17 @@
       const errorEl = document.getElementById('payment-error');
       errorEl.style.display = 'none';
 
-      // Show loading state
       btn.style.opacity = '0.6';
       btn.style.pointerEvents = 'none';
       btn.querySelector('h3').textContent = 'Laddar...';
 
       try {
         const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession');
-        const result = await createCheckoutSession({ teamId: currentTeam.id, billingInterval: paymentInterval });
+        const result = await createCheckoutSession({
+          teamId: currentTeam.id,
+          billingInterval: plansInterval,
+          tier: selectedTier,
+        });
         if (result.data.url) {
           window.location.href = result.data.url;
         } else {
@@ -789,7 +922,8 @@
         const createInvoiceSubscription = httpsCallable(functions, 'createInvoiceSubscription');
         await createInvoiceSubscription({
           teamId: currentTeam.id,
-          billingInterval: paymentInterval,
+          billingInterval: plansInterval,
+          tier: selectedTier,
           ...details,
         });
         closeModal('invoice-modal');
@@ -809,8 +943,8 @@
 
     window.handleOpenPortal = async function() {
       const btn = document.getElementById('portal-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>';
+      const original = btn ? btn.innerHTML : '';
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>'; }
 
       try {
         const createCustomerPortalSession = httpsCallable(functions, 'createCustomerPortalSession');
@@ -822,25 +956,32 @@
         console.error('Portal error:', error);
         alert('Kunde inte öppna betalningsportalen. Försök igen.');
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = '&#9881;&#65039; Hantera betalning';
+        if (btn) { btn.disabled = false; btn.innerHTML = original; }
       }
     };
 
     window.handlePurchaseStorage = async function() {
       const btn = document.getElementById('storage-submit-btn');
+      const isChange = !!currentTeam?.storageAddonSubscriptionId;
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>';
 
       try {
-        const purchaseStorageAddon = httpsCallable(functions, 'purchaseStorageAddon');
-        const result = await purchaseStorageAddon({
-          teamId: currentTeam.id,
-          storageTier: selectedStorageTier,
-          billingInterval: storageInterval,
-        });
-        if (result.data.url) {
-          window.location.href = result.data.url;
+        if (isChange) {
+          const changeStorageAddon = httpsCallable(functions, 'changeStorageAddon');
+          await changeStorageAddon({ teamId: currentTeam.id, newStorageTier: selectedStorageTier });
+          closeModal('storage-modal');
+          alert('Lagringspaket ändrat!');
+        } else {
+          const purchaseStorageAddon = httpsCallable(functions, 'purchaseStorageAddon');
+          const result = await purchaseStorageAddon({
+            teamId: currentTeam.id,
+            storageTier: selectedStorageTier,
+            billingInterval: storageInterval,
+          });
+          if (result.data.url) {
+            window.location.href = result.data.url;
+          }
         }
       } catch (error) {
         console.error('Storage purchase error:', error);
@@ -851,7 +992,7 @@
         }
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Gå till betalning';
+        btn.textContent = isChange ? 'Ändra paket' : 'Gå till betalning';
       }
     };
 
@@ -873,6 +1014,7 @@
     // =====================================================
     teamId = getParam('teamId');
     const authToken = getParam('token');
+    pendingStorageDeepLink = getParam('product') === 'storage';
 
     if (!teamId) {
       showSection('auth-section');
@@ -880,7 +1022,6 @@
       showSection('loading-section');
 
       if (authToken) {
-        // Sign in with custom token from app
         signInWithCustomToken(auth, authToken)
           .then((userCredential) => {
             currentUser = userCredential.user;
@@ -895,7 +1036,6 @@
             }
           });
       } else {
-        // No token — check if already signed in (e.g. returning from Stripe)
         onAuthStateChanged(auth, (user) => {
           if (user) {
             currentUser = user;
