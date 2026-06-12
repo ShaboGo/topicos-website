@@ -569,10 +569,11 @@
             </div>
           </div>`;
       } else if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
-        // Bas/Pro: knapp för att köpa mer lagring
+        // Bas/Pro: köp lagringstillägg — eller ändra det om man redan har ett
+        const hasAddon = !!team.storageAddonSubscriptionId;
         callOrStorageBtn = `
           <button class="buy-storage-btn" onclick="openStorageModal()">
-            &#9729;&#65039; Köp mer lagring
+            &#9729;&#65039; ${hasAddon ? 'Ändra lagringspaket' : 'Köp mer lagring'}
           </button>`;
       } else {
         callOrStorageBtn = '';
@@ -687,16 +688,8 @@
           &#9881;&#65039; Hantera betalning (kort & kvitton)
         </button>`;
 
-      // Ändra/avsluta lagringspaket
-      if (TIER_CONFIG[tier].storageAddons && status === 'active' && team.storageAddonSubscriptionId) {
-        container.innerHTML += `
-          <button class="btn btn-secondary" onclick="openStorageModal()">
-            &#8596;&#65039; Ändra lagringspaket
-          </button>
-          <button class="btn btn-danger-outline btn-small" onclick="handleCancelStorage()">
-            &#10060; Avsluta lagringspaket
-          </button>`;
-      }
+      // Lagringstillägg hanteras via "Ändra lagringspaket" (knappen under Lagring
+      // ovan) och avslutas inne i Stripe-portalen via "Hantera betalning".
 
       // Avbokning sker inne i Stripe-portalen via "Hantera betalning" ovan —
       // ingen separat "Säg upp"-knapp (skulle bara leda till samma portal).
