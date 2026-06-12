@@ -250,6 +250,12 @@
       <button class="btn btn-primary" id="storage-submit-btn" onclick="handlePurchaseStorage()" style="margin-top:8px;">
         Gå till betalning
       </button>
+
+      <!-- Visas bara när ett lagringspaket redan finns: leder till Stripe-portalen
+           där man kan avsluta paketet. -->
+      <button class="btn btn-secondary" id="storage-manage-btn" onclick="handleOpenPortal()" style="margin-top:8px; display:none;">
+        &#9881;&#65039; Hantera paket (avsluta i Stripe)
+      </button>
     </div>
   </div>
 
@@ -882,8 +888,14 @@
       }
 
       // Knapptext beror på om man redan har ett paket
+      const hasAddon = !!currentTeam?.storageAddonSubscriptionId;
       const btn = document.getElementById('storage-submit-btn');
-      btn.textContent = currentTeam?.storageAddonSubscriptionId ? 'Ändra paket' : 'Gå till betalning';
+      btn.textContent = hasAddon ? 'Ändra paket' : 'Gå till betalning';
+
+      // "Hantera paket" (→ Stripe-portalen, för att avsluta) visas bara när man
+      // redan har ett aktivt lagringspaket.
+      const manageBtn = document.getElementById('storage-manage-btn');
+      if (manageBtn) manageBtn.style.display = hasAddon ? 'block' : 'none';
     }
 
     window.selectStorageTier = function(tier) {
