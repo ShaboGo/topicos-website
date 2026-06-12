@@ -648,10 +648,7 @@
           // Nedgradering till denna nivå är redan schemalagd till periodslut
           cta = `<button class="btn btn-secondary" disabled>Inväntar byte</button>`;
         } else if (isFree) {
-          // Gå ner till Free = säg upp betald plan
-          if (hasSubscription) {
-            cta = `<button class="btn btn-danger-outline" onclick="selectPlan('free')">Säg upp abonnemang</button>`;
-          }
+          // Ingen avboknings-knapp här — avbokning sker via "Hantera betalning" (Stripe-portalen)
         } else {
           const verb = hasSubscription ? 'Byt till' : 'Välj';
           cta = `<button class="btn ${isPro ? 'btn-primary' : 'btn-secondary'}" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
@@ -701,13 +698,8 @@
           </button>`;
       }
 
-      // Säg upp abonnemang (om inte redan uppsagt)
-      if (!team.cancelAtPeriodEnd && status !== 'canceled') {
-        container.innerHTML += `
-          <button class="btn btn-danger-outline" onclick="handleOpenPortal()">
-            &#10060; Säg upp abonnemang
-          </button>`;
-      }
+      // Avbokning sker inne i Stripe-portalen via "Hantera betalning" ovan —
+      // ingen separat "Säg upp"-knapp (skulle bara leda till samma portal).
     }
 
     // =====================================================
