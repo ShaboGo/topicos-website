@@ -783,9 +783,13 @@
       const newName = TIER_CONFIG[newTier].name;
       const curName = TIER_CONFIG[currentTier].name;
       const interval = currentTeam.billingInterval || 'monthly';
+      const isInvoice = currentTeam.paymentMethod === 'invoice';
 
+      const upgradeMsg = isInvoice
+        ? `Uppgradera till ${newName}? Mellanskillnaden faktureras nu med 14 dagars betalningsvillkor.`
+        : `Uppgradera till ${newName}? Mellanskillnaden dras direkt på ditt kort.`;
       const msg = isUpgrade
-        ? `Uppgradera till ${newName}? Mellanskillnaden läggs på din nästa faktura.`
+        ? upgradeMsg
         : `Byt till ${newName}? Ändringen börjar gälla vid nästa betalningsperiod — du behåller ${curName} tills dess.`;
       if (!confirm(msg)) return;
 
@@ -798,7 +802,10 @@
           // Nedgradering ska schemaläggas till periodens slut (hanteras i backend).
           downgradeAtPeriodEnd: !isUpgrade,
         });
-        alert(isUpgrade ? `Uppgraderat till ${newName}!` : `Byte till ${newName} sker vid periodens slut.`);
+        const upgradeDone = isInvoice
+          ? `Uppgraderat till ${newName}! En faktura på mellanskillnaden är på väg (14 dagar att betala).`
+          : `Uppgraderat till ${newName}! Mellanskillnaden dras på ditt kort.`;
+        alert(isUpgrade ? upgradeDone : `Byte till ${newName} sker vid periodens slut.`);
       } catch (error) {
         console.error('Tier change error:', error);
         alert('Kunde inte byta plan. Försök igen.');
@@ -974,7 +981,7 @@
           ...details,
         });
         closeModal('invoice-modal');
-        alert(`Abonnemang aktiverat! Första fakturan skickas till ${details.email} när provperioden är slut.`);
+        alert(`Abonnemang aktiverat! En faktura skickas till ${details.email} (14 dagar att betala).`);
       } catch (error) {
         console.error('Invoice error:', error);
         if (error.message?.includes('already-exists')) {
@@ -1027,7 +1034,13 @@
             billingInterval: storageInterval,
           });
           if (result.data.url) {
+            // Kort-kund → Stripe Checkout
             window.location.href = result.data.url;
+          } else {
+            // Faktura-kund → tillägget aktiverat direkt, faktura på väg
+            closeModal('storage-modal');
+            const to = currentTeam.invoiceEmail ? ` till ${currentTeam.invoiceEmail}` : '';
+            alert(`Lagringspaket aktiverat! En faktura${to} är på väg (14 dagar att betala).`);
           }
         }
       } catch (error) {
