@@ -1062,6 +1062,13 @@
       }
     };
 
+    // När man backar tillbaka från Stripe (Hantera betalning / Checkout) återställer
+    // webbläsaren en fryst bfcache-version av sidan — gammalt DOM + ingen ny render.
+    // Tvinga omladdning så att senaste kod OCH färsk data (ev. ändrad i Stripe) visas.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) window.location.reload();
+    });
+
     // =====================================================
     // Init
     // =====================================================
