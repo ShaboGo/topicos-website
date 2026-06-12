@@ -86,6 +86,18 @@
         </div>
       </div>
 
+      <!-- Pending Downgrade Card (schemalagd nivåsänkning vid periodslut) -->
+      <div class="card card-cancel-pending" id="pending-downgrade-card" style="display:none;">
+        <div class="info-card">
+          <span class="info-card-icon">&#128197;</span>
+          <div class="info-card-content">
+            <div class="info-card-title">Planbyte schemalagt</div>
+            <div class="info-card-text" id="pending-downgrade-text"></div>
+            <button class="btn btn-secondary" id="pending-downgrade-undo" onclick="cancelPendingDowngrade()" style="margin-top:12px;">Ångra &ndash; beh&aring;ll nuvarande plan</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Canceled Card -->
       <div class="card card-canceled" id="canceled-card" style="display:none;">
         <div class="info-card">
@@ -501,6 +513,21 @@
         cancelPendingCard.style.display = 'none';
       }
 
+      // Pending downgrade (schemalagd nivåsänkning till periodslut — behåller nuvarande nivå tills dess)
+      const pendingDowngradeCard = document.getElementById('pending-downgrade-card');
+      if (team.pendingTierChange && !team.cancelAtPeriodEnd) {
+        pendingDowngradeCard.style.display = 'block';
+        const targetName = TIER_CONFIG[team.pendingTierChange]?.name || team.pendingTierChange;
+        const changeAt = team.pendingTierChangeAt
+          ? (team.pendingTierChangeAt.toDate ? team.pendingTierChangeAt.toDate() : new Date(team.pendingTierChangeAt)).toLocaleDateString('sv-SE')
+          : '';
+        document.getElementById('pending-downgrade-text').textContent = changeAt
+          ? `Du byter till ${targetName} den ${changeAt}. Du behåller ${cfg.name} tills dess.`
+          : `Du byter till ${targetName} vid periodens slut. Du behåller ${cfg.name} tills dess.`;
+      } else {
+        pendingDowngradeCard.style.display = 'none';
+      }
+
       // Canceled card
       const canceledCard = document.getElementById('canceled-card');
       canceledCard.style.display = (status === 'canceled' && !team.cancelAtPeriodEnd) ? 'block' : 'none';
@@ -617,6 +644,9 @@
         let cta = '';
         if (isCurrent) {
           cta = `<button class="btn btn-secondary" disabled>Nuvarande plan</button>`;
+        } else if (team.pendingTierChange === tier) {
+          // Nedgradering till denna nivå är redan schemalagd till periodslut
+          cta = `<button class="btn btn-secondary" disabled>Inväntar byte</button>`;
         } else if (isFree) {
           // Gå ner till Free = säg upp betald plan
           if (hasSubscription) {
@@ -780,6 +810,31 @@
       } catch (error) {
         console.error('Tier change error:', error);
         alert('Kunde inte byta plan. Försök igen.');
+      }
+    };
+
+    // Ångra en schemalagd nedgradering — behåll nuvarande (högre) nivå.
+    // Att "byta" till nuvarande nivå utan periodslut-flagga släpper Stripe-schemat i backend.
+    window.cancelPendingDowngrade = async function() {
+      const currentTier = getTier(currentTeam);
+      const curName = TIER_CONFIG[currentTier].name;
+      if (!confirm(`Ångra planbytet och behålla ${curName}?`)) return;
+
+      const btn = document.getElementById('pending-downgrade-undo');
+      if (btn) { btn.disabled = true; btn.textContent = 'Ångrar…'; }
+      try {
+        const updateSubscription = httpsCallable(functions, 'updateSubscription');
+        await updateSubscription({
+          teamId: currentTeam.id,
+          newBillingInterval: currentTeam.billingInterval || 'monthly',
+          newTier: currentTier,
+          downgradeAtPeriodEnd: false,
+        });
+        alert(`Planbytet är ångrat — du behåller ${curName}.`);
+      } catch (error) {
+        console.error('Cancel downgrade error:', error);
+        alert('Kunde inte ångra planbytet. Försök igen.');
+        if (btn) { btn.disabled = false; btn.innerHTML = 'Ångra &ndash; beh&aring;ll nuvarande plan'; }
       }
     };
 
