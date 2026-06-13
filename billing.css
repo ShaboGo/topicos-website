@@ -515,6 +515,28 @@ body {
   border-radius: 8px;
 }
 
+.tier-card.pending-end::after {
+  content: 'Väntar avslut';
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Varningsruta i lagringsmodalen när paketet/abonnemanget väntar på avslut */
+.storage-pending-note {
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 8px;
+}
+
 .tier-name {
   font-size: 20px;
   font-weight: 800;

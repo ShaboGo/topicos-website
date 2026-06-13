@@ -247,6 +247,9 @@
 
       <div id="storage-tiers"></div>
 
+      <!-- Visas när lagringspaketet (eller hela abonnemanget) väntar på avslut. -->
+      <div class="storage-pending-note" id="storage-pending-note" style="display:none;"></div>
+
       <button class="btn btn-primary" id="storage-submit-btn" onclick="handlePurchaseStorage()" style="margin-top:8px;">
         Gå till betalning
       </button>
@@ -556,9 +559,16 @@
       const usedBytes = team.storageUsedBytes || 0;
       const storagePct = totalStorage > 0 ? Math.min((usedBytes / totalStorage) * 100, 100) : 0;
       const storageColor = storagePct >= 100 ? 'var(--danger)' : storagePct >= 80 ? 'var(--warning)' : 'var(--primary)';
+      const storageCancelled = !!team.storageAddonCancelAtPeriodEnd;
       let storageSub = '';
       if (addonBytes > 0) {
         storageSub = `<div class="metric-sub">Bas: ${formatBytes(baseStorage)} · Tillägg: +${formatBytes(addonBytes)}</div>`;
+        if (storageCancelled) {
+          const cancelDate = team.storageAddonCancelAt
+            ? (team.storageAddonCancelAt.toDate ? team.storageAddonCancelAt.toDate() : new Date(team.storageAddonCancelAt)).toLocaleDateString('sv-SE')
+            : '';
+          storageSub += `<div class="metric-sub" style="color:var(--warning);">Lagringspaketet avslutas${cancelDate ? ' ' + cancelDate : ' vid periodslut'}</div>`;
+        }
       }
 
       // Samtal
@@ -575,11 +585,18 @@
             </div>
           </div>`;
       } else if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
-        // Bas/Pro: köp lagringstillägg — eller ändra det om man redan har ett
+        // Bas/Pro: tre lägen för lagringsknappen (alla öppnar modalen, som visar
+        // status och rätt åtgärd):
+        //  - inget paket        → "Köp mer lagring"
+        //  - aktivt paket       → "Ändra lagringspaket"
+        //  - uppsagt paket      → "Förnya lagring" (modalen visar "Väntar avslut")
         const hasAddon = !!team.storageAddonSubscriptionId;
+        const label = !hasAddon
+          ? 'Köp mer lagring'
+          : (storageCancelled ? 'Förnya lagring' : 'Ändra lagringspaket');
         callOrStorageBtn = `
           <button class="buy-storage-btn" onclick="openStorageModal()">
-            &#9729;&#65039; ${hasAddon ? 'Ändra lagringspaket' : 'Köp mer lagring'}
+            &#9729;&#65039; ${label}
           </button>`;
       } else {
         callOrStorageBtn = '';
@@ -871,14 +888,24 @@
       const container = document.getElementById('storage-tiers');
       container.innerHTML = '';
 
+      const hasAddon = !!currentTeam?.storageAddonSubscriptionId;
+      // Lagringen kan vara på väg att avslutas av två skäl: paketet är uppsagt
+      // separat, eller hela abonnemanget avslutas (då upphör lagringen också).
+      const storageCancelled = !!currentTeam?.storageAddonCancelAtPeriodEnd;
+      const subCancelled = !!currentTeam?.cancelAtPeriodEnd;
+      const pendingEnd = hasAddon && (storageCancelled || subCancelled);
+
       for (const [key, tier] of Object.entries(STORAGE_TIERS)) {
         const price = tier.pricing[storageInterval];
         const isCurrent = currentTeam?.storageAddonTier === key;
         const isSelected = selectedStorageTier === key;
         const intervalLabel = storageInterval === 'yearly' ? '/år' : '/mån';
+        // På nuvarande paket: visa "Väntar avslut" (gul) i stället för "Nuvarande"
+        // (grön) när lagringen är på väg att upphöra.
+        const badgeClass = isCurrent ? (pendingEnd ? 'pending-end' : 'current') : '';
 
         container.innerHTML += `
-          <div class="tier-card ${isSelected ? 'selected' : ''} ${isCurrent ? 'current' : ''}"
+          <div class="tier-card ${isSelected ? 'selected' : ''} ${badgeClass}"
                onclick="selectStorageTier('${key}')">
             <div>
               <div class="tier-name">+${tier.label}</div>
@@ -887,15 +914,49 @@
           </div>`;
       }
 
-      // Knapptext beror på om man redan har ett paket
-      const hasAddon = !!currentTeam?.storageAddonSubscriptionId;
-      const btn = document.getElementById('storage-submit-btn');
-      btn.textContent = hasAddon ? 'Ändra paket' : 'Gå till betalning';
-
-      // "Hantera paket" (→ Stripe-portalen, för att avsluta) visas bara när man
-      // redan har ett aktivt lagringspaket.
+      const submitBtn = document.getElementById('storage-submit-btn');
       const manageBtn = document.getElementById('storage-manage-btn');
-      if (manageBtn) manageBtn.style.display = hasAddon ? 'block' : 'none';
+      const note = document.getElementById('storage-pending-note');
+
+      if (pendingEnd) {
+        // Datum: lagringspaketets eget avslut, annars abonnemangets.
+        const rawDate = storageCancelled
+          ? currentTeam?.storageAddonCancelAt
+          : currentTeam?.cancelAt;
+        const dateStr = rawDate
+          ? (rawDate.toDate ? rawDate.toDate() : new Date(rawDate)).toLocaleDateString('sv-SE')
+          : '';
+        note.style.display = 'block';
+
+        if (storageCancelled) {
+          // Lagringspaketet är uppsagt → kan förnyas/bytas direkt i appen.
+          note.textContent = `Lagringspaketet avslutas${dateStr ? ' ' + dateStr : ' vid periodslut'}. Förnya för att behålla det.`;
+          const sameTier = selectedStorageTier === currentTeam?.storageAddonTier;
+          submitBtn.style.display = 'block';
+          submitBtn.textContent = sameTier ? 'Förnya lagringspaket' : 'Byt till detta paket';
+          submitBtn.onclick = window.handlePurchaseStorage;
+          manageBtn.style.display = 'none';
+        } else {
+          // Bara hela abonnemanget avslutas → lagringen följer med. Förnya
+          // abonnemanget för att behålla lagringen.
+          note.textContent = `Lagringspaketet upphör när abonnemanget avslutas${dateStr ? ' ' + dateStr : ''}. Återuppta abonnemanget för att behålla det.`;
+          submitBtn.style.display = 'none';
+          manageBtn.style.display = 'block';
+          manageBtn.innerHTML = '&#9881;&#65039; Återuppta abonnemang';
+          manageBtn.onclick = window.handleOpenPortal;
+        }
+      } else {
+        note.style.display = 'none';
+        // Knapptext beror på om man redan har ett paket
+        submitBtn.style.display = 'block';
+        submitBtn.textContent = hasAddon ? 'Ändra paket' : 'Gå till betalning';
+        submitBtn.onclick = window.handlePurchaseStorage;
+        // "Hantera paket" (→ Stripe-portalen, för att avsluta) visas bara när man
+        // redan har ett aktivt lagringspaket.
+        manageBtn.style.display = hasAddon ? 'block' : 'none';
+        manageBtn.innerHTML = '&#9881;&#65039; Hantera paket (avsluta i Stripe)';
+        manageBtn.onclick = window.handleOpenPortal;
+      }
     }
 
     window.selectStorageTier = function(tier) {
@@ -1025,12 +1086,22 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>';
 
+      // Förnyelse: paketet är uppsagt och man väljer samma nivå igen.
+      // changeStorageAddon sätter cancel_at_period_end:false i Stripe och rensar
+      // uppsägningsflaggorna, så paketet löper vidare istället för att avslutas.
+      const wasCancelled = !!currentTeam?.storageAddonCancelAtPeriodEnd;
+      const sameTier = selectedStorageTier === currentTeam?.storageAddonTier;
+
       try {
         if (isChange) {
           const changeStorageAddon = httpsCallable(functions, 'changeStorageAddon');
           await changeStorageAddon({ teamId: currentTeam.id, newStorageTier: selectedStorageTier });
           closeModal('storage-modal');
-          alert('Lagringspaket ändrat!');
+          alert(wasCancelled
+            ? (sameTier
+                ? 'Lagringspaketet förnyat – det fortsätter som vanligt.'
+                : 'Lagringspaket ändrat och förnyat – det fortsätter som vanligt.')
+            : 'Lagringspaket ändrat!');
         } else {
           const purchaseStorageAddon = httpsCallable(functions, 'purchaseStorageAddon');
           const result = await purchaseStorageAddon({
@@ -1056,8 +1127,9 @@
           alert('Något gick fel. Försök igen.');
         }
       } finally {
+        // Återställ knappen (text + onclick) till rätt läge.
         btn.disabled = false;
-        btn.textContent = isChange ? 'Ändra paket' : 'Gå till betalning';
+        renderStorageTiers();
       }
     };
 
