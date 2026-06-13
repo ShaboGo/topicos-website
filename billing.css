@@ -164,17 +164,12 @@ body {
   box-shadow: var(--shadow);
 }
 
-.card-header {
+/* Kompakt rad högst upp i aktuell-plan-kortet: plannamn + status-badge */
+.plan-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
+  margin-bottom: 6px;
 }
 
 /* Status badge */
@@ -195,33 +190,32 @@ body {
 
 /* Plan info */
 .plan-name {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
-  margin-bottom: 8px;
 }
 
-.plan-description {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 20px;
-  margin-bottom: 8px;
-}
-
-.price-container {
+.plan-price-row {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .price-amount {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--primary);
 }
 
-.price-label {
+.price-breakdown {
   font-size: 14px;
   color: var(--text-secondary);
+}
+
+.plan-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 /* Info cards (grace period, cancellation, etc.) */

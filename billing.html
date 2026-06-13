@@ -51,16 +51,15 @@
 
       <!-- Current Plan Card -->
       <div class="card" id="plan-card">
-        <div class="card-header">
-          <span class="card-title">Aktuell plan</span>
+        <div class="plan-card-top">
+          <span class="plan-name" id="plan-name"></span>
           <span class="status-badge" id="status-badge"></span>
         </div>
-        <div class="plan-name" id="plan-name"></div>
-        <div class="plan-description" id="plan-description"></div>
-        <div class="price-container">
+        <div class="plan-price-row">
           <span class="price-amount" id="price-amount"></span>
-          <span class="price-label" id="price-label"></span>
+          <span class="price-breakdown" id="price-breakdown"></span>
         </div>
+        <div class="plan-note" id="plan-note" style="display:none;"></div>
       </div>
 
       <!-- Grace Period Card -->
@@ -480,22 +479,30 @@
       badge.style.background = statusInfo.color + '20';
       badge.style.color = statusInfo.color;
 
-      // Plan name + description + price
+      // Plan name + price
       const intervalLabel = interval === 'yearly' ? 'år' : 'mån';
-      const intervalLong = interval === 'yearly' ? 'per år' : 'per månad';
       document.getElementById('plan-name').textContent = cfg.name;
 
+      // Kompakt prisrad: "207 SEK/mån · 3 × 69 SEK". Totalpriset är prominent,
+      // uppdelningen nedtonad efter en punkt. (Tidigare upprepades totalpriset
+      // både i beskrivningen och som stor siffra.)
+      const amountEl = document.getElementById('price-amount');
+      const breakdownEl = document.getElementById('price-breakdown');
+      const noteEl = document.getElementById('plan-note');
+
       if (tier === 'free') {
-        document.getElementById('plan-description').textContent =
-          'Börja gratis. Uppgradera när organisationen växer.';
-        document.getElementById('price-amount').textContent = `0 ${CURRENCY}`;
-        document.getElementById('price-label').textContent = 'gratis';
+        amountEl.textContent = `0 ${CURRENCY}`;
+        breakdownEl.textContent = '· Börja gratis, uppgradera när ni växer';
+        noteEl.style.display = 'none';
       } else {
-        document.getElementById('plan-description').innerHTML =
-          `${seats} platser &times; ${pricePerSeat} ${CURRENCY}/${intervalLabel} = ${seats * pricePerSeat} ${CURRENCY}/${intervalLong}` +
-          (memberCount < SEAT_LIMITS.MIN ? `<br><small>(Minst ${SEAT_LIMITS.MIN} platser per abonnemang)</small>` : '');
-        document.getElementById('price-amount').textContent = `${totalPrice} ${CURRENCY}`;
-        document.getElementById('price-label').textContent = intervalLong;
+        amountEl.textContent = `${totalPrice} ${CURRENCY}/${intervalLabel}`;
+        breakdownEl.textContent = `· ${seats} × ${pricePerSeat} ${CURRENCY}`;
+        if (memberCount < SEAT_LIMITS.MIN) {
+          noteEl.textContent = `Minst ${SEAT_LIMITS.MIN} platser per abonnemang`;
+          noteEl.style.display = 'block';
+        } else {
+          noteEl.style.display = 'none';
+        }
       }
 
       // Grace period card
