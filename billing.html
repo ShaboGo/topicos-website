@@ -643,7 +643,14 @@
         // CTA-knapp
         let cta = '';
         if (isCurrent) {
-          cta = `<button class="btn btn-secondary" disabled>Nuvarande plan</button>`;
+          // Byte av faktureringsintervall på nuvarande nivå: endast månadsvis → årsvis.
+          // (Årsvis → månadsvis erbjuds inte här — kunden har betalat för året.)
+          const teamInterval = team.billingInterval || 'monthly';
+          if (!isFree && hasSubscription && teamInterval === 'monthly' && plansInterval === 'yearly') {
+            cta = `<button class="btn btn-primary" onclick="switchToYearly()">Byt till årsvis</button>`;
+          } else {
+            cta = `<button class="btn btn-secondary" disabled>Nuvarande plan</button>`;
+          }
         } else if (team.pendingTierChange === tier) {
           // Nedgradering till denna nivå är redan schemalagd till periodslut
           cta = `<button class="btn btn-secondary" disabled>Inväntar byte</button>`;
@@ -826,6 +833,39 @@
         console.error('Cancel downgrade error:', error);
         alert('Kunde inte ångra planbytet. Försök igen.');
         if (btn) { btn.disabled = false; btn.innerHTML = 'Ångra &ndash; beh&aring;ll nuvarande plan'; }
+      }
+    };
+
+    // Byt faktureringsintervall månadsvis → årsvis på nuvarande nivå.
+    // Sker direkt med proration (always_invoice): faktura-kund får mellanskillnaden
+    // på en faktura med 30 dagars villkor, kort-kund debiteras direkt.
+    window.switchToYearly = async function() {
+      const currentTier = getTier(currentTeam);
+      const curName = TIER_CONFIG[currentTier].name;
+      const isInvoice = currentTeam.paymentMethod === 'invoice';
+      const memberCount = currentTeam?.memberIds?.length || 0;
+      const seats = calculateSeatCount(memberCount);
+      const yearlyTotal = seats * TIER_CONFIG[currentTier].pricePerSeat.yearly;
+
+      const msg = isInvoice
+        ? `Byt ${curName} till årsvis betalning? Mellanskillnaden faktureras nu med 30 dagars betalningsvillkor. Nytt årspris: ${yearlyTotal} ${CURRENCY}/år (ex. moms).`
+        : `Byt ${curName} till årsvis betalning? Mellanskillnaden dras direkt på ditt kort. Nytt årspris: ${yearlyTotal} ${CURRENCY}/år (ex. moms).`;
+      if (!confirm(msg)) return;
+
+      try {
+        const updateSubscription = httpsCallable(functions, 'updateSubscription');
+        await updateSubscription({
+          teamId: currentTeam.id,
+          newBillingInterval: 'yearly',
+          newTier: currentTier,
+          downgradeAtPeriodEnd: false,
+        });
+        alert(isInvoice
+          ? 'Du har bytt till årsvis betalning! En faktura på mellanskillnaden är på väg (30 dagar att betala).'
+          : 'Du har bytt till årsvis betalning! Mellanskillnaden dras på ditt kort.');
+      } catch (error) {
+        console.error('Interval change error:', error);
+        alert('Kunde inte byta betalningsintervall. Försök igen.');
       }
     };
 
