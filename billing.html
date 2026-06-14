@@ -62,18 +62,6 @@
         <div class="plan-note" id="plan-note" style="display:none;"></div>
       </div>
 
-      <!-- Grace Period Card -->
-      <div class="card card-grace" id="grace-card" style="display:none;">
-        <div class="info-card">
-          <span class="info-card-icon">&#9200;</span>
-          <div class="info-card-content">
-            <div class="info-card-title">Gratisperiod aktiv</div>
-            <div class="info-card-text" id="grace-text"></div>
-            <div class="info-card-text secondary" id="grace-info"></div>
-          </div>
-        </div>
-      </div>
-
       <!-- Pending Cancellation Card -->
       <div class="card card-cancel-pending" id="cancel-pending-card" style="display:none;">
         <div class="info-card">
@@ -152,7 +140,7 @@
         <span class="payment-method-icon">&#128196;</span>
         <div class="payment-method-info">
           <h3>Betala med faktura</h3>
-          <p>Företagsfaktura med 16 dagars betalning</p>
+          <p>Företagsfaktura med 30 dagars betalning</p>
         </div>
       </div>
 
@@ -457,11 +445,6 @@
 
       document.getElementById('team-name').textContent = team.name;
 
-      // Grace period
-      const gracePeriodEndsAt = team.gracePeriodEndsAt?.toDate ? team.gracePeriodEndsAt.toDate() : (team.gracePeriodEndsAt ? new Date(team.gracePeriodEndsAt) : null);
-      const inGracePeriod = gracePeriodEndsAt ? new Date() < gracePeriodEndsAt : false;
-      const graceDays = gracePeriodEndsAt ? Math.max(0, Math.ceil((gracePeriodEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
-
       // Status badge
       const badge = document.getElementById('status-badge');
       const statusMap = {
@@ -472,9 +455,7 @@
       };
       const statusInfo = tier === 'free'
         ? { label: 'Gratis', color: '#10b981' }
-        : (statusMap[status] || (inGracePeriod
-          ? { label: 'Provperiod', color: '#3b82f6' }
-          : { label: 'Inaktiv', color: '#6b7280' }));
+        : (statusMap[status] || { label: 'Inaktiv', color: '#6b7280' });
       badge.textContent = statusInfo.label;
       badge.style.background = statusInfo.color + '20';
       badge.style.color = statusInfo.color;
@@ -503,18 +484,6 @@
         } else {
           noteEl.style.display = 'none';
         }
-      }
-
-      // Grace period card
-      const graceCard = document.getElementById('grace-card');
-      if (inGracePeriod && tier !== 'free') {
-        graceCard.style.display = 'block';
-        document.getElementById('grace-text').textContent = `${graceDays} dagar kvar av gratisperioden`;
-        document.getElementById('grace-info').textContent = hasSubscription
-          ? 'Du kan avsluta abonnemanget när som helst.'
-          : 'Välj en betalmetod för att fortsätta efter provperioden.';
-      } else {
-        graceCard.style.display = 'none';
       }
 
       // Pending cancellation
@@ -809,7 +778,7 @@
       const isInvoice = currentTeam.paymentMethod === 'invoice';
 
       const upgradeMsg = isInvoice
-        ? `Uppgradera till ${newName}? Mellanskillnaden faktureras nu med 14 dagars betalningsvillkor.`
+        ? `Uppgradera till ${newName}? Mellanskillnaden faktureras nu med 30 dagars betalningsvillkor.`
         : `Uppgradera till ${newName}? Mellanskillnaden dras direkt på ditt kort.`;
       const msg = isUpgrade
         ? upgradeMsg
@@ -826,7 +795,7 @@
           downgradeAtPeriodEnd: !isUpgrade,
         });
         const upgradeDone = isInvoice
-          ? `Uppgraderat till ${newName}! En faktura på mellanskillnaden är på väg (14 dagar att betala).`
+          ? `Uppgraderat till ${newName}! En faktura på mellanskillnaden är på väg (30 dagar att betala).`
           : `Uppgraderat till ${newName}! Mellanskillnaden dras på ditt kort.`;
         alert(isUpgrade ? upgradeDone : `Byte till ${newName} sker vid periodens slut.`);
       } catch (error) {
@@ -1054,7 +1023,7 @@
           ...details,
         });
         closeModal('invoice-modal');
-        alert(`Abonnemang aktiverat! En faktura skickas till ${details.email} (14 dagar att betala).`);
+        alert(`Abonnemang aktiverat! En faktura skickas till ${details.email} (30 dagar att betala).`);
       } catch (error) {
         console.error('Invoice error:', error);
         if (error.message?.includes('already-exists')) {
@@ -1123,7 +1092,7 @@
             // Faktura-kund → tillägget aktiverat direkt, faktura på väg
             closeModal('storage-modal');
             const to = currentTeam.invoiceEmail ? ` till ${currentTeam.invoiceEmail}` : '';
-            alert(`Lagringspaket aktiverat! En faktura${to} är på väg (14 dagar att betala).`);
+            alert(`Lagringspaket aktiverat! En faktura${to} är på väg (30 dagar att betala).`);
           }
         }
       } catch (error) {
