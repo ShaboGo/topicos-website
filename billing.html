@@ -283,6 +283,7 @@
         storageFlatBytes: 5 * GB,    // 5 GB totalt för hela org:en
         storageBytesPerSeat: null,
         callMinutesPerSeat: 40,      // poolat: min(seats,5) × 40 = max 200 min/mån
+        historyDays: 90,             // ser bara senaste ~3 mån (döljs, raderas ej)
         timeTracking: false,
         storageAddons: false,
       },
@@ -292,6 +293,7 @@
         storageFlatBytes: null,
         storageBytesPerSeat: 10 * GB,
         callMinutesPerSeat: null,    // obegränsat
+        historyDays: null,           // obegränsad historik
         timeTracking: false,
         storageAddons: true,
       },
@@ -301,6 +303,7 @@
         storageFlatBytes: null,
         storageBytesPerSeat: 25 * GB,
         callMinutesPerSeat: null,
+        historyDays: null,           // obegränsad historik
         timeTracking: true,
         storageAddons: true,
       },
@@ -603,9 +606,11 @@
       const perSeatGb = cfg.storageBytesPerSeat ? Math.round(cfg.storageBytesPerSeat / GB) : null;
       const flatGb = cfg.storageFlatBytes ? Math.round(cfg.storageFlatBytes / GB) : null;
       const callMax = cfg.callMinutesPerSeat != null ? cfg.callMinutesPerSeat * CALL_POTT_SEAT_CAP : null;
+      const historyLabel = cfg.historyDays != null
+        ? `${cfg.historyDays} dagars meddelandehistorik`
+        : 'Obegränsad meddelandehistorik';
 
       return [
-        { label: `Upp till ${SEAT_LIMITS.MAX} medlemmar`, included: true },
         {
           label: flatGb != null ? `${flatGb} GB lagring` : `${perSeatGb} GB per användare`,
           included: true,
@@ -614,6 +619,7 @@
           label: callMax != null ? `${callMax} samtalsmin/mån` : 'Obegränsade samtal',
           included: true,
         },
+        { label: historyLabel, included: true },
         { label: 'Tidrapportering', included: cfg.timeTracking },
       ];
     }
