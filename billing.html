@@ -271,7 +271,7 @@
     // =====================================================
     const GB = 1024 * 1024 * 1024;
     const CURRENCY = 'SEK';
-    const SEAT_LIMITS = { MIN: 3, MAX: 200 };
+    const SEAT_LIMITS = { MIN: 3, MAX: 2000 };
     const CALL_POTT_SEAT_CAP = 5; // Free-potten kapas vid 5 platser → max 5 × 40 = 200 min/mån
 
     const TIER_ORDER = ['free', 'bas', 'pro'];
@@ -440,7 +440,6 @@
       const interval = team.billingInterval || 'monthly';
       const pricePerSeat = cfg.pricePerSeat[interval];
       const totalPrice = team.currentPrice != null ? team.currentPrice : (seats * pricePerSeat);
-      const memberLimit = team.memberLimit || SEAT_LIMITS.MAX;
       const hasSubscription = !!team.stripeSubscriptionId;
 
       // Förvald intervall i plan-jämförelsen = teamets nuvarande
@@ -520,16 +519,13 @@
       const canceledCard = document.getElementById('canceled-card');
       canceledCard.style.display = (status === 'canceled' && !team.cancelAtPeriodEnd) ? 'block' : 'none';
 
-      renderUsage(team, tier, seats, memberCount, memberLimit, hasSubscription);
+      renderUsage(team, tier, seats, memberCount, hasSubscription);
       renderPlans(team, tier, hasSubscription);
       renderActions(team, tier, hasSubscription, status);
     }
 
-    function renderUsage(team, tier, seats, memberCount, memberLimit, hasSubscription) {
+    function renderUsage(team, tier, seats, memberCount, hasSubscription) {
       const container = document.getElementById('usage-card');
-
-      // Platser
-      const memberPct = Math.min((memberCount / memberLimit) * 100, 100);
 
       // Lagring
       const baseStorage = getBaseStorageBytes(tier, seats);
@@ -585,9 +581,8 @@
         <div class="metric-row">
           <div class="metric-top">
             <span class="metric-label">Platser</span>
-            <span class="metric-value">${memberCount}<span class="max"> / ${memberLimit}</span></span>
+            <span class="metric-value">${memberCount}</span>
           </div>
-          <div class="metric-bar"><div class="metric-bar-fill" style="width:${memberPct}%;"></div></div>
         </div>
         <div class="metric-row">
           <div class="metric-top">
