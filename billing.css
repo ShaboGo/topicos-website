@@ -642,10 +642,15 @@ body {
 }
 
 /* Compact usage card (Platser / Lagring / Samtal) — matchar appens SubscriptionScreen */
+/* Platser/Lagring/Samtal ligger nu i samma kort som aktuell plan,
+   avskilt med en tunn linje. */
 .usage-card {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
 .metric-row {
