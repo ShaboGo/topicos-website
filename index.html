@@ -13,6 +13,12 @@
   <nav class="navbar">
     <div class="nav-container">
       <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
+      <div class="nav-links">
+        <a href="#features">Funktioner</a>
+        <a href="#pricing">Priser</a>
+        <a href="#" class="nav-signin" onclick="comingSoon(event)">Logga in</a>
+        <a href="#" class="btn btn-primary btn-sm" onclick="comingSoon(event)">Kom igång</a>
+      </div>
       <button class="hamburger" id="hamburger" aria-label="Meny">
         <span></span>
         <span></span>
@@ -20,54 +26,31 @@
       </button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
+      <a href="#features">Funktioner</a>
+      <a href="#pricing">Priser</a>
+      <a href="#" onclick="comingSoon(event)">Logga in</a>
       <a href="privacy.html">Integritetspolicy</a>
       <a href="terms.html">Användarvillkor</a>
     </div>
   </nav>
 
-  <script>
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-
-    hamburger.addEventListener('click', () => {
-      mobileMenu.classList.toggle('active');
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mobileMenu.classList.remove('active');
-      }
-    });
-  </script>
-
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <h1>Topicos</h1>
-      <div class="hero-spacer"></div>
-      <p>Håll ditt teams kommunikation strukturerad på ett ställe.</p>
-      <div class="app-badges">
-        <a href="#" class="app-badge">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          App Store
-        </a>
-        <a href="#" class="app-badge">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c.22.17.49.26.78.26.19 0 .38-.05.56-.14l8.74-4.86-3.3-3.3L3.18 23.49zM.47 2.2C.17 2.6 0 3.15 0 3.8v16.4c0 .65.17 1.2.47 1.6l.04.04 9.2-9.2v-.08L.51 2.16.47 2.2zM20.17 10.13l-3.42-1.94-3.63 3.63 3.63 3.63 3.43-1.94c.98-.55 .98-1.45 0-2l-.01.01v-.01l-.01.01v-.01l.01.01v.01zM13.07 8.44L16.5 6.5 4.89.84c-.35-.2-.72-.27-1.06-.22l9.24 7.82z"/></svg>
-          Google Play
-        </a>
+      <h1>Allt teamet behöver,<br>på ett ställe.</h1>
+      <p class="subtitle">Topicos samlar chatt, möten, uppgifter och kalender — strukturerat per ämne och i realtid.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary" onclick="comingSoon(event)">Kom igång</a>
+        <a href="#pricing" class="btn btn-outline">Se priser →</a>
       </div>
-    </div>
-    <div class="hero-wave">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-        <path d="M0,64 C480,150 960,-20 1440,64 L1440,120 L0,120 Z" fill="var(--bg-light)"/>
-      </svg>
+      <p class="hero-platforms">Finns för iOS och Android</p>
     </div>
   </section>
 
   <!-- Features Section -->
   <section class="features" id="features">
-<div class="features-grid">
+    <h2 class="section-title">Allt teamet behöver</h2>
+    <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🏢</div>
         <h3>Organisation</h3>
@@ -108,6 +91,101 @@
         <h3>Teamkalender</h3>
         <p>Samla teamets schema på ett ställe.</p>
       </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Tidrapportering</h3>
+        <p>Rapportera tid på projekt och uppgifter direkt i appen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="pricing">
+    <div class="pricing-header">
+      <h2 class="section-title">Enkla priser för team i alla storlekar</h2>
+      <p class="pricing-sub">Per plats, från 3 platser. Priser anges ex. moms.</p>
+      <div class="billing-toggle" id="billingToggle">
+        <button data-interval="monthly" class="active" onclick="setBillingInterval('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">−10%</span></button>
+      </div>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="plan-card">
+        <h3 class="plan-name">Free</h3>
+        <p class="plan-tagline">Allt du behöver för att komma igång.</p>
+        <div class="plan-price">
+          <span class="price-original" data-monthly="" data-yearly=""></span>
+          <span class="price-amount" data-monthly="0" data-yearly="0">0</span><span class="price-currency">kr</span>
+        </div>
+        <div class="price-unit">per plats/mån</div>
+        <div class="price-yearly-note"></div>
+        <a href="#" class="plan-cta plan-cta-outline" onclick="comingSoon(event)">Kom igång</a>
+        <ul class="plan-features">
+          <li>5 GB lagring för hela teamet</li>
+          <li>200 min videosamtal/mån</li>
+          <li>90 dagars meddelandehistorik</li>
+          <li>Grupper, ämnen &amp; uppgifter</li>
+        </ul>
+      </div>
+
+      <!-- Bas -->
+      <div class="plan-card">
+        <h3 class="plan-name">Bas</h3>
+        <p class="plan-tagline">Det professionella valet för ditt team.</p>
+        <div class="plan-price">
+          <span class="price-original" data-monthly="" data-yearly="49"></span>
+          <span class="price-amount" data-monthly="49" data-yearly="44">49</span><span class="price-currency">kr</span>
+        </div>
+        <div class="price-unit">per plats/mån</div>
+        <div class="price-yearly-note">faktureras årsvis (529 kr/plats/år)</div>
+        <a href="#" class="plan-cta plan-cta-outline" onclick="comingSoon(event)">Välj Bas</a>
+        <ul class="plan-features">
+          <li>10 GB lagring per plats</li>
+          <li>Obegränsade videosamtal</li>
+          <li>Obegränsad meddelandehistorik</li>
+          <li>Köp till extra lagring</li>
+        </ul>
+      </div>
+
+      <!-- Pro (featured) -->
+      <div class="plan-card plan-card-featured">
+        <div class="plan-badge">Bäst värde</div>
+        <h3 class="plan-name">Pro</h3>
+        <p class="plan-tagline">Maxa produktiviteten med tidrapportering.</p>
+        <div class="plan-price">
+          <span class="price-original" data-monthly="" data-yearly="69"></span>
+          <span class="price-amount" data-monthly="69" data-yearly="62">69</span><span class="price-currency">kr</span>
+        </div>
+        <div class="price-unit">per plats/mån</div>
+        <div class="price-yearly-note">faktureras årsvis (745 kr/plats/år)</div>
+        <a href="#" class="plan-cta plan-cta-primary" onclick="comingSoon(event)">Välj Pro</a>
+        <ul class="plan-features">
+          <li>Allt i Bas</li>
+          <li>25 GB lagring per plats</li>
+          <li>Tidrapportering</li>
+          <li>Köp till extra lagring</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="pricing-note">Du betalar alltid för minst 3 platser. Antalet platser följer teamets storlek.</p>
+  </section>
+
+  <!-- CTA Band -->
+  <section class="cta-band">
+    <h2>Redo att samla teamet?</h2>
+    <p>Ladda ner Topicos och kom igång på några minuter.</p>
+    <div class="app-badges">
+      <a href="#" class="app-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        App Store
+      </a>
+      <a href="#" class="app-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c.22.17.49.26.78.26.19 0 .38-.05.56-.14l8.74-4.86-3.3-3.3L3.18 23.49zM.47 2.2C.17 2.6 0 3.15 0 3.8v16.4c0 .65.17 1.2.47 1.6l.04.04 9.2-9.2v-.08L.51 2.16.47 2.2zM20.17 10.13l-3.42-1.94-3.63 3.63 3.63 3.63 3.43-1.94c.98-.55 .98-1.45 0-2l-.01.01v-.01l-.01.01v-.01l.01.01v.01zM13.07 8.44L16.5 6.5 4.89.84c-.35-.2-.72-.27-1.06-.22l9.24 7.82z"/></svg>
+        Google Play
+      </a>
     </div>
   </section>
 
@@ -120,5 +198,57 @@
     </div>
     <p>&copy; 2026 Topicos. Alla rättigheter förbehållna.</p>
   </footer>
+
+  <!-- Coming-soon toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">Kommer snart 🚀</div>
+
+  <script>
+    // Mobile hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+
+    // Close mobile menu when an anchor link is tapped
+    mobileMenu.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    });
+
+    // Pricing month/year toggle
+    function setBillingInterval(interval) {
+      document.querySelectorAll('#billingToggle button').forEach(b => {
+        b.classList.toggle('active', b.dataset.interval === interval);
+      });
+      document.querySelectorAll('.price-amount').forEach(el => {
+        el.textContent = el.dataset[interval];
+      });
+      document.querySelectorAll('.price-original').forEach(el => {
+        const v = el.dataset[interval];
+        el.textContent = v ? v + ' kr' : '';
+        el.style.display = v ? 'inline' : 'none';
+      });
+      document.querySelectorAll('.price-yearly-note').forEach(el => {
+        el.style.visibility = (interval === 'yearly' && el.textContent.trim()) ? 'visible' : 'hidden';
+      });
+    }
+
+    // "Kommer snart" — login + plan CTAs until the web app lands at app.topicos.app
+    let toastTimer;
+    function comingSoon(e) {
+      e.preventDefault();
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+  </script>
 </body>
 </html>
