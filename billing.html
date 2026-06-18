@@ -596,26 +596,45 @@
       `;
     }
 
+    // Säljande rad under plannamnet (speglar hemsidans plankort).
+    function planTagline(tier) {
+      return {
+        free: 'Allt du behöver för att komma igång.',
+        bas: 'Det professionella valet för ditt team.',
+        pro: 'Maxa produktiviteten med tidrapportering.',
+      }[tier] || '';
+    }
+
+    // Vad som ingår per nivå (speglar hemsidans plankort). Dynamiska värden
+    // (GB, samtalsmin, historik) hämtas från TIER_CONFIG — texten är marknadsföring.
     function planFeatures(tier) {
       const cfg = TIER_CONFIG[tier];
       const perSeatGb = cfg.storageBytesPerSeat ? Math.round(cfg.storageBytesPerSeat / GB) : null;
       const flatGb = cfg.storageFlatBytes ? Math.round(cfg.storageFlatBytes / GB) : null;
       const callMax = cfg.callMinutesPerSeat != null ? cfg.callMinutesPerSeat * CALL_POTT_SEAT_CAP : null;
-      const historyLabel = cfg.historyDays != null
-        ? `${cfg.historyDays} dagars meddelandehistorik`
-        : 'Obegränsad meddelandehistorik';
 
+      if (tier === 'free') {
+        return [
+          `${flatGb} GB lagring för hela teamet`,
+          `${callMax} min videosamtal/mån`,
+          `${cfg.historyDays} dagars meddelandehistorik`,
+          'Grupper, ämnen & uppgifter',
+        ];
+      }
+      if (tier === 'bas') {
+        return [
+          `${perSeatGb} GB lagring per plats`,
+          'Obegränsade videosamtal',
+          'Obegränsad meddelandehistorik',
+          'Köp till extra lagring',
+        ];
+      }
+      // pro
       return [
-        {
-          label: flatGb != null ? `${flatGb} GB lagring` : `${perSeatGb} GB per användare`,
-          included: true,
-        },
-        {
-          label: callMax != null ? `${callMax} samtalsmin/mån` : 'Obegränsade samtal',
-          included: true,
-        },
-        { label: historyLabel, included: true },
-        { label: 'Tidrapportering', included: cfg.timeTracking },
+        'Allt i Bas',
+        `${perSeatGb} GB lagring per plats`,
+        'Tidrapportering',
+        'Köp till extra lagring',
       ];
     }
 
@@ -636,9 +655,9 @@
         const price = cfg.pricePerSeat[plansInterval];
 
         const features = planFeatures(tier).map(f => `
-          <div class="plan-feature ${f.included ? '' : 'excluded'}">
-            <span class="check">${f.included ? '✓' : '✕'}</span>
-            <span>${f.label}</span>
+          <div class="plan-feature">
+            <span class="check">✓</span>
+            <span>${f}</span>
           </div>`).join('');
 
         // CTA-knapp
@@ -673,6 +692,7 @@
               <span class="plan-compare-name">${cfg.name}</span>
               ${isCurrent ? '<span class="current-badge">Nuvarande</span>' : ''}
             </div>
+            <p class="plan-compare-tagline">${planTagline(tier)}</p>
             <div class="plan-compare-price">
               <span class="plan-compare-amount">${isFree ? '0' : price}</span>
               <span class="plan-compare-unit">${priceUnit}</span>
