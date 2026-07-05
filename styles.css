@@ -194,7 +194,7 @@ body {
 /* Hero Section */
 .hero {
   background: var(--white);
-  padding: 9rem 2rem 5rem;
+  padding: 9rem 2rem 2.5rem;
   text-align: center;
 }
 
@@ -269,7 +269,7 @@ body {
 }
 
 .showcase-img {
-  width: 50%;
+  width: 60%;
   height: auto;
   border-radius: 20px;
 }
