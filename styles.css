@@ -269,10 +269,9 @@ body {
 }
 
 .showcase-img {
-  width: 50%;
+  width: 35%;
   height: auto;
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(17, 24, 39, 0.12);
 }
 
 /* Features Section */
