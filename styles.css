@@ -594,30 +594,6 @@ body {
   font-size: 0.875rem;
 }
 
-/* Coming-soon toast */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translate(-50%, 1rem);
-  background: var(--text-dark);
-  color: var(--white);
-  padding: 0.85rem 1.5rem;
-  border-radius: 50px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
-  z-index: 2000;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
 /* Legal Pages */
 .legal-page {
   padding-top: 80px;

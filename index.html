@@ -199,9 +199,6 @@
     <p>&copy; 2026 Topicos. Alla rättigheter förbehållna.</p>
   </footer>
 
-  <!-- Coming-soon toast -->
-  <div id="toast" class="toast" role="status" aria-live="polite">Kommer snart 🚀</div>
-
   <script>
     // Mobile hamburger menu
     const hamburger = document.getElementById('hamburger');
@@ -238,16 +235,6 @@
       document.querySelectorAll('.price-yearly-note').forEach(el => {
         el.style.visibility = (interval === 'yearly' && el.textContent.trim()) ? 'visible' : 'hidden';
       });
-    }
-
-    // "Kommer snart" — login + plan CTAs until the web app lands at app.topicos.app
-    let toastTimer;
-    function comingSoon(e) {
-      e.preventDefault();
-      const t = document.getElementById('toast');
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
     }
   </script>
 </body>
