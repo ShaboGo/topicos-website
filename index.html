@@ -236,6 +236,28 @@
         el.style.visibility = (interval === 'yearly' && el.textContent.trim()) ? 'visible' : 'hidden';
       });
     }
+
+    // På mobil är webbappen (app.topicos.app) inte responsiv ännu, så styr om
+    // alla app-länkar till rätt appbutik. Butiks-URL:erna återanvänds från
+    // badgesen i CTA-bandet så det bara finns en källa att underhålla.
+    (function () {
+      const ua = navigator.userAgent || navigator.vendor || '';
+      const isAndroid = /android/i.test(ua);
+      const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (!isAndroid && !isIOS) return;
+
+      const badge = document.querySelector(
+        isIOS ? 'a[href*="apps.apple.com"]' : 'a[href*="play.google.com"]'
+      );
+      if (!badge) return;
+
+      document.querySelectorAll('a[href^="https://app.topicos.app"]').forEach(a => {
+        a.href = badge.href;
+        a.target = '_blank';
+        a.rel = 'noopener';
+      });
+    })();
   </script>
 </body>
 </html>
