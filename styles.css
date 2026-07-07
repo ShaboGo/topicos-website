@@ -547,6 +547,15 @@ body {
   font-weight: 800;
 }
 
+.plan-features li.excluded {
+  color: var(--text-light);
+}
+
+.plan-features li.excluded::before {
+  content: '✕';
+  color: var(--text-light);
+}
+
 .pricing-note {
   text-align: center;
   color: var(--text-light);
