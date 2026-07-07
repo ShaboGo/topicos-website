@@ -601,7 +601,7 @@
       return {
         free: 'Allt du behöver för att komma igång.',
         bas: 'Det professionella valet för ditt team.',
-        pro: 'Maxa produktiviteten med tidrapportering.',
+        pro: 'Maxa produktiviteten med tidsrapportering.',
       }[tier] || '';
     }
 
@@ -615,26 +615,27 @@
 
       if (tier === 'free') {
         return [
+          'Alla samarbetsfunktioner',
           `${flatGb} GB lagring för hela teamet`,
           `${callMax} min videosamtal/mån`,
           `${cfg.historyDays} dagars meddelandehistorik`,
-          'Grupper, ämnen & uppgifter',
         ];
       }
       if (tier === 'bas') {
         return [
+          'Alla samarbetsfunktioner',
           `${perSeatGb} GB lagring per plats`,
           'Obegränsade videosamtal',
           'Obegränsad meddelandehistorik',
-          'Köp till extra lagring',
         ];
       }
       // pro
       return [
-        'Allt i Bas',
+        'Alla samarbetsfunktioner',
         `${perSeatGb} GB lagring per plats`,
-        'Tidrapportering',
-        'Köp till extra lagring',
+        'Obegränsade videosamtal',
+        'Obegränsad meddelandehistorik',
+        'Tidsrapportering',
       ];
     }
 
