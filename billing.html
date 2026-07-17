@@ -679,7 +679,7 @@
           // Ingen avboknings-knapp här — avbokning sker via "Hantera betalning" (Stripe-portalen)
         } else {
           const verb = hasSubscription ? 'Byt till' : 'Välj';
-          cta = `<button class="btn ${isPro ? 'btn-primary' : 'btn-secondary'}" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
+          cta = `<button class="btn btn-secondary" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
         }
 
         const priceUnit = isFree
@@ -687,8 +687,7 @@
           : (plansInterval === 'yearly' ? `${CURRENCY}/plats/år` : `${CURRENCY}/plats/mån`);
 
         container.innerHTML += `
-          <div class="plan-compare-card ${isPro ? 'featured' : ''}">
-            ${isPro ? '<div class="best-value">BÄST VÄRDE</div>' : ''}
+          <div class="plan-compare-card">
             <div class="plan-compare-header">
               <span class="plan-compare-name">${cfg.name}</span>
               ${isCurrent ? '<span class="current-badge">Nuvarande</span>' : ''}
