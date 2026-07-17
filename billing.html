@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <!-- Plans Comparison (Free / Bas / Pro) -->
+      <!-- Plans Comparison (Free / Pro / Max) -->
       <h3 class="plans-section-title">Planer</h3>
       <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 10% rabatt.</p>
 
@@ -288,7 +288,7 @@
         storageAddons: false,
       },
       bas: {
-        name: 'Bas',
+        name: 'Pro',
         pricePerSeat: { monthly: 49, yearly: 529 },
         storageFlatBytes: null,
         storageBytesPerSeat: 10 * GB,
@@ -298,7 +298,7 @@
         storageAddons: true,
       },
       pro: {
-        name: 'Pro',
+        name: 'Max',
         pricePerSeat: { monthly: 69, yearly: 745 },
         storageFlatBytes: null,
         storageBytesPerSeat: 20 * GB,
@@ -339,7 +339,7 @@
     let plansInterval = 'monthly';   // intervall vald i plan-jämförelsen
     let storageInterval = 'monthly';
     let selectedStorageTier = 'extra_20gb';
-    let selectedTier = null;         // nivå vald i betalflödet (bas/pro)
+    let selectedTier = null;         // nivå vald i betalflödet (pro/max)
     let pendingStorageDeepLink = false;
 
     // =====================================================
@@ -362,7 +362,7 @@
       return Math.max(memberCount, SEAT_LIMITS.MIN);
     }
 
-    // Inkluderad lagring (bytes) för nivån — fast pott (Free) eller per-seat (Bas/Pro).
+    // Inkluderad lagring (bytes) för nivån — fast pott (Free) eller per-seat (Pro/Max).
     function getBaseStorageBytes(tier, seats) {
       const cfg = TIER_CONFIG[tier];
       if (cfg.storageFlatBytes != null) return cfg.storageFlatBytes;
@@ -537,7 +537,7 @@
       const storageCancelled = !!team.storageAddonCancelAtPeriodEnd;
       let storageSub = '';
       if (addonBytes > 0) {
-        storageSub = `<div class="metric-sub">Bas: ${formatBytes(baseStorage)} · Tillägg: +${formatBytes(addonBytes)}</div>`;
+        storageSub = `<div class="metric-sub">Grund: ${formatBytes(baseStorage)} · Tillägg: +${formatBytes(addonBytes)}</div>`;
         if (storageCancelled) {
           const cancelDate = team.storageAddonCancelAt
             ? (team.storageAddonCancelAt.toDate ? team.storageAddonCancelAt.toDate() : new Date(team.storageAddonCancelAt)).toLocaleDateString('sv-SE')
@@ -560,7 +560,7 @@
             </div>
           </div>`;
       } else if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
-        // Bas/Pro: tre lägen för lagringsknappen (alla öppnar modalen, som visar
+        // Pro/Max: tre lägen för lagringsknappen (alla öppnar modalen, som visar
         // status och rätt åtgärd):
         //  - inget paket        → "Köp mer lagring"
         //  - aktivt paket       → "Ändra lagringspaket"
@@ -741,7 +741,7 @@
     });
 
     // =====================================================
-    // Plan selection (Free / Bas / Pro)
+    // Plan selection (Free / Pro / Max)
     // =====================================================
     window.setPlansInterval = function(interval) {
       plansInterval = interval;
@@ -764,7 +764,7 @@
         // Nytt abonnemang → välj betalmetod
         openPaymentModal(tier);
       } else {
-        // Byt mellan Bas/Pro på befintligt abonnemang
+        // Byt mellan Pro/Max på befintligt abonnemang
         confirmTierChange(tier);
       }
     };
@@ -796,7 +796,7 @@
     };
 
     // =====================================================
-    // Tier change på befintligt abonnemang (Bas <-> Pro)
+    // Tier change på befintligt abonnemang (Pro <-> Max)
     // =====================================================
     window.confirmTierChange = async function(newTier) {
       const currentTier = getTier(currentTeam);
@@ -900,7 +900,7 @@
       if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
         openStorageModal();
       } else {
-        alert('Lagringstillägg kräver ett aktivt Bas- eller Pro-abonnemang. Välj en plan först.');
+        alert('Lagringstillägg kräver ett aktivt Pro- eller Max-abonnemang. Välj en plan först.');
       }
     }
 
