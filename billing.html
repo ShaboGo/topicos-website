@@ -278,6 +278,10 @@
     // tidsrapporteringen som var dess enda funktionsskillnad ingår nu i 'bas'.
     const TIER_ORDER = ['free', 'bas'];
 
+    // Visningsordning i plan-jämförelsen: Pro först så att prisändringen syns
+    // direkt när användaren växlar mellan månadsvis och årsvis.
+    const PLAN_DISPLAY_ORDER = ['bas', 'free'];
+
     const TIER_CONFIG = {
       free: {
         name: 'Free',
@@ -633,7 +637,7 @@
         btn.classList.toggle('active', btn.dataset.interval === plansInterval);
       });
 
-      for (const tier of TIER_ORDER) {
+      for (const tier of PLAN_DISPLAY_ORDER) {
         const cfg = TIER_CONFIG[tier];
         const isCurrent = tier === currentTier;
         const isFree = tier === 'free';
@@ -666,9 +670,21 @@
           cta = `<button class="btn btn-secondary" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
         }
 
-        const priceUnit = isFree
-          ? 'gratis'
-          : (plansInterval === 'yearly' ? `${CURRENCY}/plats/år` : `${CURRENCY}/plats/mån`);
+        // Årsvis visas som månadskostnad (årspris / 12) med ordinarie månadspris
+        // överstruket — samma upplägg som prissektionen på startsidan, så rabatten
+        // syns direkt i kortet när man växlar intervall.
+        const isYearly = !isFree && plansInterval === 'yearly';
+        const monthlyPrice = cfg.pricePerSeat.monthly;
+        const amount = isFree ? '0' : (isYearly ? Math.round(price / 12) : price);
+        const priceUnit = isFree ? 'gratis' : `${CURRENCY}/plats/mån`;
+        const original = isYearly
+          ? `<span class="plan-compare-original">${monthlyPrice} ${CURRENCY}</span>`
+          : '';
+
+        // Noten renderas även månadsvis (dold) så kortets höjd inte hoppar vid växling.
+        const yearlyNote = isFree
+          ? ''
+          : `<div class="plan-compare-yearly-note"${isYearly ? '' : ' style="visibility:hidden;"'}>faktureras årsvis (${cfg.pricePerSeat.yearly} ${CURRENCY}/plats/år)</div>`;
 
         container.innerHTML += `
           <div class="plan-compare-card">
@@ -678,9 +694,11 @@
             </div>
             <p class="plan-compare-tagline">${planTagline(tier)}</p>
             <div class="plan-compare-price">
-              <span class="plan-compare-amount">${isFree ? '0' : price}</span>
+              ${original}
+              <span class="plan-compare-amount">${amount}</span>
               <span class="plan-compare-unit">${priceUnit}</span>
             </div>
+            ${yearlyNote}
             <div class="plan-features">${features}</div>
             ${cta}
           </div>`;

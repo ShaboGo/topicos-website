@@ -661,6 +661,13 @@ body {
     max-width: 420px;
   }
 
+  /* Staplade kort: Pro överst så prisändringen syns direkt under
+     månad/år-växeln. På desktop står korten sida vid sida i DOM-ordning
+     (Free först) och båda priserna syns ändå. */
+  .plan-card-mobile-first {
+    order: -1;
+  }
+
   .plan-card-featured {
     transform: none;
   }
