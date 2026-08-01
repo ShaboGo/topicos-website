@@ -344,7 +344,7 @@ body {
 .pricing-header {
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem;
 }
 
 .pricing-header .section-title {
@@ -362,8 +362,17 @@ body {
   border: 1px solid var(--border);
   border-radius: 50px;
   padding: 0.3rem;
-  margin-top: 1.5rem;
   gap: 0.25rem;
+}
+
+/* Växeln är ett grid-item bland korten. order: -1 lyfter den till egen rad
+   ovanför båda korten; marginalen nedåt lägger sig till grid-gapet så
+   avståndet ned till korten blir 3rem som tidigare. */
+.pricing-grid .billing-toggle {
+  order: -1;
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-bottom: 1.5rem;
 }
 
 .billing-toggle button {
@@ -661,11 +670,11 @@ body {
     max-width: 420px;
   }
 
-  /* Staplade kort: Pro överst så prisändringen syns direkt under
-     månad/år-växeln. På desktop står korten sida vid sida i DOM-ordning
-     (Free först) och båda priserna syns ändå. */
-  .plan-card-mobile-first {
-    order: -1;
+  /* Staplade kort: DOM-ordningen gäller (Free → växel → Pro), så växeln
+     hamnar precis ovanför Pro-kortet där prisändringen sker. */
+  .pricing-grid .billing-toggle {
+    order: 0;
+    margin-bottom: 0;
   }
 
   .plan-card-featured {

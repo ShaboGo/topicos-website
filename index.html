@@ -114,10 +114,6 @@
     <div class="pricing-header">
       <h2 class="section-title">Enkla priser för team i alla storlekar</h2>
       <p class="pricing-sub">Per plats, från 3 platser. Priser anges ex. moms.</p>
-      <div class="billing-toggle" id="billingToggle">
-        <button data-interval="monthly" class="active" onclick="setBillingInterval('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">−10%</span></button>
-      </div>
     </div>
 
     <div class="pricing-grid">
@@ -140,8 +136,15 @@
         </ul>
       </div>
 
+      <!-- Månad/år-växeln ligger i griden, inte i headern, så den kan placeras
+           överst på desktop men mellan Free- och Pro-kortet på mobil. -->
+      <div class="billing-toggle" id="billingToggle">
+        <button data-interval="monthly" class="active" onclick="setBillingInterval('monthly')">Månadsvis</button>
+        <button data-interval="yearly" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">−10%</span></button>
+      </div>
+
       <!-- Pro -->
-      <div class="plan-card plan-card-mobile-first">
+      <div class="plan-card">
         <h3 class="plan-name">Pro</h3>
         <p class="plan-tagline">Det professionella valet för ditt team.</p>
         <div class="plan-price">
