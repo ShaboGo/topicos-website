@@ -664,7 +664,11 @@
           // Nedgradering till denna nivå är redan schemalagd till periodslut
           cta = `<button class="btn btn-secondary" disabled>Inväntar byte</button>`;
         } else if (isFree) {
-          // Ingen avboknings-knapp här — avbokning sker via "Hantera betalning" (Stripe-portalen)
+          // Nedgradering till Free = säg upp Pro. Grenen nås bara från en betald
+          // nivå utan redan schemalagt byte, så knappen dyker inte upp för den
+          // som redan står på Free. selectPlan('free') öppnar Stripe-portalen
+          // där uppsägningen görs; bytet träder i kraft vid periodens slut.
+          cta = `<button class="btn btn-secondary" onclick="selectPlan('free', this)">Byt till Free</button>`;
         } else {
           const verb = hasSubscription ? 'Byt till' : 'Välj';
           cta = `<button class="btn btn-secondary" onclick="selectPlan('${tier}')">${verb} ${cfg.name}</button>`;
@@ -752,14 +756,22 @@
     // Med två nivåer finns bara två riktningar: teckna Pro, eller säga upp till
     // Free. (Byte mellan två betalnivåer försvann med Max — ett team som redan
     // har abonnemang är per definition på Pro och faller ut på `tier === currentTier`.)
-    window.selectPlan = function(tier) {
+    window.selectPlan = function(tier, btn) {
       const currentTier = getTier(currentTeam);
 
       if (tier === currentTier) return;
 
       if (tier === 'free') {
-        // Nedgradering till Free = säg upp betald plan (vid periodens slut via Stripe)
-        handleOpenPortal();
+        // Nivån kan vara satt utan Stripe-abonnemang (testteam där tier skrivits
+        // direkt i Firestore). Portalen har då inget att visa och skulle falla på
+        // ett generiskt fel, så vi förklarar i stället.
+        if (!currentTeam.stripeSubscriptionId) {
+          alert('Det finns ingen aktiv prenumeration att säga upp. Kontakta kontakt@topicos.app om du vill byta plan.');
+          return;
+        }
+        // Nedgradering till Free = säg upp betald plan (vid periodens slut via Stripe).
+        // btn skickas vidare så spinnern hamnar på knappen som faktiskt klickades.
+        handleOpenPortal(btn);
         return;
       }
 
@@ -1061,8 +1073,12 @@
       }
     };
 
-    window.handleOpenPortal = async function() {
-      const btn = document.getElementById('portal-btn');
+    // trigger är knappen som klickades, när den skickas med. Funktionen används
+    // också direkt som event-handler (manageBtn.onclick), och får då ett Event
+    // som argument — därav HTMLElement-kontrollen innan vi faller tillbaka på
+    // portal-knappen.
+    window.handleOpenPortal = async function(trigger) {
+      const btn = (trigger instanceof HTMLElement) ? trigger : document.getElementById('portal-btn');
       const original = btn ? btn.innerHTML : '';
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>'; }
 
