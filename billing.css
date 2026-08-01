@@ -836,6 +836,23 @@ body {
   color: var(--text-dark);
 }
 
+/* Dämpad markering för funktioner som inte är färdigtestade — speglar
+   .beta-badge i styles.css på webbplatsen. */
+.beta-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.35em;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .plan-feature .check {
   color: var(--primary);
   font-weight: 800;

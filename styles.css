@@ -351,11 +351,6 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.pricing-sub {
-  color: var(--text-light);
-  font-size: 1.1rem;
-}
-
 .billing-toggle {
   display: inline-flex;
   background: var(--bg-light);
@@ -393,6 +388,23 @@ body {
 .billing-toggle button.active {
   background: var(--primary-color);
   color: var(--white);
+}
+
+/* Dämpad markering för funktioner som inte är färdigtestade. em-baserad storlek
+   så den följer föräldern (rubrik i funktionskortet, listrad i prisplanen). */
+.beta-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.35em;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  font-size: 0.65em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .discount-badge {
