@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <!-- Plans Comparison (Free / Pro / Max) -->
+      <!-- Plans Comparison (Free / Pro) -->
       <h3 class="plans-section-title">Planer</h3>
       <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 10% rabatt.</p>
 
@@ -274,7 +274,9 @@
     const SEAT_LIMITS = { MIN: 3, MAX: 2000 };
     const CALL_POTT_SEAT_CAP = 5; // Free-potten kapas vid 5 platser → max 5 × 40 = 200 min/mån
 
-    const TIER_ORDER = ['free', 'bas', 'pro'];
+    // Två nivåer. Den gamla toppnivån 'pro' (UI "Max") är borttagen —
+    // tidsrapporteringen som var dess enda funktionsskillnad ingår nu i 'bas'.
+    const TIER_ORDER = ['free', 'bas'];
 
     const TIER_CONFIG = {
       free: {
@@ -294,17 +296,7 @@
         storageBytesPerSeat: 10 * GB,
         callMinutesPerSeat: null,    // obegränsat
         historyDays: null,           // obegränsad historik
-        timeTracking: false,
-        storageAddons: true,
-      },
-      pro: {
-        name: 'Max',
-        pricePerSeat: { monthly: 69, yearly: 745 },
-        storageFlatBytes: null,
-        storageBytesPerSeat: 20 * GB,
-        callMinutesPerSeat: null,
-        historyDays: null,           // obegränsad historik
-        timeTracking: true,
+        timeTracking: true,          // ingår — superadmin slår på den i appen
         storageAddons: true,
       },
     };
@@ -339,7 +331,7 @@
     let plansInterval = 'monthly';   // intervall vald i plan-jämförelsen
     let storageInterval = 'monthly';
     let selectedStorageTier = 'extra_20gb';
-    let selectedTier = null;         // nivå vald i betalflödet (pro/max)
+    let selectedTier = null;         // nivå vald i betalflödet (alltid 'bas')
     let pendingStorageDeepLink = false;
 
     // =====================================================
@@ -353,16 +345,18 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
+    // Legacy 'pro' (borttagna Max) mappas till 'bas' så gamla team-dokument
+    // inte slår ut uppslagen i TIER_CONFIG.
     function getTier(team) {
       const t = team?.tier;
-      return (t === 'bas' || t === 'pro') ? t : 'free';
+      return (t === 'bas' || t === 'pro') ? 'bas' : 'free';
     }
 
     function calculateSeatCount(memberCount) {
       return Math.max(memberCount, SEAT_LIMITS.MIN);
     }
 
-    // Inkluderad lagring (bytes) för nivån — fast pott (Free) eller per-seat (Pro/Max).
+    // Inkluderad lagring (bytes) för nivån — fast pott (Free) eller per-seat (Pro).
     function getBaseStorageBytes(tier, seats) {
       const cfg = TIER_CONFIG[tier];
       if (cfg.storageFlatBytes != null) return cfg.storageFlatBytes;
@@ -560,7 +554,7 @@
             </div>
           </div>`;
       } else if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
-        // Pro/Max: tre lägen för lagringsknappen (alla öppnar modalen, som visar
+        // Pro: tre lägen för lagringsknappen (alla öppnar modalen, som visar
         // status och rätt åtgärd):
         //  - inget paket        → "Köp mer lagring"
         //  - aktivt paket       → "Ändra lagringspaket"
@@ -600,8 +594,7 @@
     function planTagline(tier) {
       return {
         free: 'Allt du behöver för att komma igång.',
-        bas: 'Det professionella valet för ditt team.',
-        pro: 'Maxa produktiviteten med tidsrapportering.',
+        bas: 'Allt i appen — inklusive tidsrapportering.',
       }[tier] || '';
     }
 
@@ -621,15 +614,7 @@
           `${cfg.historyDays} dagars meddelandehistorik`,
         ];
       }
-      if (tier === 'bas') {
-        return [
-          'Alla samarbetsfunktioner',
-          `${perSeatGb} GB lagring per plats`,
-          'Obegränsade röstsamtal',
-          'Obegränsad meddelandehistorik',
-        ];
-      }
-      // pro
+      // bas
       return [
         'Alla samarbetsfunktioner',
         `${perSeatGb} GB lagring per plats`,
@@ -652,7 +637,6 @@
         const cfg = TIER_CONFIG[tier];
         const isCurrent = tier === currentTier;
         const isFree = tier === 'free';
-        const isPro = tier === 'pro';
         const price = cfg.pricePerSeat[plansInterval];
 
         const features = planFeatures(tier).map(f => `
@@ -740,16 +724,18 @@
     });
 
     // =====================================================
-    // Plan selection (Free / Pro / Max)
+    // Plan selection (Free / Pro)
     // =====================================================
     window.setPlansInterval = function(interval) {
       plansInterval = interval;
       renderPlans(currentTeam, getTier(currentTeam), !!currentTeam.stripeSubscriptionId);
     };
 
+    // Med två nivåer finns bara två riktningar: teckna Pro, eller säga upp till
+    // Free. (Byte mellan två betalnivåer försvann med Max — ett team som redan
+    // har abonnemang är per definition på Pro och faller ut på `tier === currentTier`.)
     window.selectPlan = function(tier) {
       const currentTier = getTier(currentTeam);
-      const hasSubscription = !!currentTeam.stripeSubscriptionId;
 
       if (tier === currentTier) return;
 
@@ -759,13 +745,7 @@
         return;
       }
 
-      if (!hasSubscription) {
-        // Nytt abonnemang → välj betalmetod
-        openPaymentModal(tier);
-      } else {
-        // Byt mellan Pro/Max på befintligt abonnemang
-        confirmTierChange(tier);
-      }
+      openPaymentModal(tier);
     };
 
     // =====================================================
@@ -794,43 +774,8 @@
       openModal('invoice-modal');
     };
 
-    // =====================================================
-    // Tier change på befintligt abonnemang (Pro <-> Max)
-    // =====================================================
-    window.confirmTierChange = async function(newTier) {
-      const currentTier = getTier(currentTeam);
-      const isUpgrade = TIER_ORDER.indexOf(newTier) > TIER_ORDER.indexOf(currentTier);
-      const newName = TIER_CONFIG[newTier].name;
-      const curName = TIER_CONFIG[currentTier].name;
-      const interval = currentTeam.billingInterval || 'monthly';
-      const isInvoice = currentTeam.paymentMethod === 'invoice';
-
-      const upgradeMsg = isInvoice
-        ? `Uppgradera till ${newName}? Mellanskillnaden faktureras nu med 30 dagars betalningsvillkor.`
-        : `Uppgradera till ${newName}? Mellanskillnaden dras direkt på ditt kort.`;
-      const msg = isUpgrade
-        ? upgradeMsg
-        : `Byt till ${newName}? Ändringen börjar gälla vid nästa betalningsperiod — du behåller ${curName} tills dess.`;
-      if (!confirm(msg)) return;
-
-      try {
-        const updateSubscription = httpsCallable(functions, 'updateSubscription');
-        await updateSubscription({
-          teamId: currentTeam.id,
-          newBillingInterval: interval,
-          newTier,
-          // Nedgradering ska schemaläggas till periodens slut (hanteras i backend).
-          downgradeAtPeriodEnd: !isUpgrade,
-        });
-        const upgradeDone = isInvoice
-          ? `Uppgraderat till ${newName}! En faktura på mellanskillnaden är på väg (30 dagar att betala).`
-          : `Uppgraderat till ${newName}! Mellanskillnaden dras på ditt kort.`;
-        alert(isUpgrade ? upgradeDone : `Byte till ${newName} sker vid periodens slut.`);
-      } catch (error) {
-        console.error('Tier change error:', error);
-        alert('Kunde inte byta plan. Försök igen.');
-      }
-    };
+    // (Byte mellan två betalnivåer togs bort med Max — det finns bara en betald
+    // nivå kvar. Intervallbyte sköts av switchToYearly, uppsägning av portalen.)
 
     // Ångra en schemalagd nedgradering — behåll nuvarande (högre) nivå.
     // Att "byta" till nuvarande nivå utan periodslut-flagga släpper Stripe-schemat i backend.
@@ -899,7 +844,7 @@
       if (TIER_CONFIG[tier].storageAddons && hasSubscription) {
         openStorageModal();
       } else {
-        alert('Lagringstillägg kräver ett aktivt Pro- eller Max-abonnemang. Välj en plan först.');
+        alert('Lagringstillägg kräver ett aktivt Pro-abonnemang. Välj en plan först.');
       }
     }
 

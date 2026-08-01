@@ -396,10 +396,12 @@ body {
 }
 
 .pricing-grid {
-  max-width: 1080px;
+  /* Två planer (Free + Pro). Smalare max-width än 3-kolumnsvarianten så korten
+     behåller sin bredd i stället för att bli halva sidan var. */
+  max-width: 760px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
