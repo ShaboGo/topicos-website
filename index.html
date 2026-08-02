@@ -37,6 +37,11 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
+      <a href="#pricing" class="hero-campaign" data-campaign-only>
+        <span class="hero-campaign-badge" data-campaign-percent>&minus;50&nbsp;%</span>
+        Lanseringserbjudande på Pro
+        <span class="hero-campaign-arrow" aria-hidden="true">→</span>
+      </a>
       <h1>Allt teamet behöver,<br>på ett ställe.</h1>
       <p class="subtitle">Topicos samlar chatt, möten, uppgifter och kalender — strukturerat per ämne och i realtid.</p>
       <div class="hero-cta">
@@ -108,6 +113,18 @@
   <section class="pricing" id="pricing">
     <div class="pricing-header">
       <h2 class="section-title">Enkla planer</h2>
+
+      <!-- Kampanjen renderas statiskt här och i Pro-kortet, så priset inte hinner
+           blinka från ordinarie till rabatterat innan skriptet kör. Skriptet
+           skriver om texterna utifrån CAMPAIGN och plockar bort allt som är
+           markerat med data-campaign-only när kampanjen är slut. -->
+      <div class="campaign-banner" data-campaign-only>
+        <span class="campaign-banner-badge" data-campaign-percent>&minus;50&nbsp;%</span>
+        <div class="campaign-banner-text">
+          <strong>Lanseringserbjudande</strong>
+          <span id="campaignTerms">50 % rabatt på nya Pro-abonnemang de 3 första månaderna, sedan ordinarie pris. Gäller t.o.m. 2 februari 2027.</span>
+        </div>
+      </div>
     </div>
 
     <div class="pricing-grid">
@@ -121,6 +138,8 @@
         </div>
         <div class="price-unit">per plats/mån</div>
         <div class="price-yearly-note"></div>
+        <!-- Tom motsvarighet till Pros kampanjrad, så knapparna ligger i linje. -->
+        <div class="price-campaign-note" data-campaign-only></div>
         <a href="https://app.topicos.app" class="plan-cta plan-cta-outline">Kom igång</a>
         <ul class="plan-features">
           <li>Alla samarbetsfunktioner</li>
@@ -133,21 +152,23 @@
       <!-- Månad/år-växeln ligger i griden, inte i headern, så den kan placeras
            överst på desktop men mellan Free- och Pro-kortet på mobil. -->
       <div class="billing-toggle" id="billingToggle">
-        <button data-interval="monthly" class="active" onclick="setBillingInterval('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">−10%</span></button>
+        <button type="button" data-interval="monthly" class="active" aria-pressed="true" onclick="setBillingInterval('monthly')">Månadsvis</button>
+        <button type="button" data-interval="yearly" aria-pressed="false" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">Spara 10&nbsp;%</span></button>
       </div>
 
       <!-- Pro -->
-      <div class="plan-card">
+      <div class="plan-card plan-card-featured" id="planPro">
+        <span class="plan-badge" data-campaign-only><span data-campaign-percent>&minus;50&nbsp;%</span> just nu</span>
         <h3 class="plan-name">Pro</h3>
         <p class="plan-tagline">Det professionella valet för ditt team.</p>
         <div class="plan-price">
-          <span class="price-original" data-monthly="" data-yearly="49"></span>
-          <span class="price-amount" data-monthly="49" data-yearly="44">49</span><span class="price-currency">kr</span>
+          <span class="price-original" data-monthly="" data-yearly="49">49 kr</span>
+          <span class="price-amount" data-monthly="49" data-yearly="44">24,50</span><span class="price-currency">kr</span>
         </div>
         <div class="price-unit">per plats/mån ex. moms</div>
-        <div class="price-yearly-note">faktureras årsvis (529 kr/plats/år)</div>
-        <a href="https://app.topicos.app" class="plan-cta plan-cta-outline">Kom igång</a>
+        <div class="price-yearly-note" data-yearly-total="529">faktureras årsvis (529 kr/plats/år)</div>
+        <div class="price-campaign-note" data-campaign-only>&minus;50 % de 3 första månaderna</div>
+        <a href="https://app.topicos.app" class="plan-cta plan-cta-primary">Kom igång</a>
         <ul class="plan-features">
           <li>Alla samarbetsfunktioner</li>
           <li>10 GB lagring per plats</li>
@@ -207,23 +228,116 @@
       a.addEventListener('click', () => mobileMenu.classList.remove('active'));
     });
 
+    // Lanseringskampanj — MÅSTE spegla CAMPAIGN i billing.html, som i sin tur
+    // speglar LAUNCH_CAMPAIGN i functions/src/triggers/stripeConfig.ts. Servern
+    // är den som faktiskt hänger på kupongen; det här styr bara vad sidan VISAR.
+    // Sätt active: false när kampanjen är slut — då faller banner, badge och
+    // kampanjpriser bort av sig själva och ordinarie prisvisning är kvar.
+    const CAMPAIGN = {
+      active: true,
+      percentOff: 50,
+      endsAt: '2027-02-02T23:59:59+01:00',
+      // Varaktighet per intervall — speglar de två Stripe-kupongernas duration.
+      terms: {
+        monthly: 'de 3 första månaderna',
+        yearly: 'första året',
+      },
+    };
+
+    function campaignIsLive() {
+      return CAMPAIGN.active && Date.now() <= Date.parse(CAMPAIGN.endsAt);
+    }
+
+    // Rabatterat belopp som VISNINGSSTRÄNG. Stripe räknar i ören och avrundar
+    // inte till hela kronor (49 → 24,50), så halvkronor måste med — annars står
+    // det 25 kr på sidan och 24,50 kr i kassan.
+    function campaignPrice(amount) {
+      const value = amount * (1 - CAMPAIGN.percentOff / 100);
+      return Number.isInteger(value) ? String(value) : value.toFixed(2).replace('.', ',');
+    }
+
+    function campaignEndLabel() {
+      return new Date(Date.parse(CAMPAIGN.endsAt))
+        .toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
     // Pricing month/year toggle
     function setBillingInterval(interval) {
+      const live = campaignIsLive();
+
       document.querySelectorAll('#billingToggle button').forEach(b => {
-        b.classList.toggle('active', b.dataset.interval === interval);
+        const active = b.dataset.interval === interval;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
       });
-      document.querySelectorAll('.price-amount').forEach(el => {
-        el.textContent = el.dataset[interval];
+
+      document.querySelectorAll('.plan-card').forEach(card => {
+        const amountEl = card.querySelector('.price-amount');
+        const originalEl = card.querySelector('.price-original');
+        const listPrice = Number(amountEl.dataset[interval]);
+        // Gratisplanen har inget att rabattera.
+        const discounted = live && listPrice > 0;
+
+        amountEl.textContent = discounted ? campaignPrice(listPrice) : amountEl.dataset[interval];
+
+        // Under kampanjen är det ordinarie priset för valt intervall som stryks
+        // över. Det ersätter årsrabattens jämförelsepris — annars konkurrerar två
+        // "före"-priser i samma rad. Årspriset står ändå kvar i noten under.
+        const original = discounted ? String(listPrice) : originalEl.dataset[interval];
+        originalEl.textContent = original ? original + ' kr' : '';
+
+        const yearlyNote = card.querySelector('.price-yearly-note');
+        yearlyNote.style.visibility =
+          (interval === 'yearly' && yearlyNote.textContent.trim()) ? 'visible' : 'hidden';
+
+        // Raden finns i båda korten så knapparna ligger i linje, men bara det
+        // rabatterade kortet får text. Håll den kort — den måste rymmas på en
+        // rad i kortet, annars glider knapparna isär. Att rabatten är tillfällig
+        // står i bannern ovanför.
+        const campaignNote = card.querySelector('.price-campaign-note');
+        if (campaignNote) {
+          // Årsvis står månadspriset överst men årsbeloppet är det som dras, så
+          // det rabatterade årspriset måste med — annars ser "22 kr/plats/mån"
+          // ut att motsäga "529 kr/plats/år" på raden ovanför.
+          const yearlyTotal = Number(yearlyNote.dataset.yearlyTotal || 0);
+          const perYear = interval === 'yearly' && yearlyTotal
+            ? ` (${campaignPrice(yearlyTotal)} kr/plats/år)`
+            : '';
+          campaignNote.textContent = discounted
+            ? `−${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[interval]}${perYear}`
+            : '';
+        }
       });
-      document.querySelectorAll('.price-original').forEach(el => {
-        const v = el.dataset[interval];
-        el.textContent = v ? v + ' kr' : '';
-        el.style.display = v ? 'inline' : 'none';
-      });
-      document.querySelectorAll('.price-yearly-note').forEach(el => {
-        el.style.visibility = (interval === 'yearly' && el.textContent.trim()) ? 'visible' : 'hidden';
-      });
+
+      const terms = document.getElementById('campaignTerms');
+      if (terms) {
+        terms.textContent = `${CAMPAIGN.percentOff} % rabatt på nya Pro-abonnemang ` +
+          `${CAMPAIGN.terms[interval]}, sedan ordinarie pris. ` +
+          `Gäller t.o.m. ${campaignEndLabel()}.`;
+      }
     }
+
+    // Kampanjen är utskriven i HTML för att slippa prisblink vid inladdning.
+    // Här städas den bort igen när flaggan är av eller slutdatumet passerat.
+    (function () {
+      const live = campaignIsLive();
+
+      document.querySelectorAll('[data-campaign-only]').forEach(el => {
+        el.hidden = !live;
+      });
+      document.querySelectorAll('[data-campaign-percent]').forEach(el => {
+        el.textContent = `−${CAMPAIGN.percentOff} %`;
+      });
+
+      // Pro lyfts fram medan erbjudandet gäller; utan kampanj ska korten väga lika.
+      const pro = document.getElementById('planPro');
+      pro.classList.toggle('plan-card-featured', live);
+      const proCta = pro.querySelector('.plan-cta');
+      proCta.classList.toggle('plan-cta-primary', live);
+      proCta.classList.toggle('plan-cta-outline', !live);
+
+      setBillingInterval('monthly');
+    })();
 
     // På mobil är webbappen (app.topicos.app) inte responsiv ännu, så styr om
     // alla app-länkar till rätt appbutik. Butiks-URL:erna återanvänds från
