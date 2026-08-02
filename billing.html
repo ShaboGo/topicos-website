@@ -305,6 +305,37 @@
       },
     };
 
+    // Lanseringskampanj — MÅSTE spegla LAUNCH_CAMPAIGN i functions/src/triggers/
+    // stripeConfig.ts. Servern är den som faktiskt hänger på kupongen; det här
+    // styr bara vad sidan VISAR före kassan. Går de isär säljer vi rätt pris men
+    // visar fel, så ändra alltid båda. Sätt active: false när kampanjen är slut.
+    const CAMPAIGN = {
+      active: true,
+      percentOff: 50,
+      endsAt: '2027-02-02T23:59:59+01:00',
+      // Varaktighet per intervall — speglar de två Stripe-kupongernas duration.
+      terms: {
+        monthly: 'de 3 första månaderna',
+        yearly: 'första året',
+      },
+    };
+
+    function campaignIsLive() {
+      return CAMPAIGN.active && Date.now() <= Date.parse(CAMPAIGN.endsAt);
+    }
+
+    // Rabatterat belopp som VISNINGSSTRÄNG. Stripe räknar i ören och avrundar
+    // inte till hela kronor (3 × 49 = 147 → 73,50), så halvkronor måste med —
+    // annars står det 74 kr på sidan och 73,50 kr i kassan.
+    function discountedAmount(amount, percentOff) {
+      const value = amount * (1 - percentOff / 100);
+      return Number.isInteger(value) ? String(value) : value.toFixed(2).replace('.', ',');
+    }
+
+    function campaignPrice(amount) {
+      return discountedAmount(amount, CAMPAIGN.percentOff);
+    }
+
     const STORAGE_TIERS = {
       extra_20gb: { bytes: 20 * GB, label: '20 GB', pricing: { monthly: 35, yearly: 379 } },
       extra_50gb: { bytes: 50 * GB, label: '50 GB', pricing: { monthly: 75, yearly: 809 } },
@@ -476,8 +507,20 @@
         breakdownEl.textContent = '· Börja gratis, uppgradera när ni växer';
         noteEl.style.display = 'none';
       } else {
-        amountEl.textContent = `${totalPrice} ${CURRENCY}/${intervalLabel}`;
-        breakdownEl.textContent = `· ${seats} × ${pricePerSeat} ${CURRENCY}`;
+        // Aktiv rabatt (kampanjkupong) speglas från Stripe av webhooken.
+        // `currentPrice` är ALLTID ordinarie pris, så det rabatterade räknas här —
+        // annars står det fullpris på sidan medan kortet dras på halva.
+        const discount = team.discountPercent > 0 ? team.discountPercent : 0;
+        if (discount) {
+          const until = team.discountEndsAt
+            ? (team.discountEndsAt.toDate ? team.discountEndsAt.toDate() : new Date(team.discountEndsAt)).toLocaleDateString('sv-SE')
+            : '';
+          amountEl.innerHTML = `<span class="price-original">${totalPrice} ${CURRENCY}</span>${discountedAmount(totalPrice, discount)} ${CURRENCY}/${intervalLabel}`;
+          breakdownEl.textContent = `· ${seats} × ${pricePerSeat} ${CURRENCY} · −${discount} % ${until ? `t.o.m. ${until}` : 'denna period'}`;
+        } else {
+          amountEl.textContent = `${totalPrice} ${CURRENCY}/${intervalLabel}`;
+          breakdownEl.textContent = `· ${seats} × ${pricePerSeat} ${CURRENCY}`;
+        }
         if (memberCount < SEAT_LIMITS.MIN) {
           noteEl.textContent = `Minst ${SEAT_LIMITS.MIN} platser per abonnemang`;
           noteEl.style.display = 'block';
@@ -679,16 +722,28 @@
         // syns direkt i kortet när man växlar intervall.
         const isYearly = !isFree && plansInterval === 'yearly';
         const monthlyPrice = cfg.pricePerSeat.monthly;
-        const amount = isFree ? '0' : (isYearly ? Math.round(price / 12) : price);
+        const listAmount = isFree ? '0' : (isYearly ? Math.round(price / 12) : price);
+
+        // Under kampanjen visas kampanjpriset som huvudsiffra med ordinarie pris
+        // överstruket. Det ersätter årsrabattens överstrykning (annars två
+        // konkurrerande "före"-priser i samma rad) — årspriset står ändå i noten.
+        // Bara på plan man kan TECKNA: den som redan har Pro ser sitt verkliga
+        // pris (inkl. ev. pågående rabatt) i "Din plan"-raden i stället.
+        const campaignOnPlan = !isFree && !isCurrent && campaignIsLive();
+        const amount = campaignOnPlan ? campaignPrice(listAmount) : listAmount;
         const priceUnit = isFree ? 'gratis' : `${CURRENCY}/plats/mån`;
-        const original = isYearly
-          ? `<span class="plan-compare-original">${monthlyPrice} ${CURRENCY}</span>`
-          : '';
+        const original = campaignOnPlan
+          ? `<span class="plan-compare-original">${listAmount} ${CURRENCY}</span>`
+          : (isYearly ? `<span class="plan-compare-original">${monthlyPrice} ${CURRENCY}</span>` : '');
 
         // Noten renderas även månadsvis (dold) så kortets höjd inte hoppar vid växling.
         const yearlyNote = isFree
           ? ''
           : `<div class="plan-compare-yearly-note"${isYearly ? '' : ' style="visibility:hidden;"'}>faktureras årsvis (${cfg.pricePerSeat.yearly} ${CURRENCY}/plats/år)</div>`;
+
+        const campaignNote = campaignOnPlan
+          ? `<div class="plan-compare-campaign">&minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]}, sedan ordinarie pris</div>`
+          : '';
 
         container.innerHTML += `
           <div class="plan-compare-card">
@@ -703,6 +758,7 @@
               <span class="plan-compare-unit">${priceUnit}</span>
             </div>
             ${yearlyNote}
+            ${campaignNote}
             <div class="plan-features">${features}</div>
             ${cta}
           </div>`;
@@ -794,9 +850,14 @@
       const price = cfg.pricePerSeat[plansInterval];
       const total = seats * price;
       const label = plansInterval === 'yearly' ? 'per år' : 'per månad';
-      const summary = `${cfg.name} · ${seats} platser × ${price} ${CURRENCY} = ${total} ${CURRENCY} ${label}`;
-      document.getElementById('payment-summary').textContent = summary;
-      document.getElementById('invoice-summary').textContent = summary;
+      let summary = `${cfg.name} · ${seats} platser × ${price} ${CURRENCY} = ${total} ${CURRENCY} ${label}`;
+      // Kampanjen dras av först i Stripes kassa — säg det här så beloppet i
+      // rutan inte ser ut att motsäga det kunden strax får se.
+      if (campaignIsLive()) {
+        summary += ` · &minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]} = ${campaignPrice(total)} ${CURRENCY} ${label}`;
+      }
+      document.getElementById('payment-summary').innerHTML = summary;
+      document.getElementById('invoice-summary').innerHTML = summary;
     }
 
     window.openInvoiceForm = function() {

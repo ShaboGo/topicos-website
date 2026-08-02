@@ -212,6 +212,17 @@ body {
   color: var(--text-secondary);
 }
 
+/* Ordinarie pris överstruket framför det rabatterade i "Din plan"-raden.
+   Ligger inuti .price-amount, så avståndet måste sättas här (radens flex-gap
+   når inte in). */
+.price-original {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  margin-right: 6px;
+}
+
 .plan-note {
   font-size: 12px;
   color: var(--text-secondary);
@@ -819,6 +830,14 @@ body {
   font-size: 12px;
   color: var(--text-secondary);
   margin: -8px 0 12px;
+}
+
+/* Kampanjrad i plankortet — ska sticka ut mot den nedtonade årsnoten ovanför. */
+.plan-compare-campaign {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: -6px 0 12px;
 }
 
 .plan-features {
