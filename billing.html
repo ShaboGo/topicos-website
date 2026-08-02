@@ -103,9 +103,12 @@
       <h3 class="plans-section-title">Planer</h3>
       <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 10% rabatt.</p>
 
+      <!-- Fylls av renderCampaignBanner() — tom när ingen kampanj är igång. -->
+      <div id="campaign-banner"></div>
+
       <div class="interval-toggle" id="plans-interval-toggle">
         <button class="active" data-interval="monthly" onclick="setPlansInterval('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="setPlansInterval('yearly')">Årsvis <span class="discount-badge">-10%</span></button>
+        <button data-interval="yearly" onclick="setPlansInterval('yearly')">Årsvis <span class="discount-badge">Spara 10 %</span></button>
       </div>
 
       <div id="plans-container"></div>
@@ -671,6 +674,28 @@
       ];
     }
 
+    // Bannern annonserar erbjudandet en gång ovanför korten och samlar villkoren,
+    // så korten klarar sig med en kort rad. Den visas bara när något kort faktiskt
+    // FÅR kampanjpris — den som redan betalar för Pro kan inte teckna om sig till
+    // rabatten och ska slippa se ett erbjudande som inte gäller hen.
+    function renderCampaignBanner(show) {
+      const el = document.getElementById('campaign-banner');
+      if (!show) {
+        el.innerHTML = '';
+        return;
+      }
+      const until = new Date(Date.parse(CAMPAIGN.endsAt))
+        .toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' });
+      el.innerHTML = `
+        <div class="campaign-banner">
+          <span class="campaign-banner-badge">&minus;${CAMPAIGN.percentOff}&nbsp;%</span>
+          <div class="campaign-banner-text">
+            <strong>Lanseringserbjudande</strong>
+            <span>${CAMPAIGN.percentOff} % rabatt på nytt abonnemang ${CAMPAIGN.terms[plansInterval]}, sedan ordinarie pris. Gäller t.o.m. ${until}.</span>
+          </div>
+        </div>`;
+    }
+
     function renderPlans(team, currentTier, hasSubscription) {
       const container = document.getElementById('plans-container');
       container.innerHTML = '';
@@ -679,6 +704,8 @@
       document.querySelectorAll('#plans-interval-toggle button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.interval === plansInterval);
       });
+
+      let campaignAvailable = false;
 
       for (const tier of PLAN_DISPLAY_ORDER) {
         const cfg = TIER_CONFIG[tier];
@@ -730,6 +757,7 @@
         // Bara på plan man kan TECKNA: den som redan har Pro ser sitt verkliga
         // pris (inkl. ev. pågående rabatt) i "Din plan"-raden i stället.
         const campaignOnPlan = !isFree && !isCurrent && campaignIsLive();
+        if (campaignOnPlan) campaignAvailable = true;
         const amount = campaignOnPlan ? campaignPrice(listAmount) : listAmount;
         const priceUnit = isFree ? 'gratis' : `${CURRENCY}/plats/mån`;
         const original = campaignOnPlan
@@ -741,8 +769,15 @@
           ? ''
           : `<div class="plan-compare-yearly-note"${isYearly ? '' : ' style="visibility:hidden;"'}>faktureras årsvis (${cfg.pricePerSeat.yearly} ${CURRENCY}/plats/år)</div>`;
 
+        // Årsvis visas månadskostnaden som huvudsiffra, men det är årsbeloppet som
+        // dras — så det rabatterade årspriset måste stå med. Annars ser "22 kr/plats/mån"
+        // ut att motsäga "529 kr/plats/år" på raden ovanför. Att rabatten är tillfällig
+        // står i bannern, därför räcker kort text här.
+        const campaignPerYear = isYearly
+          ? ` (${campaignPrice(cfg.pricePerSeat.yearly)} ${CURRENCY}/plats/år)`
+          : '';
         const campaignNote = campaignOnPlan
-          ? `<div class="plan-compare-campaign">&minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]}, sedan ordinarie pris</div>`
+          ? `<div class="plan-compare-campaign">&minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]}${campaignPerYear}</div>`
           : '';
 
         container.innerHTML += `
@@ -763,6 +798,8 @@
             ${cta}
           </div>`;
       }
+
+      renderCampaignBanner(campaignAvailable);
     }
 
     function renderActions(team, tier, hasSubscription, status) {
@@ -850,12 +887,22 @@
       const price = cfg.pricePerSeat[plansInterval];
       const total = seats * price;
       const label = plansInterval === 'yearly' ? 'per år' : 'per månad';
-      let summary = `${cfg.name} · ${seats} platser × ${price} ${CURRENCY} = ${total} ${CURRENCY} ${label}`;
-      // Kampanjen dras av först i Stripes kassa — säg det här så beloppet i
-      // rutan inte ser ut att motsäga det kunden strax får se.
-      if (campaignIsLive()) {
-        summary += ` · &minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]} = ${campaignPrice(total)} ${CURRENCY} ${label}`;
-      }
+
+      // Kampanjen dras av först i Stripes kassa. Beloppet kunden strax får se ska
+      // därför vara det som står störst här, med ordinarie summa överstruken —
+      // annars ser rutan ut att motsäga kassan.
+      const live = campaignIsLive();
+      const amountRow = live
+        ? `<span class="summary-original">${total} ${CURRENCY}</span>${campaignPrice(total)} ${CURRENCY} ${label}`
+        : `${total} ${CURRENCY} ${label}`;
+      const campaignRow = live
+        ? `<div class="summary-campaign">&minus;${CAMPAIGN.percentOff} % ${CAMPAIGN.terms[plansInterval]}, sedan ordinarie pris</div>`
+        : '';
+
+      const summary = `
+        <div class="summary-plan">${cfg.name} · ${seats} platser × ${price} ${CURRENCY}</div>
+        <div class="summary-amount">${amountRow}</div>
+        ${campaignRow}`;
       document.getElementById('payment-summary').innerHTML = summary;
       document.getElementById('invoice-summary').innerHTML = summary;
     }

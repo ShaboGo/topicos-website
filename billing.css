@@ -652,6 +652,36 @@ body {
   color: var(--text-dark);
 }
 
+/* Rutan är uppdelad i plan → belopp → kampanj, så det kunden faktiskt betalar
+   är den siffra som syns först. */
+.summary-plan {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.summary-amount {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+/* Överstrykningen ligger inuti .summary-amount, så avståndet sätts här. */
+.summary-original {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  margin-right: 8px;
+}
+
+.summary-campaign {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 4px;
+}
+
 /* Compact usage card (Platser / Lagring / Samtal) — matchar appens SubscriptionScreen */
 /* Platser/Lagring/Samtal ligger nu i samma kort som aktuell plan,
    avskilt med en tunn linje. */
@@ -745,6 +775,47 @@ body {
   font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: 16px;
+}
+
+/* Kampanjbanner ovanför plankorten — samma upplägg som prissektionen på
+   startsidan, men i betalsidans mått (kort med 16px radie, 20px padding). */
+.campaign-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(218,245,202,0.6), rgba(62,155,146,0.08));
+  border: 1px solid rgba(62,155,146,0.25);
+}
+
+.campaign-banner-badge {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: #2c6f69;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.campaign-banner-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.campaign-banner-text strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.campaign-banner-text span {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .plan-compare-card {
