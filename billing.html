@@ -364,7 +364,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const functions = getFunctions(app);
+    // Callables körs i europe-west1. Utan regionen här går de åtta
+    // betalnings-callablesen nedan till standardregionen us-central1, som
+    // bara lever kvar tills appar med gammal kod hunnit uppdateras.
+    //
+    // Regionen finns på TRE ställen totalt — de två andra är
+    // src/services/functionsRegion.ts i ShaboGo-repot (native + webb).
+    // Ändras den ena måste de andra följa med.
+    const functions = getFunctions(app, 'europe-west1');
 
     // App Check (krävs för Auth enforcement)
     initializeAppCheck(app, {
