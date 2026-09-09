@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacy policy for Topicos: what personal data we process, where it is stored, which subprocessors we use and how end-to-end encryption affects processing.">
+  <title>Topicos – Privacy Policy</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Topicos">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://topicos.app/privacy-en.html">
+  <meta property="og:title" content="Topicos – Privacy Policy">
+  <meta property="og:description" content="What personal data Topicos processes, where it is stored and which subprocessors are used.">
+  <meta property="og:image" content="https://topicos.app/Bilder/topicos-showcase.png">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="918">
+  <meta property="og:image:alt" content="Topicos on laptop and iPhone – chats, groups and topics">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body class="legal-page">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="sakerhet.html">Security (Swedish)</a>
+      <a href="privacy-en.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </nav>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  </script>
+
+  <main class="legal-content">
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last updated: 2026-09-09</p>
+    <a href="privacy.html" class="lang-switch" hreflang="sv">Läs policyn på svenska →</a>
+    <p><em>This is a translation of the Swedish privacy policy. In case of any discrepancy, the Swedish version applies.</em></p>
+
+    <h2>1. Introduction</h2>
+    <p>This privacy policy describes how Råggywood AB ("we", "us"), registration number 556972-3884, processes personal data when you use the app Topicos ("App", "Service") on mobile and on the web (app.topicos.app), and the website topicos.app.</p>
+    <p>We process personal data in accordance with the EU General Data Protection Regulation (GDPR) and supplementary Swedish legislation.</p>
+    <p><strong>Contact:</strong><br>
+    Råggywood AB<br>
+    Email: kontakt@topicos.app<br>
+    Country: Sweden</p>
+
+    <h2>2. Roles: who is responsible for what</h2>
+    <p>Topicos is used by organizations, and responsibility for personal data is shared.</p>
+    <ul>
+      <li><strong>Your account.</strong> For account data (phone number, name, profile picture, email, technical data about your device) Råggywood AB is the data controller.</li>
+      <li><strong>The organization's content.</strong> For what is created within an organization (messages, files, documents, tasks, calendar events, time reports, member lists) the organization is the data controller and Råggywood AB is the data processor. We process the content only to provide the Service according to the organization's instructions.</li>
+    </ul>
+    <p>Organizations that need a written data processing agreement can contact us at kontakt@topicos.app.</p>
+
+    <h2>3. What personal data we process</h2>
+    <h3>Data you provide</h3>
+    <ul>
+      <li><strong>Account data</strong> – phone number, name, profile picture, email address (optional) and bio.</li>
+      <li><strong>Communication</strong> – messages (text, images, video, audio, files), reactions, mentions and polls.</li>
+      <li><strong>Location data</strong> – your position only when you choose to share it in a chat. We never track your location in the background.</li>
+      <li><strong>Links</strong> – when a message contains a link, our server fetches a preview (title, description, image) from the linked page. Your device does not contact the page.</li>
+      <li><strong>Organization data</strong> – the organization's name, group names, topics, folders, roles and memberships. If you invite someone who does not yet have Topicos, their phone number is stored until the invitation is answered, for at most 30 days.</li>
+      <li><strong>Tasks, calendar and documents</strong> – titles, descriptions, notes, times, participants and attachments.</li>
+      <li><strong>Time tracking</strong> – if the organization uses time tracking: clock-in and clock-out times, breaks, absences with a reason code (for example sickness, care of a sick child, vacation, parental leave, leave of absence), approvals and payroll exports. Absence reasons may constitute health data. The organization is responsible for having a legal basis under employment law or collective agreements; we process this data solely as a processor.</li>
+      <li><strong>Calls</strong> – participants, start time, duration and whether the call was answered or missed. Audio is relayed in real time and is never recorded.</li>
+      <li><strong>Payment</strong> (organization administrators) – the organization's name, your phone number, the invoice recipient's email, company name and company registration number. Card details are handled directly by Stripe and never reach our systems.</li>
+    </ul>
+
+    <h3>Data collected automatically</h3>
+    <ul>
+      <li><strong>Technical data</strong> – device type and platform, operating system, app version, selected language and time zone.</li>
+      <li><strong>Notifications</strong> – push tokens from Apple and Google for your device (and from Expo for older app versions), plus a key used to encrypt notification content to your specific device.</li>
+      <li><strong>Device keys</strong> – in organizations with end-to-end encryption: the device's public encryption key, a device id and when the device was last active. The private key never leaves the device.</li>
+      <li><strong>Usage data</strong> – read receipts, delivery status, timestamps and when you were last active, to display message status and presence.</li>
+      <li><strong>Crash data</strong> – when the app crashes, a report is sent via Firebase Crashlytics with error details, device model, operating system and your account id, so that we can find and fix bugs.</li>
+      <li><strong>Abuse protection</strong> – to make sure requests come from the genuine Topicos app we use Firebase App Check with Play Integrity (Android), App Attest (iOS) and reCAPTCHA (web). These process technical signals about the device or browser.</li>
+    </ul>
+
+    <h3>Data we do NOT process</h3>
+    <ul>
+      <li>We do not track your location in the background.</li>
+      <li>We use no advertising networks, no analytics tools and no behavioral tracking, neither in the app nor on the website.</li>
+      <li>We never sell personal data.</li>
+    </ul>
+
+    <h2>4. Purposes and legal basis</h2>
+    <ul>
+      <li><strong>Provide and maintain the Service</strong> – performance of contract (Art. 6.1 b).</li>
+      <li><strong>Send notifications about messages, tasks, calendar and calls</strong> – performance of contract (Art. 6.1 b).</li>
+      <li><strong>Manage accounts, authentication and payment</strong> – performance of contract (Art. 6.1 b).</li>
+      <li><strong>Store and display the organization's content, including time reports</strong> – on the organization's instructions as a data processor. The organization's legal basis is normally contract or a legal obligation towards its employees.</li>
+      <li><strong>Improve and develop the Service and fix bugs</strong> – legitimate interest (Art. 6.1 f).</li>
+      <li><strong>Prevent abuse and maintain security</strong> – legitimate interest (Art. 6.1 f).</li>
+      <li><strong>Fulfil legal obligations</strong>, such as bookkeeping – legal obligation (Art. 6.1 c).</li>
+    </ul>
+
+    <h2>5. End-to-end encryption</h2>
+    <p>An organization's super administrator can enable end-to-end encryption (the Organization key). New messages, attachments, documents, tasks, calendar events, notifications, names of groups, topics and folders, and calls are then encrypted on the members' devices with keys that only the organization holds. We then store only encrypted content that we cannot read, together with metadata.</p>
+    <ul>
+      <li>We can neither read, moderate, restore nor hand over encrypted content. A request to access such content must be directed to the organization, which holds the keys.</li>
+      <li>If the organization's recovery phrase and all approved devices are lost, the content is permanently unreadable. We cannot restore it.</li>
+      <li>Remains in plaintext even with encryption enabled: the organization's name, member names and phone numbers, time tracking data, content from before encryption was enabled, and metadata (who is a member where, who wrote when and how much).</li>
+    </ul>
+    <p>What is encrypted, how keys are managed and what the encryption does not protect against is described on the <a href="sakerhet.html">Security page</a> (in Swedish).</p>
+
+    <h2>6. Where data is processed and which subprocessors we use</h2>
+    <p>The database, server code and files are located in the EU. Some services are global or US-based. The table shows each provider, what it processes and where.</p>
+    <div class="sec-table-wrap">
+      <table class="sec-table">
+        <thead>
+          <tr><th>Provider and service</th><th>Data</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google Cloud – Firestore (database)</td>
+            <td>Messages, documents, tasks, calendar, time reports, memberships, notifications</td>
+            <td>EU, multi-region eur3 (Belgium and the Netherlands)</td>
+          </tr>
+          <tr>
+            <td>Google Cloud – Cloud Functions (server code)</td>
+            <td>Processing of the above on write, notifications, payment</td>
+            <td>EU, europe-west1 (Belgium)</td>
+          </tr>
+          <tr>
+            <td>Google Cloud – Cloud Storage</td>
+            <td>Profile pictures and link preview images</td>
+            <td>EU, europe-west1 (Belgium)</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Authentication</td>
+            <td>Phone number, login session and SMS delivery of one-time codes</td>
+            <td>USA. Google states that the service runs exclusively in US data centers</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Cloud Messaging</td>
+            <td>Push token and notifications to Android. Content is encrypted to the device before sending</td>
+            <td>Global</td>
+          </tr>
+          <tr>
+            <td>Apple – Apple Push Notification service</td>
+            <td>Push token, notifications and call signaling to iPhone. Content is encrypted to the device before sending</td>
+            <td>Global (USA)</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Crashlytics</td>
+            <td>Crash reports with error details, device model, operating system and account id</td>
+            <td>Global</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase App Check and reCAPTCHA</td>
+            <td>Technical signals about the device or browser to stop abuse</td>
+            <td>Global</td>
+          </tr>
+          <tr>
+            <td>Cloudflare – R2</td>
+            <td>Attachments: images, video, audio and files. Access only via signed links valid for one hour</td>
+            <td>EU jurisdiction</td>
+          </tr>
+          <tr>
+            <td>LiveKit – voice calls</td>
+            <td>Real-time audio (never stored; encrypted between participants in organizations with end-to-end encryption) and participant ids</td>
+            <td>USA</td>
+          </tr>
+          <tr>
+            <td>Expo (650 Industries, Inc.)</td>
+            <td>Delivery of app updates; push to older app versions (push token, organization and sender name)</td>
+            <td>USA</td>
+          </tr>
+          <tr>
+            <td>Stripe</td>
+            <td>Payments: organization name, phone number, invoice recipient, company name, registration number, invoices and subscription status. Card details only at Stripe</td>
+            <td>EU/USA</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The providers process data according to our instructions and are bound by data processing agreements.</p>
+
+    <h3>Transfers outside the EU/EEA</h3>
+    <p>Some of our providers are US companies, and parts of the processing take place with them in the USA. "Processing" in the legal sense also covers storage and transport of encrypted data that the provider cannot read. We therefore distinguish here between what is readable to the provider and what is not:</p>
+    <ul>
+      <li><strong>Phone number and login</strong> – stored in readable form in Google's US data centers (Firebase Authentication). This is the most sensitive item a US provider sees in plaintext, and the only one that neither you nor your organization can opt out of.</li>
+      <li><strong>Push notifications</strong> – push tokens pass through Google and Apple, but the content is encrypted to your device. Google and Apple cannot read it.</li>
+      <li><strong>Crash reports</strong> – error details, device model and an account id go to Google. No names, phone numbers or content.</li>
+      <li><strong>Abuse protection</strong> – technical signals about the device or browser go to Google (App Check, reCAPTCHA). No content.</li>
+      <li><strong>Voice calls</strong> – audio passes through LiveKit's servers in real time and is never stored. In organizations with end-to-end encryption the audio is encrypted between the participants and cannot be listened to by LiveKit. Without encryption, the audio passes through the server in readable form during the call.</li>
+      <li><strong>App updates</strong> – Expo sees that your device fetches updates (device data, no content). Older app versions receive their notifications via Expo; for them, the message preview may pass through Expo in readable form, in organizations with end-to-end encryption only the organization and sender name.</li>
+      <li><strong>Payment</strong> – the organization's administrator provides billing details to Stripe (organization name, phone number, email, company name, registration number). Stripe reads them, that is the purpose.</li>
+    </ul>
+    <p>The content of chats, files, documents, tasks and calendar is not processed in the USA. It is stored in the EU, and with end-to-end encryption enabled it exists in readable form only on the organization's devices.</p>
+    <p>The legal basis for the transfers is the European Commission's Standard Contractual Clauses in the providers' data processing agreements and, for providers that are certified, the EU–US Data Privacy Framework.</p>
+
+    <h2>7. How long we keep data</h2>
+    <ul>
+      <li><strong>Account data</strong> is kept as long as you have an account.</li>
+      <li><strong>Content</strong> is kept until deleted by you, by an administrator or by deletion of the organization. Deleted messages are removed from the database immediately; attachments are deleted when no message refers to them any more. Deleted data may remain for a limited time in backups.</li>
+      <li><strong>Free plan:</strong> messages older than 90 days are hidden in the app but not deleted. They become visible again if the organization upgrades.</li>
+      <li><strong>Groups and topics</strong> marked for deletion are deleted automatically with all their content when the grace period has passed.</li>
+      <li><strong>Organizations with a cancelled paid subscription:</strong> 90 days after cancellation the organization's files are deleted and the organization is deactivated. The super administrator is warned after 60 and 80 days.</li>
+      <li><strong>Notifications</strong> that have been read are deleted after 90 days. Unanswered invitations are deleted after 30 days.</li>
+      <li><strong>Call history and time reports</strong> are kept as long as the organization exists, or until the organization deletes them. Time reports are the organization's payroll records.</li>
+      <li><strong>Inactive accounts</strong> may be deleted after 24 months of inactivity, with prior notice.</li>
+      <li><strong>Payment history and invoices</strong> at Stripe are kept for up to 7 years in accordance with the Swedish Bookkeeping Act.</li>
+    </ul>
+
+    <h3>Delete account</h3>
+    <p>You can delete your account at any time in the app: <strong>Settings → Delete account</strong>. If you are the super administrator of an organization, or an administrator of an organization with an active subscription, you first need to transfer or close it.</p>
+    <p><strong>What is deleted:</strong></p>
+    <ul>
+      <li>Your profile: name, phone number, profile picture, email and bio</li>
+      <li>Your login and your devices' push tokens and keys</li>
+      <li>Your memberships in groups and organizations</li>
+    </ul>
+    <p><strong>What remains:</strong></p>
+    <ul>
+      <li>Messages and files you sent in group chats and private chats remain with the recipients as part of the organization's data, with your name as sender as it appeared when the message was sent. If you want them removed, contact the organization's administrator.</li>
+      <li>Tasks, calendar events, documents and time reports you created within an organization remain with the organization.</li>
+      <li>Payment history at Stripe is kept in accordance with the Bookkeeping Act.</li>
+    </ul>
+
+    <h2>8. Your rights</h2>
+    <p>Under GDPR you have the right to:</p>
+    <ul>
+      <li><strong>Access</strong> – to know what data we hold about you.</li>
+      <li><strong>Rectification</strong> – to have inaccurate data corrected. Name, profile picture, email and bio you change yourself in the app.</li>
+      <li><strong>Erasure</strong> – to have your data deleted.</li>
+      <li><strong>Restriction</strong> – to restrict how we process your data.</li>
+      <li><strong>Data portability</strong> – to receive your data in a machine-readable format.</li>
+      <li><strong>Objection</strong> – to object to processing based on legitimate interest.</li>
+      <li><strong>Withdraw consent</strong> – to withdraw consent you have given at any time.</li>
+    </ul>
+    <p><strong>How to exercise your rights:</strong> Contact us at kontakt@topicos.app. We respond within 30 days. If your request concerns content in an organization, contact the organization first, as it is the data controller for that content. We assist the organization in fulfilling the request. End-to-end encrypted content can only be provided in encrypted form.</p>
+    <p><strong>Complaints:</strong> You have the right to lodge a complaint with the Swedish Authority for Privacy Protection (IMY), www.imy.se, imy@imy.se.</p>
+
+    <h2>9. Security</h2>
+    <ul>
+      <li>All traffic is encrypted (HTTPS/TLS).</li>
+      <li>Database, server code and files are located in the EU.</li>
+      <li>Database security rules ensure that only members of an organization, group or chat can read its content.</li>
+      <li>Attachments are only accessible via signed links that expire after one hour.</li>
+      <li>Notification content is encrypted to your device and opened locally.</li>
+      <li>Organizations can enable end-to-end encryption with keys that only the organization holds.</li>
+      <li>Requests are verified with Firebase App Check so that only the genuine app can reach our servers.</li>
+      <li>Login uses a phone number and a one-time code via SMS.</li>
+    </ul>
+    <p>No external security audit of Topicos has been carried out yet. More about the protection is on the <a href="sakerhet.html">Security page</a> (in Swedish).</p>
+
+    <h2>10. Children</h2>
+    <p>Topicos is not intended for children under 13, and we do not knowingly collect personal data from children under 13. If you are a parent or guardian and discover that your child has created an account, contact us and we will delete the data.</p>
+
+    <h2>11. Cookies and local storage</h2>
+    <ul>
+      <li><strong>The mobile app</strong> stores locally on the device: login state, drafts, settings and cached messages and documents. Encryption keys are stored in the iOS Keychain and Android Keystore respectively. This storage is necessary for the Service to function and does not require separate consent.</li>
+      <li><strong>The web app app.topicos.app</strong> uses browser storage for the login session, abuse protection, cached data and encryption keys. At login, Google reCAPTCHA is used to stop automated abuse, and Google may then set its own cookies.</li>
+      <li><strong>The website topicos.app</strong> uses no cookies and no analytics tools. The billing page (topicos.app/billing) loads Firebase libraries from Google to identify you and redirects you to Stripe, which uses its own cookies on its pages.</li>
+    </ul>
+
+    <h2>12. Changes to this policy</h2>
+    <p>We may update this policy. In case of significant changes we will notify you in the app or by email if we have your address. Continued use of the Service after a change means that you accept the updated policy.</p>
+
+    <h2>13. Contact</h2>
+    <p>Do you have questions about this policy or about how we process your personal data?</p>
+    <p><strong>Råggywood AB</strong><br>
+    Email: kontakt@topicos.app</p>
+    <p><em>This privacy policy is effective from 2026-09-09 and replaces the version dated 2026-01-13.</em></p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="sakerhet.html">Security</a>
+      <a href="privacy-en.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="mailto:kontakt@topicos.app">Contact</a>
+    </div>
+    <p>&copy; 2025 Topicos. All rights reserved.</p>
+  </footer>
+</body>
+</html>

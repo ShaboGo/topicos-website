@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Privacy Policy for Topicos app">
-  <title>Topicos – Privacy Policy</title>
+  <meta name="description" content="Integritetspolicy för Topicos: vilka personuppgifter vi behandlar, var de lagras, vilka underleverantörer vi använder och hur end-to-end-krypteringen påverkar behandlingen.">
+  <title>Topicos – Integritetspolicy</title>
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Topicos">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="sv_SE">
   <meta property="og:url" content="https://topicos.app/privacy.html">
-  <meta property="og:title" content="Topicos – Privacy Policy">
-  <meta property="og:description" content="Privacy Policy for Topicos app">
+  <meta property="og:title" content="Topicos – Integritetspolicy">
+  <meta property="og:description" content="Vilka personuppgifter Topicos behandlar, var de lagras och vilka underleverantörer som används.">
   <meta property="og:image" content="https://topicos.app/Bilder/topicos-showcase.png">
   <meta property="og:image:width" content="1920">
   <meta property="og:image:height" content="918">
@@ -26,15 +26,26 @@
   <nav class="navbar">
     <div class="nav-container">
       <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
+      <div class="nav-links">
+        <a href="index.html#features">Funktioner</a>
+        <a href="index.html#pricing">Priser</a>
+        <a href="sakerhet.html">Säkerhet</a>
+        <a href="https://app.topicos.app" class="nav-signin">Logga in</a>
+        <a href="https://app.topicos.app" class="btn btn-primary btn-sm">Kom igång</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Meny">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
+      <a href="index.html#features">Funktioner</a>
+      <a href="index.html#pricing">Priser</a>
+      <a href="sakerhet.html">Säkerhet</a>
+      <a href="https://app.topicos.app">Logga in</a>
+      <a href="privacy.html">Integritetspolicy</a>
+      <a href="terms.html">Användarvillkor</a>
     </div>
   </nav>
 
@@ -46,7 +57,6 @@
       mobileMenu.classList.toggle('active');
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
         mobileMenu.classList.remove('active');
@@ -54,161 +64,249 @@
     });
   </script>
 
-  <!-- Privacy Policy Content -->
   <main class="legal-content">
-    <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: 2026-04-14</p>
+    <h1>Integritetspolicy</h1>
+    <p class="last-updated">Senast uppdaterad: 2026-09-09</p>
+    <a href="privacy-en.html" class="lang-switch" hreflang="en">Read this policy in English →</a>
 
-    <h2>1. Introduction</h2>
-    <p>This privacy policy describes how Råggywood AB ("we", "us", "our"), registration number 556972-3884, processes your personal data when you use the app Topicos ("App", "Service").</p>
-    <p>We value your privacy and process your personal data in accordance with the EU General Data Protection Regulation (GDPR) and applicable Swedish legislation.</p>
-    <p><strong>Contact information:</strong><br>
-    Email: support@topicos.app<br>
-    Company: Råggywood AB<br>
-    Country: Sweden</p>
+    <h2>1. Inledning</h2>
+    <p>Den här integritetspolicyn beskriver hur Råggywood AB ("vi", "oss"), organisationsnummer 556972-3884, behandlar personuppgifter när du använder appen Topicos ("Appen", "Tjänsten") på mobil och på webben (app.topicos.app), samt webbplatsen topicos.app.</p>
+    <p>Vi behandlar personuppgifter i enlighet med EU:s dataskyddsförordning (GDPR) och svensk kompletterande lagstiftning.</p>
+    <p><strong>Kontakt:</strong><br>
+    Råggywood AB<br>
+    E-post: kontakt@topicos.app<br>
+    Land: Sverige</p>
 
-    <h2>2. Data controller</h2>
-    <p>Råggywood AB is the data controller for the processing of your personal data according to this policy.</p>
-
-    <h2>3. What personal data we collect</h2>
-    <h3>Data you provide to us</h3>
+    <h2>2. Roller: vem som ansvarar för vad</h2>
+    <p>Topicos används av organisationer, och ansvaret för personuppgifterna är delat.</p>
     <ul>
-      <li><strong>Account information</strong> – We collect phone number, name, profile picture, email address (optional) and biographical text to create and manage your account.</li>
-      <li><strong>Communication</strong> – We collect messages (text, images, video, audio, files), reactions and mentions to provide the chat function.</li>
-      <li><strong>Location data</strong> – We collect geographic location only when you choose to share it, to enable location sharing in chats.</li>
-      <li><strong>Organization data</strong> – We collect company/team names, group names and roles to manage workspaces and teams.</li>
-      <li><strong>Calendar data</strong> – We collect event titles, descriptions, dates, times and participant information when you create or participate in calendar events.</li>
-      <li><strong>Audio call data</strong> – We collect call metadata such as participants, call duration and timestamps when you participate in audio calls. Audio calls are real-time only and are not recorded or stored.</li>
+      <li><strong>Ditt konto.</strong> För kontouppgifter (telefonnummer, namn, profilbild, e-post, tekniska uppgifter om din enhet) är Råggywood AB personuppgiftsansvarig.</li>
+      <li><strong>Organisationens innehåll.</strong> För det som skapas inom en organisation (meddelanden, filer, dokument, uppgifter, kalenderhändelser, tidrapporter, medlemslistor) är organisationen personuppgiftsansvarig och Råggywood AB personuppgiftsbiträde. Vi behandlar innehållet bara för att tillhandahålla Tjänsten enligt organisationens instruktioner.</li>
+    </ul>
+    <p>Organisationer som behöver ett skriftligt personuppgiftsbiträdesavtal kontaktar oss på kontakt@topicos.app.</p>
+
+    <h2>3. Vilka personuppgifter vi behandlar</h2>
+    <h3>Uppgifter du lämnar</h3>
+    <ul>
+      <li><strong>Kontouppgifter</strong> – telefonnummer, namn, profilbild, e-postadress (frivillig) och presentationstext.</li>
+      <li><strong>Kommunikation</strong> – meddelanden (text, bilder, video, ljud, filer), reaktioner, omnämnanden och omröstningar.</li>
+      <li><strong>Platsdata</strong> – din position bara när du själv väljer att dela den i en chatt. Vi spårar aldrig din position i bakgrunden.</li>
+      <li><strong>Länkar</strong> – när ett meddelande innehåller en länk hämtar vår server en förhandsvisning (titel, beskrivning, bild) från den länkade sidan. Din enhet kontaktar inte sidan.</li>
+      <li><strong>Organisationsdata</strong> – organisationens namn, gruppnamn, ämnen, mappar, roller och medlemskap. Bjuder du in någon som ännu inte har Topicos lagras dennes telefonnummer tills inbjudan besvarats, dock högst 30 dagar.</li>
+      <li><strong>Uppgifter, kalender och dokument</strong> – titlar, beskrivningar, anteckningar, tider, deltagare och bilagor.</li>
+      <li><strong>Tidrapport</strong> – om organisationen använder tidrapportering: in- och utstämplingar, raster, frånvaro med orsakskod (till exempel sjukdom, vård av barn, semester, föräldraledighet, tjänstledighet), attesteringar och löneexporter. Frånvaroorsaker kan utgöra uppgifter om hälsa. Organisationen ansvarar för att behandlingen har stöd i arbetsrättslig lagstiftning eller kollektivavtal; vi behandlar dem enbart som biträde.</li>
+      <li><strong>Samtal</strong> – deltagare, starttid, längd och om samtalet besvarades eller missades. Ljudet förmedlas i realtid och spelas aldrig in.</li>
+      <li><strong>Betalning</strong> (organisationens administratör) – organisationens namn, ditt telefonnummer, fakturamottagarens e-post, företagsnamn och organisationsnummer. Kortuppgifter hanteras direkt av Stripe och når aldrig våra system.</li>
     </ul>
 
-    <h3>Data collected automatically</h3>
+    <h3>Uppgifter som samlas in automatiskt</h3>
     <ul>
-      <li><strong>Technical data</strong> – We collect device type, operating system and app version to ensure compatibility and troubleshooting.</li>
-      <li><strong>Crash data</strong> – When the app crashes, we automatically collect crash reports via Firebase Crashlytics, including stack traces, device model, OS version and anonymous installation ID, to identify and fix bugs.</li>
-      <li><strong>Usage data</strong> – We collect read receipts, delivery status and timestamps to display message status.</li>
-      <li><strong>Push token</strong> – We collect Expo Push Token for your device to send notifications.</li>
-      <li><strong>Language setting</strong> – We collect the selected language in the app to display content in the correct language.</li>
+      <li><strong>Tekniska uppgifter</strong> – enhetstyp och plattform, operativsystem, appversion, valt språk och tidszon.</li>
+      <li><strong>Notiser</strong> – push-token från Apple respektive Google för din enhet (och från Expo för äldre appversioner), samt en nyckel som används för att kryptera notisernas innehåll till just din enhet.</li>
+      <li><strong>Enhetsnycklar</strong> – i organisationer med end-to-end-kryptering: enhetens publika krypteringsnyckel, ett enhets-id och när enheten senast var aktiv. Den privata nyckeln lämnar aldrig enheten.</li>
+      <li><strong>Användningsdata</strong> – läskvitton, leveransstatus, tidsstämplar och när du senast var aktiv, för att visa meddelandestatus och närvaro.</li>
+      <li><strong>Kraschdata</strong> – vid krasch skickas en rapport via Firebase Crashlytics med felinformation, enhetsmodell, operativsystem och ditt konto-id, så att vi kan hitta och rätta fel.</li>
+      <li><strong>Skydd mot missbruk</strong> – för att säkerställa att anrop kommer från den riktiga Topicos-appen används Firebase App Check med Play Integrity (Android), App Attest (iOS) och reCAPTCHA (webben). Dessa behandlar tekniska signaler om enheten eller webbläsaren.</li>
     </ul>
 
-    <h3>Data we do NOT collect</h3>
+    <h3>Uppgifter vi INTE behandlar</h3>
     <ul>
-      <li>We do not continuously track your GPS location.</li>
-      <li>We do not use advertising networks or behavioral tracking tools.</li>
-      <li>We never sell your data to third parties.</li>
+      <li>Vi spårar inte din position i bakgrunden.</li>
+      <li>Vi använder inga annonsnätverk, inga analysverktyg och ingen beteendespårning, vare sig i appen eller på webbplatsen.</li>
+      <li>Vi säljer aldrig personuppgifter.</li>
     </ul>
 
-    <h2>4. How we use your data</h2>
-    <p>We process your personal data for the following purposes:</p>
+    <h2>4. Ändamål och rättslig grund</h2>
     <ul>
-      <li><strong>Provide and maintain the Service</strong> – Legal basis: Performance of contract (Art. 6.1.b)</li>
-      <li><strong>Send push notifications about messages</strong> – Legal basis: Performance of contract (Art. 6.1.b)</li>
-      <li><strong>Manage your account and authentication</strong> – Legal basis: Performance of contract (Art. 6.1.b)</li>
-      <li><strong>Store and display your messages and media</strong> – Legal basis: Performance of contract (Art. 6.1.b)</li>
-      <li><strong>Facilitate audio calls and meetings</strong> – Legal basis: Performance of contract (Art. 6.1.b)</li>
-      <li><strong>Improve and develop the Service</strong> – Legal basis: Legitimate interest (Art. 6.1.f)</li>
-      <li><strong>Prevent abuse and ensure security</strong> – Legal basis: Legitimate interest (Art. 6.1.f)</li>
-      <li><strong>Fulfill legal obligations</strong> – Legal basis: Legal obligation (Art. 6.1.c)</li>
+      <li><strong>Tillhandahålla och underhålla Tjänsten</strong> – fullgörande av avtal (art. 6.1 b).</li>
+      <li><strong>Skicka notiser om meddelanden, uppgifter, kalender och samtal</strong> – fullgörande av avtal (art. 6.1 b).</li>
+      <li><strong>Hantera konto, inloggning och betalning</strong> – fullgörande av avtal (art. 6.1 b).</li>
+      <li><strong>Lagra och visa organisationens innehåll, inklusive tidrapporter</strong> – på organisationens instruktion som personuppgiftsbiträde. Organisationens rättsliga grund är normalt avtal eller rättslig förpliktelse gentemot de anställda.</li>
+      <li><strong>Förbättra och utveckla Tjänsten samt rätta fel</strong> – berättigat intresse (art. 6.1 f).</li>
+      <li><strong>Förhindra missbruk och upprätthålla säkerheten</strong> – berättigat intresse (art. 6.1 f).</li>
+      <li><strong>Uppfylla rättsliga skyldigheter</strong>, till exempel bokföring – rättslig förpliktelse (art. 6.1 c).</li>
     </ul>
 
-    <h2>5. How we share your data</h2>
-    <h3>Within the Service</h3>
+    <h2>5. End-to-end-kryptering</h2>
+    <p>En organisations superadministratör kan slå på end-to-end-kryptering (Organisationsnyckeln). Då krypteras nya meddelanden, bilagor, dokument, uppgifter, kalenderhändelser, notiser, namn på grupper, ämnen och mappar samt samtal på medlemmarnas enheter, med nycklar som bara organisationen har. Vi lagrar då enbart krypterat innehåll som vi inte kan läsa, tillsammans med metadata.</p>
     <ul>
-      <li>Your name and profile picture are displayed to other members in your teams and groups.</li>
-      <li>Messages you send are displayed to recipients.</li>
-      <li>Read receipts show when you have read messages (if the feature is enabled).</li>
+      <li>Vi kan varken läsa, moderera, återställa eller lämna ut krypterat innehåll. En begäran om att ta del av sådant innehåll måste riktas till organisationen, som har nycklarna.</li>
+      <li>Förloras organisationens återställningsfras och alla godkända enheter är innehållet permanent oläsligt. Vi kan inte återställa det.</li>
+      <li>I klartext även med kryptering: organisationens namn, medlemmarnas namn och telefonnummer, tidrapporten, innehåll från före aktiveringen och metadata (vem som är medlem var, vem som skrivit när och hur mycket).</li>
+    </ul>
+    <p>Vad som krypteras, hur nycklarna hanteras och vad krypteringen inte skyddar mot beskrivs på <a href="sakerhet.html">säkerhetssidan</a>.</p>
+
+    <h2>6. Var uppgifterna behandlas och vilka underleverantörer vi använder</h2>
+    <p>Databasen, serverkoden och filerna ligger i EU. Några tjänster är globala eller amerikanska. Tabellen visar varje leverantör, vad den behandlar och var.</p>
+    <div class="sec-table-wrap">
+      <table class="sec-table">
+        <thead>
+          <tr><th>Leverantör och tjänst</th><th>Uppgifter</th><th>Plats</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google Cloud – Firestore (databas)</td>
+            <td>Meddelanden, dokument, uppgifter, kalender, tidrapporter, medlemskap, notiser</td>
+            <td>EU, multiregion eur3 (Belgien och Nederländerna)</td>
+          </tr>
+          <tr>
+            <td>Google Cloud – Cloud Functions (serverkod)</td>
+            <td>Behandling av ovanstående vid skrivning, notiser, betalning</td>
+            <td>EU, europe-west1 (Belgien)</td>
+          </tr>
+          <tr>
+            <td>Google Cloud – Cloud Storage</td>
+            <td>Profilbilder och bilder till länkförhandsvisningar</td>
+            <td>EU, europe-west1 (Belgien)</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Authentication</td>
+            <td>Telefonnummer, inloggningssession och SMS-utskick av engångskod</td>
+            <td>USA. Google uppger att tjänsten körs enbart i amerikanska datacenter</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Cloud Messaging</td>
+            <td>Push-token och notiser till Android. Innehållet krypteras till enheten innan det skickas</td>
+            <td>Globalt</td>
+          </tr>
+          <tr>
+            <td>Apple – Apple Push Notification service</td>
+            <td>Push-token, notiser och samtalssignalering till iPhone. Innehållet krypteras till enheten innan det skickas</td>
+            <td>Globalt (USA)</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase Crashlytics</td>
+            <td>Kraschrapporter med felinformation, enhetsmodell, operativsystem och konto-id</td>
+            <td>Globalt</td>
+          </tr>
+          <tr>
+            <td>Google – Firebase App Check och reCAPTCHA</td>
+            <td>Tekniska signaler om enhet eller webbläsare för att stoppa missbruk</td>
+            <td>Globalt</td>
+          </tr>
+          <tr>
+            <td>Cloudflare – R2</td>
+            <td>Bilagor: bilder, video, ljud och filer. Åtkomst bara via signerade länkar med en timmes giltighet</td>
+            <td>EU-jurisdiktion</td>
+          </tr>
+          <tr>
+            <td>LiveKit – röstsamtal</td>
+            <td>Ljud i realtid (lagras aldrig; krypterat mellan deltagarna i organisationer med end-to-end-kryptering) och deltagar-id</td>
+            <td>USA</td>
+          </tr>
+          <tr>
+            <td>Expo (650 Industries, Inc.)</td>
+            <td>Leverans av appuppdateringar; push till äldre appversioner (push-token, organisations- och avsändarnamn)</td>
+            <td>USA</td>
+          </tr>
+          <tr>
+            <td>Stripe</td>
+            <td>Betalningar: organisationsnamn, telefonnummer, fakturamottagare, företagsnamn, organisationsnummer, fakturor och abonnemangsstatus. Kortuppgifter enbart hos Stripe</td>
+            <td>EU/USA</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Leverantörerna behandlar uppgifterna enligt våra instruktioner och är bundna av personuppgiftsbiträdesavtal.</p>
+
+    <h3>Överföring utanför EU/EES</h3>
+    <p>Några av våra leverantörer är amerikanska bolag, och delar av behandlingen sker hos dem i USA. "Behandling" i lagens mening omfattar även lagring och transport av krypterade uppgifter som leverantören inte kan läsa. Därför skiljer vi här på vad som är läsbart för leverantören och inte:</p>
+    <ul>
+      <li><strong>Telefonnummer och inloggning</strong> – lagras i läsbar form i Googles amerikanska datacenter (Firebase Authentication). Det är den mest känsliga uppgiften som en amerikansk leverantör ser i klartext, och den enda som varken du eller din organisation kan välja bort.</li>
+      <li><strong>Push-notiser</strong> – push-token passerar Google och Apple, men innehållet är krypterat till din enhet. Google och Apple kan inte läsa det.</li>
+      <li><strong>Kraschrapporter</strong> – felinformation, enhetsmodell och ett konto-id går till Google. Inga namn, telefonnummer eller innehåll.</li>
+      <li><strong>Skydd mot missbruk</strong> – tekniska signaler om enhet eller webbläsare går till Google (App Check, reCAPTCHA). Inget innehåll.</li>
+      <li><strong>Röstsamtal</strong> – ljudet passerar LiveKits servrar i realtid och lagras aldrig. I organisationer med end-to-end-kryptering är ljudet krypterat mellan deltagarna och kan inte avlyssnas av LiveKit. Utan kryptering passerar ljudet servern i läsbar form under samtalet.</li>
+      <li><strong>Appuppdateringar</strong> – Expo ser att din enhet hämtar uppdateringar (enhetsuppgifter, inget innehåll). Äldre appversioner får sina notiser via Expo; för dem kan meddelandets förhandsvisning passera Expo i läsbar form, i organisationer med end-to-end-kryptering bara organisationens och avsändarens namn.</li>
+      <li><strong>Betalning</strong> – organisationens administratör lämnar själv faktureringsuppgifter till Stripe (organisationsnamn, telefonnummer, e-post, företagsnamn, organisationsnummer). Stripe läser dem, det är själva syftet.</li>
+    </ul>
+    <p>Innehållet i chattar, filer, dokument, uppgifter och kalender behandlas inte i USA. Det lagras i EU, och med end-to-end-kryptering påslaget finns det i läsbar form bara på organisationens enheter.</p>
+    <p>Rättslig grund för överföringarna är EU-kommissionens standardavtalsklausuler i leverantörernas biträdesavtal och, för leverantörer som är certifierade, EU–USA Data Privacy Framework.</p>
+
+    <h2>7. Hur länge vi sparar uppgifterna</h2>
+    <ul>
+      <li><strong>Kontouppgifter</strong> sparas så länge du har ett konto.</li>
+      <li><strong>Innehåll</strong> sparas tills det raderas av dig, av en administratör eller genom att organisationen raderas. Raderade meddelanden tas bort ur databasen direkt; bilagor raderas när inget meddelande längre pekar på dem. Raderade uppgifter kan finnas kvar en begränsad tid i säkerhetskopior.</li>
+      <li><strong>Gratisplanen:</strong> meddelanden äldre än 90 dagar döljs i appen men raderas inte. De blir synliga igen om organisationen uppgraderar.</li>
+      <li><strong>Grupper och ämnen</strong> som markerats för radering raderas automatiskt med allt innehåll när fristen gått ut.</li>
+      <li><strong>Organisationer med uppsagt betalabonnemang:</strong> 90 dagar efter uppsägningen raderas organisationens filer och organisationen avaktiveras. Superadministratören varnas efter 60 och 80 dagar.</li>
+      <li><strong>Notiser</strong> som lästs raderas efter 90 dagar. Obesvarade inbjudningar raderas efter 30 dagar.</li>
+      <li><strong>Samtalshistorik och tidrapporter</strong> sparas så länge organisationen finns, eller tills organisationen raderar dem. Tidrapporter är organisationens löneunderlag.</li>
+      <li><strong>Inaktiva konton</strong> kan raderas efter 24 månaders inaktivitet, efter förvarning.</li>
+      <li><strong>Betalningshistorik och fakturor</strong> hos Stripe sparas i upp till 7 år enligt bokföringslagen.</li>
     </ul>
 
-    <h3>Third-party providers</h3>
-    <p>We use the following subcontractors to provide the Service:</p>
+    <h3>Radera konto</h3>
+    <p>Du kan när som helst radera ditt konto i appen: <strong>Inställningar → Radera konto</strong>. Är du superadministratör för en organisation, eller administratör i en organisation med aktivt abonnemang, behöver du först överlåta eller avsluta den.</p>
+    <p><strong>Det här raderas:</strong></p>
     <ul>
-      <li><strong>Google Firebase</strong> – Provides authentication, database and cloud functions. Location: EU/USA. Data processed: account information, messages and metadata.</li>
-      <li><strong>Cloudflare R2</strong> – Provides media storage (images, video). Location: EU. Data processed: uploaded media.</li>
-      <li><strong>Expo (Meta)</strong> – Provides push notifications. Location: USA. Data processed: push token and notification content.</li>
-      <li><strong>LiveKit</strong> – Provides real-time audio call infrastructure. Location: USA. Data processed: audio streams (real-time only, not recorded), call metadata (participants, duration).</li>
-      <li><strong>Firebase Crashlytics (Google)</strong> – Provides automatic crash reporting to help us identify and fix bugs. Location: EU/USA. Data processed: crash logs, stack traces, device model, OS version and anonymous installation ID.</li>
-      <li><strong>Stripe</strong> – Provides payment processing for subscriptions. Location: EU/USA. Data processed: payment information, billing address, invoice history and subscription status. Card details are handled directly by Stripe and never stored on our servers.</li>
+      <li>Din profil: namn, telefonnummer, profilbild, e-post och presentation</li>
+      <li>Din inloggning och dina enheters push-token och nycklar</li>
+      <li>Dina medlemskap i grupper och organisationer</li>
     </ul>
-    <p>These providers process data according to our instructions and are bound by data processing agreements.</p>
-
-    <h3>Transfer outside EU/EEA</h3>
-    <p>Some of our subcontractors (Google, Expo, LiveKit, Stripe) may process data in the USA. These transfers are protected by EU Standard Contractual Clauses (SCCs) as well as the providers' certifications and security measures.</p>
-
-    <h2>6. How long we store your data</h2>
+    <p><strong>Det här ligger kvar:</strong></p>
     <ul>
-      <li>Account information is stored as long as you have an active account.</li>
-      <li>Messages are stored as long as they are not deleted by you or team admin.</li>
-      <li>Media files are stored as long as the associated message exists.</li>
-      <li>Deleted messages are permanently deleted within 30 days.</li>
-      <li>Inactive accounts may be deleted after 24 months of inactivity with prior notice.</li>
-    </ul>
-    <p>When you delete your account, we remove your personal data within 30 days, with the exception of data we are required to retain by law.</p>
-
-    <h3>Delete account</h3>
-    <p>You can delete your account at any time in the Topicos app.</p>
-    <p><strong>How to do it:</strong><br>
-    Open the app → Settings → Delete account</p>
-    <p><strong>What is deleted:</strong></p>
-    <ul>
-      <li>Your profile (name, phone number, profile picture)</li>
-      <li>Your messages and files</li>
-      <li>Your group memberships and teams</li>
-    </ul>
-    <p><strong>What may be retained:</strong></p>
-    <ul>
-      <li>Payment history and invoice documentation held by Stripe may be retained for up to 7 years in accordance with Swedish bookkeeping law (bokföringslagen).</li>
+      <li>Meddelanden och filer du skickat i gruppchattar och privata chattar ligger kvar hos mottagarna som en del av organisationens data, med ditt namn som avsändare så som det såg ut när meddelandet skickades. Vill du att de tas bort vänder du dig till organisationens administratör.</li>
+      <li>Uppgifter, kalenderhändelser, dokument och tidrapporter du skapat inom en organisation ligger kvar hos organisationen.</li>
+      <li>Betalningshistorik hos Stripe sparas enligt bokföringslagen.</li>
     </ul>
 
-    <h2>7. Your rights</h2>
-    <p>Under GDPR, you have the following rights:</p>
+    <h2>8. Dina rättigheter</h2>
+    <p>Enligt GDPR har du rätt till:</p>
     <ul>
-      <li><strong>Access</strong> – You have the right to know what data we have about you.</li>
-      <li><strong>Rectification</strong> – You have the right to correct inaccurate data.</li>
-      <li><strong>Erasure</strong> – You have the right to request that we delete your data.</li>
-      <li><strong>Restriction</strong> – You have the right to restrict how we process your data.</li>
-      <li><strong>Data portability</strong> – You have the right to receive your data in a machine-readable format.</li>
-      <li><strong>Objection</strong> – You have the right to object to processing based on legitimate interest.</li>
-      <li><strong>Withdraw consent</strong> – You have the right to withdraw consent you have previously given.</li>
+      <li><strong>Tillgång</strong> – att få veta vilka uppgifter vi har om dig.</li>
+      <li><strong>Rättelse</strong> – att få felaktiga uppgifter rättade. Namn, profilbild, e-post och presentation ändrar du själv i appen.</li>
+      <li><strong>Radering</strong> – att få dina uppgifter raderade.</li>
+      <li><strong>Begränsning</strong> – att begränsa hur vi behandlar dina uppgifter.</li>
+      <li><strong>Dataportabilitet</strong> – att få ut dina uppgifter i ett maskinläsbart format.</li>
+      <li><strong>Invändning</strong> – att invända mot behandling som grundas på berättigat intresse.</li>
+      <li><strong>Återkalla samtycke</strong> – att när som helst ta tillbaka ett samtycke du gett.</li>
     </ul>
-    <p><strong>How to exercise your rights:</strong> Contact us at support@topicos.app. We will respond within 30 days.</p>
-    <p><strong>Complaints:</strong> You have the right to file a complaint with the Swedish Authority for Privacy Protection (IMY) at www.imy.se or imy@imy.se.</p>
+    <p><strong>Så gör du:</strong> Kontakta oss på kontakt@topicos.app. Vi svarar inom 30 dagar. Gäller din begäran innehåll i en organisation vänder du dig i första hand till organisationen, som är personuppgiftsansvarig för det. Vi hjälper organisationen att uppfylla begäran. Innehåll som är end-to-end-krypterat kan vi bara lämna ut i krypterad form.</p>
+    <p><strong>Klagomål:</strong> Du har rätt att lämna klagomål till Integritetsskyddsmyndigheten (IMY), www.imy.se, imy@imy.se.</p>
 
-    <h2>8. Security</h2>
-    <p>We protect your data through:</p>
+    <h2>9. Säkerhet</h2>
     <ul>
-      <li>Encrypted data transfer (HTTPS/TLS)</li>
-      <li>Secure authentication via SMS verification</li>
-      <li>Access control and permission management</li>
-      <li>Regular security updates</li>
-      <li>Data storage with certified cloud providers</li>
+      <li>All trafik krypteras (HTTPS/TLS).</li>
+      <li>Databas, serverkod och filer ligger i EU.</li>
+      <li>Behörighetsregler i databasen ser till att bara medlemmar i en organisation, grupp eller chatt kan läsa dess innehåll.</li>
+      <li>Bilagor nås bara via signerade länkar som slutar gälla efter en timme.</li>
+      <li>Notisernas innehåll krypteras till din enhet och öppnas lokalt.</li>
+      <li>Organisationer kan slå på end-to-end-kryptering med nycklar som bara organisationen har.</li>
+      <li>Anrop kontrolleras med Firebase App Check, så att bara den riktiga appen kan nå våra servrar.</li>
+      <li>Inloggning sker med telefonnummer och engångskod via SMS.</li>
+    </ul>
+    <p>Ingen extern säkerhetsgranskning av Topicos har gjorts ännu. Mer om skyddet finns på <a href="sakerhet.html">säkerhetssidan</a>.</p>
+
+    <h2>10. Barn</h2>
+    <p>Topicos riktar sig inte till barn under 13 år, och vi samlar inte medvetet in personuppgifter från barn under 13 år. Är du vårdnadshavare och upptäcker att ditt barn skapat ett konto, kontakta oss så raderar vi uppgifterna.</p>
+
+    <h2>11. Cookies och lokal lagring</h2>
+    <ul>
+      <li><strong>Mobilappen</strong> lagrar lokalt på enheten: inloggning, utkast, inställningar och cachade meddelanden och dokument. Krypteringsnycklar lagras i iOS Keychain respektive Android Keystore. Lagringen är nödvändig för att Tjänsten ska fungera och kräver inget separat samtycke.</li>
+      <li><strong>Webbappen app.topicos.app</strong> använder webbläsarens lagring för inloggningssession, skydd mot missbruk, cachad data och krypteringsnycklar. Vid inloggning används Google reCAPTCHA för att stoppa automatiserat missbruk, och Google kan då sätta egna cookies.</li>
+      <li><strong>Webbplatsen topicos.app</strong> använder inga cookies och inga analysverktyg. Betalsidan (topicos.app/billing) hämtar Firebase-bibliotek från Google för att identifiera dig och skickar dig till Stripe, som använder egna cookies på sina sidor.</li>
     </ul>
 
-    <h2>9. Children</h2>
-    <p>Topicos is not for children under 13 years of age. We do not knowingly collect personal data from children under 13 years of age. If you are a parent and discover that your child has created an account, contact us and we will delete the data.</p>
+    <h2>12. Ändringar av policyn</h2>
+    <p>Vi kan uppdatera den här policyn. Vid väsentliga ändringar meddelar vi dig i appen eller via e-post om vi har din adress. Fortsatt användning av Tjänsten efter en ändring innebär att du godtar den uppdaterade policyn.</p>
 
-    <h2>10. Cookies and local storage</h2>
-    <p>The app uses local storage (AsyncStorage) on your device to save login status, store message drafts, and save your settings. This is necessary for the Service to function and does not require separate consent.</p>
-
-    <h2>11. Changes to this policy</h2>
-    <p>We may update this privacy policy. In case of significant changes, we will notify you via notification in the app or email (if we have your email address). Continued use of the Service after changes means you accept the updated policy.</p>
-
-    <h2>12. Contact us</h2>
-    <p>Do you have questions about this privacy policy or how we process your personal data?</p>
+    <h2>13. Kontakt</h2>
+    <p>Har du frågor om policyn eller om hur vi behandlar dina personuppgifter?</p>
     <p><strong>Råggywood AB</strong><br>
-    Email: kontakt@topicos.app</p>
-    <p><em>This privacy policy is effective from 2026-01-13.</em></p>
-
-
+    E-post: kontakt@topicos.app</p>
+    <p><em>Den här integritetspolicyn gäller från 2026-09-09 och ersätter versionen från 2026-01-13.</em></p>
   </main>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
-      <a href="sakerhet.html">Security</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <a href="mailto:kontakt@topicos.app">Contact</a>
+      <a href="sakerhet.html">Säkerhet</a>
+      <a href="privacy.html">Integritetspolicy</a>
+      <a href="terms.html">Användarvillkor</a>
+      <a href="mailto:kontakt@topicos.app">Kontakt</a>
     </div>
-    <p>&copy; 2025 Topicos. All rights reserved.</p>
+    <p>&copy; 2025 Topicos. Alla rättigheter förbehållna.</p>
   </footer>
 </body>
 </html>
