@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Så skyddar Topicos organisationens innehåll: data lagras i EU, och varje organisation kan slå på end-to-end-kryptering med nycklar som bara organisationen har.">
+  <title>Säkerhet – Topicos</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Topicos">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:url" content="https://topicos.app/sakerhet.html">
+  <meta property="og:title" content="Säkerhet – Topicos">
+  <meta property="og:description" content="Data lagras i EU, och varje organisation kan slå på end-to-end-kryptering med nycklar som bara organisationen har. Det vi inte kan läsa kan vi inte lämna ut.">
+  <meta property="og:image" content="https://topicos.app/Bilder/topicos-showcase.png">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="918">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo"><img src="logo.png" alt="Topicos" class="logo-img" style="height:32px;width:32px;">Topicos</a>
+      <div class="nav-links">
+        <a href="index.html#features">Funktioner</a>
+        <a href="index.html#pricing">Priser</a>
+        <a href="sakerhet.html" class="active" aria-current="page">Säkerhet</a>
+        <a href="https://app.topicos.app" class="nav-signin">Logga in</a>
+        <a href="https://app.topicos.app" class="btn btn-primary btn-sm">Kom igång</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Meny">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html#features">Funktioner</a>
+      <a href="index.html#pricing">Priser</a>
+      <a href="sakerhet.html">Säkerhet</a>
+      <a href="https://app.topicos.app">Logga in</a>
+      <a href="privacy.html">Integritetspolicy</a>
+      <a href="terms.html">Användarvillkor</a>
+    </div>
+  </nav>
+
+  <main class="sec-page">
+
+    <header class="sec-hero">
+      <p class="sec-eyebrow">Säkerhet</p>
+      <h1>Innehållet stannar hos organisationen</h1>
+      <p class="sec-lead">Topicos lagrar data i EU. Varje organisation kan dessutom slå på end-to-end-kryptering med nycklar som bara organisationen har. Då kan varken Topicos eller våra underleverantörer läsa meddelanden, filer och dokument. Det vi inte kan läsa kan vi inte heller lämna ut.</p>
+    </header>
+
+    <!-- Två nivåer -->
+    <section class="sec-section">
+      <h2>Två skyddsnivåer</h2>
+      <div class="sec-two">
+        <div class="sec-box">
+          <h3>Grundskydd, alla organisationer</h3>
+          <ul>
+            <li>All trafik går krypterad (TLS).</li>
+            <li>Databas, serverkod och filer ligger i EU.</li>
+            <li>Behörighetsregler i databasen: bara medlemmar i en organisation, grupp eller chatt kan läsa dess innehåll.</li>
+            <li>Bilagor nås bara via signerade länkar som slutar gälla efter en timme.</li>
+            <li>Notisernas innehåll krypteras till din enhet innan det passerar Apples och Googles push-tjänster.</li>
+            <li>Inloggning med telefonnummer och SMS-kod. Inga annonsnätverk, ingen beteendespårning.</li>
+            <li>Tas en medlem bort försvinner åtkomsten direkt.</li>
+          </ul>
+        </div>
+        <div class="sec-box sec-box-accent">
+          <h3>Organisationsnyckeln, slås på per organisation</h3>
+          <p>Superadmin slår på end-to-end-kryptering under <strong>Inställningar → Kryptering</strong>. Från den stunden krypteras nytt innehåll på medlemmarnas enheter, med nycklar som skapas där och aldrig lämnar organisationen i läsbar form. Ingår i alla planer, även Free.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Var innehållet lagras -->
+    <section class="sec-section">
+      <h2>Var innehållet lagras</h2>
+      <div class="sec-table-wrap">
+        <table class="sec-table">
+          <thead>
+            <tr><th>Vad</th><th>Tjänst</th><th>Plats</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Meddelanden, dokument, uppgifter, kalender, medlemskap</td>
+              <td>Google Cloud Firestore</td>
+              <td>EU, multiregion <code>eur3</code> (Belgien och Nederländerna)</td>
+            </tr>
+            <tr>
+              <td>Serverkod</td>
+              <td>Google Cloud Functions</td>
+              <td>EU, <code>europe-west1</code> (Belgien)</td>
+            </tr>
+            <tr>
+              <td>Bilagor: bilder, video, ljud, filer</td>
+              <td>Cloudflare R2</td>
+              <td>EU-jurisdiktion. Åtkomst bara via signerade länkar med en timmes giltighet</td>
+            </tr>
+            <tr>
+              <td>Profilbilder och länkförhandsvisningar</td>
+              <td>Google Cloud Storage</td>
+              <td>EU, <code>europe-west1</code> (Belgien)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Samtal förmedlas i realtid av LiveKit och spelas aldrig in. Med Organisationsnyckeln påslagen är ljudet krypterat mellan deltagarna, så servern bara vidarebefordrar chiffer. Fullständig förteckning över underleverantörer finns i <a href="privacy.html">integritetspolicyn</a>.</p>
+    </section>
+
+    <!-- Organisationsnyckeln -->
+    <section class="sec-section">
+      <h2>Organisationsnyckeln: så fungerar end-to-end-krypteringen</h2>
+      <ol class="sec-steps">
+        <li>
+          <strong>Superadmin slår på krypteringen.</strong> En återställningsfras med 24 ord visas en enda gång. Den är organisationens huvudnyckel och ska förvaras säkert, utanför telefonen.
+        </li>
+        <li>
+          <strong>Varje enhet får en egen nyckel.</strong> Den skapas på enheten och lagras i telefonens skyddade nyckellager. Organisationens nyckel förseglas till varje godkänd enhet, så att bara den kan öppna.
+        </li>
+        <li>
+          <strong>Nya enheter måste godkännas.</strong> En ny mobil, dator eller webbläsare visar en kod. En administratör, eller en av personens redan godkända enheter, jämför koden och godkänner. Tills dess ser enheten bara låsta rader.
+        </li>
+        <li>
+          <strong>Nyckeln roteras när någon lämnar.</strong> Återkallas en enhet, eller tas en medlem bort, får de kvarvarande enheterna en ny nyckel. Den som lämnat kan inte läsa något nytt.
+        </li>
+      </ol>
+
+      <div class="sec-two">
+        <div class="sec-box">
+          <h3>Det här krypteras</h3>
+          <ul>
+            <li>Meddelanden: text, svar, omröstningar, platsdelning och avsändarnamn i chatten</li>
+            <li>Bilagor: bilder, video, röstmeddelanden och filer, med en egen nyckel per fil</li>
+            <li>Dokument och textdokument, inklusive bilder i dem</li>
+            <li>Uppgifter med anteckningar och bilagor</li>
+            <li>Kalenderhändelser</li>
+            <li>Notiser, både i appen och som push</li>
+            <li>Namn på grupper, ämnen och mappar</li>
+            <li>Samtal: ljud och handuppräckning krypteras mellan deltagarna</li>
+          </ul>
+        </div>
+        <div class="sec-box">
+          <h3>Det här krypteras inte, med flit</h3>
+          <ul>
+            <li>Organisationens namn samt medlemmarnas profilnamn och telefonnummer. Kunden är känd via avtal och faktura, och identiteten behövs för inloggning.</li>
+            <li>Tidrapporten: stämplingar och frånvaro. Det är löneunderlag som ska kunna granskas.</li>
+            <li>Innehåll från före aktiveringen ligger kvar som det var.</li>
+            <li>Metadata: vem som är medlem var, vem som skrivit när och hur mycket, samt push-token.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Återställningsfrasen</h3>
+      <p>Frasen behövs bara om organisationen inte har någon godkänd enhet kvar. I vardagen används den aldrig. Topicos har inte frasen, ber aldrig om den och kan inte återställa innehåll utan den. Förloras frasen och alla godkända enheter är innehållet borta för gott. Frasen kan bytas från en godkänd superadmin-enhet, men bara med den gamla frasen i hand. Se därför till att organisationen alltid har minst två godkända administratörsenheter.</p>
+
+      <h3>Av och på</h3>
+      <p>Krypteringen kan slås av igen. Nytt innehåll skrivs då okrypterat, medan det som redan krypterats förblir krypterat och bara kan läsas av godkända enheter. Ingenting raderas.</p>
+
+      <h3>Vad Topicos ser</h3>
+      <p>Krypterat innehåll och metadata. Får vi en begäran från en myndighet kan vi bara lämna ut det vi har: chiffer vi inte kan öppna, och uppgifter om vem som är medlem var och när något skickats.</p>
+    </section>
+
+    <!-- Begränsningar -->
+    <section class="sec-section">
+      <h2>Vad krypteringen inte skyddar mot</h2>
+      <ul class="sec-plain">
+        <li><strong>En upplåst enhet.</strong> Den som håller i en godkänd, upplåst telefon läser det telefonen läser. Skydda enheterna med skärmlås, och med mobilhantering (MDM) där det används.</li>
+        <li><strong>Metadata.</strong> Vem som talar med vem, när och hur ofta syns för Topicos även när innehållet är krypterat.</li>
+        <li><strong>Appen själv.</strong> Krypteringen utförs av appens kod. Koden är inte öppen och ingen extern granskning är gjord ännu. Ni litar alltså på Topicos som utvecklare, på samma sätt som med varje annan app ni installerar.</li>
+        <li><strong>Webbläsaren.</strong> På app.topicos.app ligger nycklarna i webbläsarens lagring, skyddade av datorns inloggning och webbläsarens egna skydd.</li>
+      </ul>
+      <h3>Följder i vardagen</h3>
+      <ul class="sec-plain">
+        <li>Sökning sker på enheten, aldrig på servern.</li>
+        <li>Länkförhandsvisningar visas inte, eftersom servern inte kan se länken.</li>
+        <li>Krypterade bilagor kan bara vidarebefordras till chattar som också är krypterade.</li>
+        <li>Krypterade samtal fungerar i mobilappen, ännu inte i webbläsaren.</li>
+      </ul>
+    </section>
+
+    <!-- Teknik -->
+    <section class="sec-section">
+      <h2>Teknik i korthet</h2>
+      <div class="sec-tech">
+        <dl>
+          <dt>Innehåll</dt>
+          <dd>AES-256-GCM med bunden tilläggsdata, så att ett chiffer inte kan flyttas till ett annat meddelande eller fält.</dd>
+          <dt>Nycklar</dt>
+          <dd>Organisationens nyckel förseglas till varje enhets X25519-nyckel med HKDF-SHA256. Varje rotation ger en ny nyckelepok. Enhetsnycklar lagras i iOS Keychain respektive Android Keystore.</dd>
+          <dt>Återställningsfras</dt>
+          <dd>24 ord enligt BIP39. Ur frasen härleds ett nyckelpar som varje epoknyckel förseglas till.</dd>
+          <dt>Bilagor</dt>
+          <dd>Slumpad 256-bitars nyckel per fil, krypterad i block innan uppladdning. Servern och lagringen ser bara binära objekt.</dd>
+          <dt>Samtal</dt>
+          <dd>LiveKits ramkryptering med en samtalsnyckel härledd ur epoknyckeln. Servern vidarebefordrar krypterade ljudramar.</dd>
+          <dt>Notiser</dt>
+          <dd>Innehållet krypteras med en nyckel som bara enheten har och öppnas lokalt, på iOS i en notistillägg som körs innan notisen visas.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Offentlig sektor -->
+    <section class="sec-section">
+      <div class="sec-public">
+        <h2>För kommuner, regioner och myndigheter</h2>
+        <p>Upphandlar ni för offentlig sektor? Vi tar fram underlag för personuppgiftsbiträdesavtal, underbiträdesförteckning och säkerhetsbilaga, och svarar på era frågor om informationsklassning. Hör av er till <a href="mailto:kontakt@topicos.app">kontakt@topicos.app</a>.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="sakerhet.html">Säkerhet</a>
+      <a href="privacy.html">Integritetspolicy</a>
+      <a href="terms.html">Användarvillkor</a>
+      <a href="mailto:kontakt@topicos.app">Kontakt</a>
+    </div>
+    <p>&copy; 2025 Topicos. Alla rättigheter förbehållna.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
