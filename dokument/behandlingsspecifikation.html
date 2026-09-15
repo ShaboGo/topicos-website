@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Specifikation av behandlingen – Topicos</title>
+  <link rel="stylesheet" href="dokument.css">
+</head>
+<body>
+
+
+  <header class="doc-head">
+    <p class="doc-kicker">Topicos · Bilaga 1 till personuppgiftsbiträdesavtal</p>
+    <h1>Specifikation av personuppgiftsbehandlingen</h1>
+    <dl class="doc-meta">
+      <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.3</dd>
+      <dt>Version</dt><dd>0.1, utkast</dd>
+      <dt>Datum</dt><dd>2026-09-10</dd>
+      <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Porlabacken 9, 124 77 Bandhagen, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Biträdet".</dd>
+      <dt>Tjänst</dt><dd>Topicos</dd>
+      <dt>Kontakt</dt><dd>kontakt@topicos.app</dd>
+    </dl>
+  </header>
+
+  <p class="note">Den här bilagan är skriven för att fogas till den personuppgiftsansvariges egen avtalsmall, till exempel SKR:s mall för personuppgiftsbiträdesavtal. Numreringen följer de uppgifter som artikel 28.3 kräver: föremål, varaktighet, art och ändamål, typ av personuppgifter och kategorier av registrerade. Uppgifter om den personuppgiftsansvarige fylls i av denne.</p>
+
+  <h2>1. Parter och roller</h2>
+  <ul>
+    <li><strong>Personuppgiftsansvarig:</strong> den organisation (kommun, region, myndighet, bolag eller förening) som använder Topicos, nedan "Organisationen".</li>
+    <li><strong>Personuppgiftsbiträde:</strong> Råggywood AB, som tillhandahåller Topicos.</li>
+    <li><strong>Undantag:</strong> för användarnas kontouppgifter (telefonnummer, profil, tekniska uppgifter om enheten) är Råggywood AB självständigt personuppgiftsansvarig enligt Topicos integritetspolicy. Kontot är personligt och följer användaren mellan organisationer.</li>
+  </ul>
+
+  <h2>2. Ändamål med behandlingen</h2>
+  <p>Att tillhandahålla Organisationen ett verktyg för intern kommunikation och samordning: chatt i grupper och ämnen, röstsamtal, uppgifter, kalender, dokumenthantering och, om Organisationen slår på det, tidrapportering. Biträdet behandlar personuppgifterna enbart för dessa ändamål och enligt Organisationens instruktioner.</p>
+
+  <h2>3. Behandlingens art</h2>
+  <ul>
+    <li>Lagring, visning och synkronisering av innehåll mellan Organisationens medlemmars enheter.</li>
+    <li>Leverans av notiser till medlemmarnas enheter.</li>
+    <li>Förmedling av röstsamtal i realtid (ingen inspelning).</li>
+    <li>Sökning: på servern i organisationer utan end-to-end-kryptering, lokalt på enheten i organisationer med.</li>
+    <li>Hämtning av förhandsvisningar för länkar som delas i chattar.</li>
+    <li>Klassificering och sammanställning av tidrapporter (arbetstid, övertid, obekväm arbetstid, frånvaro) och export till lönesystem i PAXml- eller CSV-format, när tidrapportering är påslagen.</li>
+    <li>Radering och gallring enligt avsnitt 7.</li>
+    <li>Felsökning och drift, inklusive kraschrapportering.</li>
+  </ul>
+  <p>Biträdet fattar inga automatiserade beslut om de registrerade och gör ingen profilering.</p>
+
+  <h2>4. Kategorier av registrerade</h2>
+  <ul>
+    <li>Organisationens anställda, uppdragstagare och förtroendevalda som är medlemmar i Organisationen i Topicos.</li>
+    <li>Personer som bjudits in till Organisationen men ännu inte gått med (telefonnummer, högst 30 dagar).</li>
+    <li>Personer som förekommer i innehållet, till exempel omnämns i meddelanden, uppgifter eller dokument. Organisationen ansvarar för att sådan behandling är tillåten.</li>
+    <li>Organisationens administratör i egenskap av betalningskontakt.</li>
+  </ul>
+
+  <h2>5. Kategorier av personuppgifter</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Kategori</th><th>Uppgifter</th><th>Källa</th></tr></thead>
+      <tbody>
+        <tr><td>Identitet och kontakt</td><td>Namn, telefonnummer, profilbild, e-postadress (frivillig), presentation</td><td>Användaren</td></tr>
+        <tr><td>Organisationstillhörighet</td><td>Medlemskap i organisation och grupper, roll (superadministratör, administratör, medlem), attestbehörighet</td><td>Organisationen</td></tr>
+        <tr><td>Kommunikationsinnehåll</td><td>Meddelanden med text, bilder, video, ljud och filer; reaktioner; omnämnanden; omröstningar; systemmeddelanden</td><td>Användarna</td></tr>
+        <tr><td>Platsuppgifter</td><td>Position vid frivillig platsdelning i chatt</td><td>Användaren</td></tr>
+        <tr><td>Uppgifter, kalender, dokument</td><td>Titlar, beskrivningar, anteckningar, tider, deltagare, tilldelningar, bilagor, dokumentinnehåll</td><td>Användarna</td></tr>
+        <tr><td>Tidrapport (tillval)</td><td>In- och utstämplingar, raster, klassificerad arbetstid, frånvaro med orsakskod och omfattning, attesteringar med attestantens namn, löneexporter</td><td>Användaren och Organisationen</td></tr>
+        <tr><td>Samtal</td><td>Deltagare, tidpunkt, längd, besvarat eller missat; ljud i realtid utan lagring</td><td>Användarna</td></tr>
+        <tr><td>Användningsuppgifter</td><td>Läskvitton, leveransstatus, tidsstämplar, senast aktiv</td><td>Tjänsten</td></tr>
+        <tr><td>Tekniska uppgifter</td><td>Plattform, operativsystem, appversion, språk, tidszon, push-token, nyckel för notiskryptering, enhetens publika krypteringsnyckel, kraschrapporter med konto-id</td><td>Enheten</td></tr>
+        <tr><td>Betalning</td><td>Organisationsnamn, administratörens telefonnummer, faktura-e-post, företagsnamn, organisationsnummer, abonnemangsstatus</td><td>Organisationen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>6. Särskilda kategorier av personuppgifter</h2>
+  <ul>
+    <li><strong>Hälsa:</strong> frånvaroorsaker i tidrapporten (sjukdom, vård av barn, föräldraledighet) utgör uppgifter om hälsa enligt artikel 9. Organisationen ansvarar för att behandlingen har stöd i artikel 9.2 b (arbetsrätt) eller motsvarande. Biträdet behandlar uppgifterna enbart som lagring, klassificering och export.</li>
+    <li><strong>Fritext:</strong> meddelanden, dokument och anteckningar kan innehålla vilka uppgifter som helst, inklusive känsliga. Organisationen instruerar sina medlemmar om vad som får skrivas i tjänsten. Biträdet analyserar inte innehållet.</li>
+    <li>Tjänsten är inte avsedd för sekretessreglerade uppgifter om enskilda utan att Organisationen gjort en egen informationsklassning. End-to-end-krypteringen är ett stöd i den bedömningen, inte ett ställningstagande från Biträdet om vilken klass tjänsten passar.</li>
+  </ul>
+
+  <h2>7. Behandlingens varaktighet</h2>
+  <p>Behandlingen pågår under avtalstiden. Under avtalstiden gallras uppgifter enligt följande: raderade meddelanden tas bort ur databasen direkt och bilagor när ingen längre refererar dem; lästa notiser efter 90 dagar; obesvarade inbjudningar efter 30 dagar; grupper och ämnen som markerats för radering när fristen gått ut. Innehåll i övrigt sparas tills Organisationen eller användaren raderar det. Vid avtalets upphörande gäller avsnitt 11.</p>
+
+  <h2>8. Plats för behandlingen</h2>
+  <p>Databas, serverkod och filer behandlas i EU (Belgien och Nederländerna respektive EU-jurisdiktion hos Cloudflare). Följande delbehandlingar sker helt eller delvis i USA eller globalt: inloggning med telefonnummer (Google), leverans av push-notiser med krypterat innehåll (Google, Apple), kraschrapporter och skydd mot missbruk (Google), röstsamtal (LiveKit), appuppdateringar och notiser till äldre appversioner (Expo) samt betalning (Stripe). Detaljer, läsbarhet och överföringsgrund per underbiträde finns i <a href="underbitradesforteckning.html">underbiträdesförteckningen</a>.</p>
+
+  <h2>9. Instruktioner från den personuppgiftsansvarige</h2>
+  <p>Organisationens instruktion till Biträdet är att behandla personuppgifterna så som krävs för att tillhandahålla tjänsten enligt avtalet, denna bilaga, säkerhetsbilagan och tjänstens dokumentation. Organisationen styr behandlingen löpande genom sina inställningar i tjänsten: vilka som är medlemmar och administratörer, om end-to-end-kryptering är på, om tidrapportering är på, och vad som raderas. Ytterligare instruktioner lämnas skriftligen till kontakt@topicos.app.</p>
+  <p>Biträdet behandlar inte uppgifterna för egna ändamål, säljer dem inte, använder dem inte för marknadsföring eller utveckling av annat än tjänsten, och lämnar inte ut dem till tredje part utom till underbiträden enligt förteckningen eller när lag kräver det. Kräver lag utlämnande underrättar Biträdet Organisationen innan utlämnandet, om inte lagen förbjuder det. I organisationer med end-to-end-kryptering kan Biträdet under alla omständigheter bara lämna ut krypterat innehåll och metadata.</p>
+
+  <h2>10. Bistånd till den personuppgiftsansvarige</h2>
+  <ul>
+    <li><strong>Registrerades rättigheter.</strong> Organisationens administratörer kan själva ta bort medlemmar, radera grupper, ämnen, uppgifter, händelser och dokument, och rätta tidrapporter. För begäran om tillgång, rättelse, radering eller portabilitet som Organisationen inte kan tillgodose själv tar Biträdet fram underlag inom 10 arbetsdagar från skriftlig begäran.</li>
+    <li><strong>Konsekvensbedömning (DPIA).</strong> Säkerhetsbilagan, underbiträdesförteckningen och den här specifikationen är Biträdets underlag. Biträdet besvarar kompletterande frågor skriftligen.</li>
+    <li><strong>Informationsklassning.</strong> Biträdet besvarar Organisationens kravlista (till exempel KLASSA) på begäran, med säkerhetsbilagan som grund.</li>
+    <li><strong>Personuppgiftsincidenter.</strong> Enligt den separata incidentrutinen.</li>
+    <li><strong>Granskning.</strong> Organisationen har rätt att ställa skriftliga frågor och få dokumentation. Granskning på plats är inte meningsfull eftersom Biträdet inte har egna datacenter; underbiträdenas egna revisionsrapporter (Google Cloud, Cloudflare, Stripe) kan tillhandahållas eller hänvisas till.</li>
+  </ul>
+
+  <h2>11. Åtgärder vid avtalets upphörande</h2>
+  <ul>
+    <li><strong>Utdrag.</strong> Före upphörandet kan Organisationen exportera tidrapporter i PAXml- eller CSV-format i appen. På skriftlig begäran lämnar Biträdet dessutom ut Organisationens meddelanden, uppgifter, kalenderhändelser, dokumentmetadata och filer i maskinläsbart format (JSON och originalfiler) inom 30 dagar. I organisationer med end-to-end-kryptering kan Biträdet bara lämna krypterat innehåll; ett läsbart utdrag måste göras från en av Organisationens godkända enheter, och en sådan exportfunktion i appen finns inte i dag.</li>
+    <li><strong>Radering.</strong> Organisationens superadministratör kan radera Organisationen i appen. Raderingen utförs av en serverfunktion i ett steg och tar bort allt som hör till Organisationen: grupper, ämnen, meddelanden (även direktmeddelanden skrivna inom Organisationen), uppgifter, mappar, dokument och textdokumentens innehåll, kalenderhändelser, tidrapporter och frånvaro, samtalshistorik, notiser, inbjudningar, administratörsanteckningar, krypteringens enhetsposter och nyckelepoker, samtliga filer samt organisationsposten. Medlemmarna underrättas i appen. Kvar blir användarnas egna konton (telefonnummer, profil), som varje användare själv raderar under Inställningar, samt de driftloggar som gallras efter 30 dagar enligt säkerhetsbilagan avsnitt 6. Raderingen bekräftas skriftligen på begäran. Organisationer med uppsagt betalabonnemang får sina filer raderade automatiskt 90 dagar efter uppsägningen.</li>
+    <li><strong>Undantag.</strong> Faktureringsunderlag hos Stripe sparas i 7 år enligt bokföringslagen. Användarnas personliga konton påverkas inte av att Organisationen raderas.</li>
+    <li><strong>Säkerhetskopior.</strong> Raderade uppgifter kan finnas kvar i databasens säkerhetskopior i högst 37 dagar (7 dagars point-in-time recovery och dagliga kopior som sparas i 30 dagar, se säkerhetsbilagan avsnitt 7) och raderas därefter utan ytterligare åtgärd. Filer i fillagringen säkerhetskopieras inte separat. I organisationer med end-to-end-kryptering är innehållet i säkerhetskopior oläsligt när nycklarna förstörts.</li>
+  </ul>
+
+  <h2>12. Kontaktpersoner</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Roll</th><th>Hos Biträdet</th><th>Hos den personuppgiftsansvarige</th></tr></thead>
+      <tbody>
+        <tr><td>Avtal och dataskydd</td><td>David Danial, grundare, kontakt@topicos.app</td><td>Fylls i av Organisationen</td></tr>
+        <tr><td>Incidenter</td><td>David Danial, kontakt@topicos.app, +46 73 925 91 85</td><td>Fylls i av Organisationen</td></tr>
+        <tr><td>Teknik och drift</td><td>David Danial</td><td>Fylls i av Organisationen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>13. Ändringshistorik</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Version</th><th>Datum</th><th>Ändring</th></tr></thead>
+      <tbody>
+        <tr><td>0.1</td><td>2026-09-10</td><td>Första utkast.</td></tr>
+      <tr><td>0.2</td><td>2026-09-14</td><td>Partsbeteckningen "Biträdet" införd; externa leverantörer kallas genomgående underbiträden.</td></tr>
+      <tr><td>0.3</td><td>2026-09-15</td><td>Avsnitt 11: säkerhetskopiornas retentionstid preciserad till högst 37 dagar.</td></tr>
+      <tr><td>0.4</td><td>2026-09-15</td><td>Postadress och telefonnummer ifyllda (avsnitt 1, 12).</td></tr>
+      <tr><td>0.5</td><td>2026-09-15</td><td>Frister för registrerades rättigheter och utdrag beslutade; markörer borttagna.</td></tr>
+      <tr><td>0.6</td><td>2026-09-15</td><td>Avsnitt 11: radering av organisation sker nu fullständigt via serverfunktion; markören och lucklistan borttagna.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="doc-foot">Råggywood AB · Topicos · Specifikation av behandlingen v0.6 (utkast) · 2026-09-15 · kontakt@topicos.app</footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+/* Dokumentpaketet för upphandling (dokument/*.html). Skärm + utskrift/PDF.
+   Luckor markeras med <mark class="gap"> och ska vara borta i slutversionen. */
+:root {
+  --primary: #3E9B92;
+  --primary-dark: #2c6f69;
+  --ink: #1f2937;
+  --muted: #4b5563;
+  --line: #d1d5db;
+  --soft: #f3f4f6;
+  --gap: #fff3a8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 11pt; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  line-height: 1.5;
+  background: #fff;
+  max-width: 180mm;
+  margin: 0 auto;
+  padding: 15mm 0 25mm;
+}
+
+.doc-head {
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 6mm;
+  margin-bottom: 8mm;
+}
+
+.doc-kicker {
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 9pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+
+.doc-head h1 {
+  font-size: 20pt;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 3mm;
+}
+
+.doc-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1mm 6mm;
+  font-size: 9.5pt;
+  color: var(--muted);
+}
+
+.doc-meta dt { font-weight: 600; color: var(--ink); }
+
+h2 {
+  font-size: 14pt;
+  font-weight: 800;
+  margin: 8mm 0 3mm;
+  break-after: avoid;
+}
+
+h3 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  margin: 5mm 0 2mm;
+  break-after: avoid;
+}
+
+p { margin-bottom: 3mm; }
+
+ul, ol { margin: 0 0 3mm 5mm; }
+li { margin-bottom: 1.2mm; }
+li > ul { margin-top: 1.2mm; }
+
+strong { font-weight: 700; }
+
+.table-wrap { overflow-x: auto; margin: 2mm 0 5mm; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  break-inside: auto;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 1.8mm 2mm;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  font-size: 8.5pt;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--soft);
+  border-bottom: 1px solid var(--line);
+}
+
+tr { break-inside: avoid; }
+
+td:first-child { font-weight: 600; }
+
+.note {
+  background: var(--soft);
+  border-left: 3px solid var(--primary);
+  padding: 3mm 4mm;
+  margin: 3mm 0 5mm;
+  break-inside: avoid;
+}
+
+.note p:last-child { margin-bottom: 0; }
+
+mark.gap {
+  background: var(--gap);
+  color: #5b4a00;
+  padding: 0 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.gap-list {
+  border: 1px dashed #c9b64a;
+  background: #fffbe6;
+  padding: 3mm 4mm;
+  margin: 0 0 8mm;
+  font-size: 9.5pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.gap-list h2 { font-size: 10.5pt; margin: 0 0 2mm; }
+.gap-list ul { margin-bottom: 0; }
+
+.doc-foot {
+  margin-top: 10mm;
+  padding-top: 3mm;
+  border-top: 1px solid var(--line);
+  font-size: 8.5pt;
+  color: var(--muted);
+}
+
+.doc-index { list-style: none; margin: 0; }
+.doc-index li { margin-bottom: 4mm; }
+.doc-index a { color: var(--primary-dark); font-weight: 700; text-decoration: none; font-size: 12pt; }
+.doc-index a:hover { text-decoration: underline; }
+.doc-index span { display: block; color: var(--muted); }
+
+@page { size: A4; margin: 18mm 18mm 20mm; }
+
+@media print {
+  html { font-size: 10.5pt; }
+  body { max-width: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  th { background: var(--soft) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media screen and (max-width: 700px) {
+  body { padding: 6mm 4mm 15mm; }
+}

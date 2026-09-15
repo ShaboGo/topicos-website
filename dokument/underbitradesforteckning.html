@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Underbiträdesförteckning – Topicos</title>
+  <link rel="stylesheet" href="dokument.css">
+  <!-- Sju kolumner får inte plats i stående A4: det här dokumentet skrivs ut liggande. -->
+  <style>
+    @page { size: A4 landscape; margin: 15mm 18mm; }
+    body { max-width: 260mm; }
+    table { font-size: 9pt; }
+  </style>
+</head>
+<body>
+
+  <aside class="gap-list">
+    <h2>Luckor i det här utkastet (tas bort i slutversionen)</h2>
+    <ul>
+      <li><mark class="gap">BEKRÄFTA</mark> Juridisk avtalspart för varje underbiträde (kolumnen Underbiträde). Står på fakturan eller i kontots avtalsvillkor.</li>
+      <li><mark class="gap">LUCKA</mark> Biträdesavtal med LiveKit och Expo (kolumnen Avtal). Google, Cloudflare och Stripe ingår i standardvillkoren.</li>
+      <li><mark class="gap">BEKRÄFTA</mark> Vilka underbiträden som är certifierade under EU–USA Data Privacy Framework. Sök på bolagsnamnet på dataprivacyframework.gov.</li>
+    </ul>
+  </aside>
+
+  <header class="doc-head">
+    <p class="doc-kicker">Topicos · Bilaga till personuppgiftsbiträdesavtal</p>
+    <h1>Förteckning över underbiträden</h1>
+    <dl class="doc-meta">
+      <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.2 och 28.4</dd>
+      <dt>Version</dt><dd>0.1, utkast</dd>
+      <dt>Datum</dt><dd>2026-09-10</dd>
+      <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Biträdet".</dd>
+      <dt>Tjänst</dt><dd>Topicos</dd>
+      <dt>Kontakt</dt><dd>kontakt@topicos.app</dd>
+    </dl>
+  </header>
+
+  <h2>1. Så läser du förteckningen</h2>
+  <p>Kolumnen <strong>Läsbart</strong> anger om underbiträdet kan läsa uppgifterna i klartext, eller bara får dem i krypterad form. "Behandling" i lagens mening omfattar även lagring och transport av krypterade uppgifter, men för riskbedömningen är det avgörande vad underbiträdet faktiskt kan se. För organisationer som slagit på end-to-end-kryptering (Organisationsnyckeln) blir innehållet oläsligt för samtliga underbiträden; det anges som "nej (E2EE)".</p>
+  <p>Kolumnen <strong>Överföring</strong> anger den rättsliga grunden för överföring utanför EU/EES: standardavtalsklausuler (SCC) enligt kommissionens beslut 2021/914 i underbiträdets biträdesavtal, och i förekommande fall EU–USA Data Privacy Framework (DPF).</p>
+
+  <h2>2. Underbiträden som behandlar personuppgifter</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Underbiträde</th><th>Tjänst</th><th>Uppgifter</th><th>Läsbart</th><th>Plats</th><th>Överföring</th><th>Avtal</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Cloud EMEA Ltd (Irland) <mark class="gap">BEKRÄFTA</mark></td>
+          <td>Cloud Firestore (databas)</td>
+          <td>Meddelanden, dokument, uppgifter, kalender, tidrapporter, medlemskap, notiser, samtalshistorik</td>
+          <td>Ja; nej (E2EE) för innehåll</td>
+          <td>EU, multiregion eur3 (Belgien, Nederländerna)</td>
+          <td>Ingen överföring</td>
+          <td>Cloud Data Processing Addendum, del av Google Cloud-villkoren, och Firebase Data Processing and Security Terms. Gäller automatiskt för projektet</td>
+        </tr>
+        <tr>
+          <td>Google Cloud EMEA Ltd</td>
+          <td>Cloud Functions (serverkod)</td>
+          <td>Samma som ovan vid behandling</td>
+          <td>Ja; nej (E2EE)</td>
+          <td>EU, europe-west1 (Belgien)</td>
+          <td>Ingen överföring</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google Cloud EMEA Ltd</td>
+          <td>Cloud Storage</td>
+          <td>Profilbilder, bilder till länkförhandsvisningar</td>
+          <td>Ja</td>
+          <td>EU, europe-west1</td>
+          <td>Ingen överföring</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google Cloud EMEA Ltd</td>
+          <td>Secret Manager, Cloud Logging</td>
+          <td>Driftloggar med identifierare (inga namn, nummer eller innehåll) samt Data Access-loggar för databasläsningar med anroparens inloggningstoken (telefonnummer), 30 dagar</td>
+          <td>Ja</td>
+          <td>EU, europe-west1 (egen loggbucket sedan 2026-09-15; Admin Activity-loggar utan personuppgifter ligger kvar globalt)</td>
+          <td>Ingen överföring</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google LLC (USA) <mark class="gap">BEKRÄFTA</mark></td>
+          <td>Firebase Authentication</td>
+          <td>Telefonnummer, inloggningssession, SMS-utskick av engångskod</td>
+          <td>Ja</td>
+          <td>USA. Google uppger att tjänsten körs enbart i amerikanska datacenter</td>
+          <td>SCC; DPF <mark class="gap">BEKRÄFTA</mark></td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google LLC</td>
+          <td>Firebase Cloud Messaging</td>
+          <td>Push-token; notisinnehåll krypterat till enheten</td>
+          <td>Token ja; innehåll nej</td>
+          <td>Globalt</td>
+          <td>SCC; DPF</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google LLC</td>
+          <td>Firebase Crashlytics</td>
+          <td>Kraschrapporter: felinformation, enhetsmodell, operativsystem, konto-id</td>
+          <td>Ja</td>
+          <td>Globalt</td>
+          <td>SCC; DPF</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Google LLC</td>
+          <td>Firebase App Check, reCAPTCHA</td>
+          <td>Tekniska signaler om enhet eller webbläsare</td>
+          <td>Ja</td>
+          <td>Globalt</td>
+          <td>SCC; DPF</td>
+          <td>Samma</td>
+        </tr>
+        <tr>
+          <td>Apple Inc. (USA) <mark class="gap">BEKRÄFTA: Apple Distribution International Ltd för utvecklaravtalet</mark></td>
+          <td>Apple Push Notification service, PushKit</td>
+          <td>Push-token; notisinnehåll krypterat till enheten; samtalssignalering (uppringarens id, krypterat namn)</td>
+          <td>Token ja; innehåll nej</td>
+          <td>Globalt (USA)</td>
+          <td>SCC; DPF <mark class="gap">BEKRÄFTA</mark></td>
+          <td>Apple Developer Program License Agreement <mark class="gap">BEKRÄFTA att det täcker biträdesrollen</mark></td>
+        </tr>
+        <tr>
+          <td>Cloudflare, Inc. (USA) <mark class="gap">BEKRÄFTA</mark></td>
+          <td>R2 (fillagring)</td>
+          <td>Bilagor: bilder, video, ljud, dokument, uppgiftsbilagor</td>
+          <td>Ja; nej (E2EE)</td>
+          <td>EU-jurisdiktion (bucketen kan inte lämna EU)</td>
+          <td>Ingen överföring av data; avtalspart utanför EU, SCC</td>
+          <td>Cloudflare Data Processing Addendum, del av kundavtalet. Gäller automatiskt</td>
+        </tr>
+        <tr>
+          <td>LiveKit, Inc. (USA)</td>
+          <td>LiveKit Cloud (röstsamtal)</td>
+          <td>Ljud i realtid (lagras aldrig), deltagar-id och visningsnamn i anslutningstoken, samtalsmetadata</td>
+          <td>Ljud ja utan E2EE; nej (E2EE). Id och namn ja</td>
+          <td>Närmaste mediaserver per samtal, inte låst till region. För samtal från Sverige: Tyskland (EU)</td>
+          <td>SCC <mark class="gap">LUCKA: DPA</mark></td>
+          <td><mark class="gap">LUCKA: begär LiveKits Data Processing Addendum via kontot eller support</mark></td>
+        </tr>
+        <tr>
+          <td>650 Industries, Inc. (Expo, USA)</td>
+          <td>EAS Update (appuppdateringar), Expo Push (äldre appversioner)</td>
+          <td>Enhetsuppgifter vid uppdateringskontroll; för äldre appversioner push-token och notistext (förhandsvisning; i E2EE-organisationer bara organisations- och avsändarnamn)</td>
+          <td>Ja</td>
+          <td>USA</td>
+          <td>SCC <mark class="gap">LUCKA: DPA</mark></td>
+          <td><mark class="gap">LUCKA: begär Expos Data Processing Addendum via kontot eller support</mark></td>
+        </tr>
+        <tr>
+          <td>Stripe Payments Europe, Ltd. (Irland) <mark class="gap">BEKRÄFTA</mark></td>
+          <td>Betalningar och fakturering</td>
+          <td>Organisationsnamn, administratörens telefonnummer, faktura-e-post, företagsnamn, organisationsnummer, fakturor, abonnemangsstatus. Kortuppgifter enbart hos Stripe</td>
+          <td>Ja</td>
+          <td>EU/USA</td>
+          <td>SCC; DPF</td>
+          <td>Stripe Data Processing Agreement, del av Stripe Services Agreement. Gäller automatiskt</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>3. Infrastruktur som inte lagrar personuppgifter</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tjänsteleverantör</th><th>Tjänst</th><th>Vad den gör</th><th>Plats</th></tr></thead>
+      <tbody>
+        <tr><td>Google LLC</td><td>Firebase Hosting</td><td>Levererar webbappens programfiler (app.topicos.app). IP-adress förekommer i tjänsteleverantörens åtkomstloggar. Inga personuppgifter lagras av tjänsten</td><td>Globalt CDN</td></tr>
+        <tr><td>GitHub, Inc. (USA)</td><td>GitHub Pages, git-lagring</td><td>Webbplatsen topicos.app (statisk, utan cookies eller spårning) och källkoden. Inga personuppgifter från tjänsten</td><td>USA</td></tr>
+        <tr><td>Apple Inc., Google LLC</td><td>App Store, Google Play</td><td>Distribution av apparna. Butikernas egen behandling regleras av deras användarvillkor gentemot användaren</td><td>Globalt</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>4. Ändringar av underbiträden</h2>
+  <p>Biträdet meddelar den personuppgiftsansvarige skriftligen 30 dagar innan ett nytt underbiträde tas i bruk eller ett befintligt byts, med uppgift om underbiträde, tjänst, uppgifter och plats. Den personuppgiftsansvarige kan invända inom varseltiden. Aktuell förteckning publiceras på <a href="https://topicos.app/privacy.html">topicos.app/privacy.html</a>, avsnitt 6.</p>
+
+  <h2>5. Ändringshistorik</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Version</th><th>Datum</th><th>Ändring</th></tr></thead>
+      <tbody>
+        <tr><td>0.1</td><td>2026-09-10</td><td>Första utkast. Speglar läget efter flytten till EU (augusti 2026) och end-to-end-krypteringen (september 2026).</td></tr>
+      <tr><td>0.2</td><td>2026-09-14</td><td>Partsbeteckningen "Biträdet" införd; externa leverantörer kallas genomgående underbiträden.</td></tr>
+      <tr><td>0.3</td><td>2026-09-15</td><td>Cloud Logging: plats ändrad till EU (europe-west1) och Data Access-loggar tillagda i uppgiftskolumnen.</td></tr>
+      <tr><td>0.4</td><td>2026-09-15</td><td>Varseltid 30 dagar beslutad; markör borttagen.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="doc-foot">Råggywood AB · Topicos · Underbiträdesförteckning v0.4 (utkast) · 2026-09-15 · kontakt@topicos.app</footer>
+</body>
+</html>
