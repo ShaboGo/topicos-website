@@ -1126,6 +1126,20 @@ body {
   font-weight: 600;
 }
 
+.sec-public-list {
+  list-style: disc;
+  margin: 0.75rem 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.sec-public-list li {
+  margin-bottom: 0.5rem;
+}
+
+.sec-public-list li:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 600px) {
   .sec-hero h1 {
     font-size: 2rem;
