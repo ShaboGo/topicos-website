@@ -114,14 +114,14 @@
 
       <!-- Plans Comparison (Free / Pro) -->
       <h3 class="plans-section-title">Planer</h3>
-      <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 10% rabatt.</p>
+      <p class="plans-section-sub">Per plats. Priser ex. moms. Årsvis ger 8 % rabatt.</p>
 
       <!-- Fylls av renderCampaignBanner() — tom när ingen kampanj är igång. -->
       <div id="campaign-banner"></div>
 
       <div class="interval-toggle" id="plans-interval-toggle">
         <button class="active" data-interval="monthly" onclick="setPlansInterval('monthly')">Månadsvis</button>
-        <button data-interval="yearly" onclick="setPlansInterval('yearly')">Årsvis <span class="discount-badge">Spara 10 %</span></button>
+        <button data-interval="yearly" onclick="setPlansInterval('yearly')">Årsvis <span class="discount-badge">Spara 8 %</span></button>
       </div>
 
       <div id="plans-container"></div>
@@ -311,7 +311,7 @@
       },
       bas: {
         name: 'Pro',
-        pricePerSeat: { monthly: 49, yearly: 529 },
+        pricePerSeat: { monthly: 49, yearly: 540 },
         storageFlatBytes: null,
         storageBytesPerSeat: 10 * GB,
         callMinutesPerSeat: null,    // obegränsat
@@ -791,7 +791,7 @@
 
         // Årsvis visas månadskostnaden som huvudsiffra, men det är årsbeloppet som
         // dras — så det rabatterade årspriset måste stå med. Annars ser "22 kr/plats/mån"
-        // ut att motsäga "529 kr/plats/år" på raden ovanför. Att rabatten är tillfällig
+        // ut att motsäga "540 kr/plats/år" på raden ovanför. Att rabatten är tillfällig
         // står i bannern, därför räcker kort text här.
         const campaignPerYear = isYearly
           ? ` (${campaignPrice(cfg.pricePerSeat.yearly)} ${CURRENCY}/plats/år)`

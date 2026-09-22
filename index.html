@@ -182,7 +182,7 @@
            överst på desktop men mellan Free- och Pro-kortet på mobil. -->
       <div class="billing-toggle" id="billingToggle">
         <button type="button" data-interval="monthly" class="active" aria-pressed="true" onclick="setBillingInterval('monthly')">Månadsvis</button>
-        <button type="button" data-interval="yearly" aria-pressed="false" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">Spara 10&nbsp;%</span></button>
+        <button type="button" data-interval="yearly" aria-pressed="false" onclick="setBillingInterval('yearly')">Årsvis <span class="discount-badge">Spara 8&nbsp;%</span></button>
       </div>
 
       <!-- Pro -->
@@ -192,10 +192,10 @@
         <p class="plan-tagline">Det professionella valet för ditt team.</p>
         <div class="plan-price">
           <span class="price-original" data-monthly="" data-yearly="49"></span>
-          <span class="price-amount" data-monthly="49" data-yearly="44">49</span><span class="price-currency">kr</span>
+          <span class="price-amount" data-monthly="49" data-yearly="45">49</span><span class="price-currency">kr</span>
         </div>
         <div class="price-unit">per plats/mån ex. moms</div>
-        <div class="price-yearly-note" data-yearly-total="529">faktureras årsvis (529 kr/plats/år)</div>
+        <div class="price-yearly-note" data-yearly-total="540">faktureras årsvis (540 kr/plats/år)</div>
         <div class="price-campaign-note" data-campaign-only hidden></div>
         <a href="https://app.topicos.app" class="plan-cta plan-cta-outline">Kom igång</a>
         <ul class="plan-features">
@@ -328,7 +328,7 @@
         if (campaignNote) {
           // Årsvis står månadspriset överst men årsbeloppet är det som dras, så
           // det rabatterade årspriset måste med — annars ser "22 kr/plats/mån"
-          // ut att motsäga "529 kr/plats/år" på raden ovanför.
+          // ut att motsäga "540 kr/plats/år" på raden ovanför.
           const yearlyTotal = Number(yearlyNote.dataset.yearlyTotal || 0);
           const perYear = interval === 'yearly' && yearlyTotal
             ? ` (${campaignPrice(yearlyTotal)} kr/plats/år)`
