@@ -84,57 +84,65 @@
   <!-- Features Section -->
   <section class="features" id="features">
     <h2 class="section-title">Funktioner</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🏢</div>
-        <h3>Organisation</h3>
-        <p>Lägg upp eller gå med i en organisation. Allt är samlat där.</p>
+    <div class="features-carousel">
+      <button class="features-arrow features-arrow-prev" type="button" aria-label="Visa föregående funktioner" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="features-track">
+        <div class="feature-card">
+          <div class="feature-icon">🏢</div>
+          <h3>Organisation</h3>
+          <p>Lägg upp eller gå med i en organisation. Allt är samlat där.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Grupper</h3>
+          <p>Dela upp ditt team i grupper, och strukturera arbetet.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Ämnen</h3>
+          <p>Skapa chattar per ämne för olika projekt och håll konversationer fokuserade.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📞</div>
+          <h3>Samtal</h3>
+          <p>Ring en kollega eller starta ett möte med hela teamet – direkt i appen.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3>Smarta notifikationer</h3>
+          <p>Missa aldrig det som spelar roll.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Uppgiftshantering</h3>
+          <p>Skapa och tilldela uppgifter till varandra.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Teamkalender</h3>
+          <p>Skapa event och möten i en gemensam kalender.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>Dokument och mappar</h3>
+          <p>Samla viktiga dokument i mappar som teamet hittar direkt. Lås dem till rätt grupp.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>End-to-end-kryptering</h3>
+          <p>Krypterat på enheterna med nycklar som bara ni har. Data lagras i EU. <a href="sakerhet.html" class="feature-link" aria-label="Läs mer om säkerheten">Läs mer →</a></p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3>Tidsrapportering <span class="beta-badge">Beta</span></h3>
+          <p>Stämpla in och ut, rapportera frånvaro och få allt klart för lön.</p>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">👥</div>
-        <h3>Grupper</h3>
-        <p>Dela upp ditt team i grupper, och strukturera arbetet.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">💬</div>
-        <h3>Ämnen</h3>
-        <p>Skapa chattar per ämne för olika projekt och håll konversationer fokuserade.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📞</div>
-        <h3>Samtal</h3>
-        <p>Ring en kollega eller starta ett möte med hela teamet – direkt i appen.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔔</div>
-        <h3>Smarta notifikationer</h3>
-        <p>Missa aldrig det som spelar roll.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <h3>Uppgiftshantering</h3>
-        <p>Skapa och tilldela uppgifter till varandra.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📅</div>
-        <h3>Teamkalender</h3>
-        <p>Skapa event och möten i en gemensam kalender.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📁</div>
-        <h3>Dokument och mappar</h3>
-        <p>Samla viktiga dokument i mappar som teamet hittar direkt. Lås dem till rätt grupp.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>End-to-end-kryptering</h3>
-        <p>Slå på Organisationsnyckeln så krypteras innehållet på enheterna med nycklar som bara organisationen har. Data lagras i EU.<a href="sakerhet.html" class="feature-link">Läs mer om säkerheten →</a></p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⏱️</div>
-        <h3>Tidsrapportering <span class="beta-badge">Beta</span></h3>
-        <p>Stämpla in och ut, rapportera frånvaro och få allt klart för lön.</p>
-      </div>
+      <button class="features-arrow features-arrow-next" type="button" aria-label="Visa fler funktioner" aria-disabled="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   </section>
 
@@ -257,6 +265,45 @@
     mobileMenu.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', () => mobileMenu.classList.remove('active'));
     });
+
+    // Funktionsbandet: pilarna bläddrar en hel sida (så många kolumner som
+    // syns) och tonas ner vid kanterna. Själva rullningen är CSS (scroll-snap),
+    // så svep på mobil och styrplatta fungerar utan det här. aria-disabled
+    // i stället för disabled så att knappen behåller fokus när kanten nås.
+    (function () {
+      const track = document.querySelector('.features-track');
+      const prev = document.querySelector('.features-arrow-prev');
+      const next = document.querySelector('.features-arrow-next');
+      if (!track || !prev || !next) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Bredden på det synliga kortområdet plus ett mellanrum, så att nästa
+      // sida börjar exakt där den förra slutade. Snappningen rättar till
+      // eventuella avrundningsfel.
+      function pageWidth() {
+        const style = getComputedStyle(track);
+        const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        return track.clientWidth - padding + (parseFloat(style.columnGap) || 0);
+      }
+
+      function scrollByPage(button, direction) {
+        if (button.getAttribute('aria-disabled') === 'true') return;
+        track.scrollBy({ left: direction * pageWidth(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+
+      function updateArrows() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        prev.setAttribute('aria-disabled', String(track.scrollLeft <= 1));
+        next.setAttribute('aria-disabled', String(track.scrollLeft >= maxScroll - 1));
+      }
+
+      prev.addEventListener('click', () => scrollByPage(prev, -1));
+      next.addEventListener('click', () => scrollByPage(next, 1));
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      window.addEventListener('resize', updateArrows);
+      updateArrows();
+    })();
 
     // Lanseringskampanj — MÅSTE spegla CAMPAIGN i billing.html, som i sin tur
     // speglar LAUNCH_CAMPAIGN i functions/src/triggers/stripeConfig.ts. Servern

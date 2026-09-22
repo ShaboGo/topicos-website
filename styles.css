@@ -340,13 +340,6 @@ body {
   color: var(--text-dark);
 }
 
-.features-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-}
 
 .feature-card {
   background: var(--white);
@@ -384,6 +377,124 @@ body {
   color: var(--text-light);
   font-size: 0.95rem;
   line-height: 1.6;
+}
+
+/* Funktionsbandet: två rader som rullar i sidled. Antalet synliga kolumner
+   styrs av --columns och korten får exakt den bredd som fyller bandet, så
+   pilarna bläddrar hela sidor. Rullningen är ren CSS (scroll-snap); skriptet
+   i index.html sköter bara pilarna. */
+.features-carousel {
+  --arrow-space: 3.5rem;
+  position: relative;
+  /* Kortytan är 1200 px; bandets sidoluft och pilarna ligger utanför. */
+  max-width: calc(1200px + 2rem + 2 * var(--arrow-space));
+  margin: 0 auto;
+  padding: 0 var(--arrow-space);
+}
+
+.features-track {
+  --columns: 3;
+  --gap: 2rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  grid-auto-columns: calc((100% - (var(--columns) - 1) * var(--gap)) / var(--columns));
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Luft runt korten så hover-lyftet och skuggan inte klipps av rullytan.
+     Den negativa marginalen tar tillbaka det mesta av bottenluften. */
+  padding: 0.5rem 1rem 2.5rem;
+  margin-bottom: -2rem;
+  scroll-padding-inline: 1rem;
+}
+
+.features-track::-webkit-scrollbar {
+  display: none;
+}
+
+.features-track > .feature-card {
+  scroll-snap-align: start;
+}
+
+.features-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.features-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.features-arrow-prev {
+  left: 0;
+}
+
+.features-arrow-next {
+  right: 0;
+}
+
+.features-arrow:hover:not([aria-disabled="true"]) {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.features-arrow[aria-disabled="true"] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Tre kolumner behöver ~850 px kortyta för att korten inte ska bli smalare
+   än idag; därunder två. */
+@media (max-width: 1023px) {
+  .features-track {
+    --columns: 2;
+  }
+}
+
+/* Mobil och surfplatta: en kolumn (max 340 px) med en skymt av nästa kort,
+   så man ser att det går att svepa. Pilarna göms — de skulle ta plats från
+   korten. Bandet går ända ut i skärmkanten så skymten inte klipps av
+   sektionens sidomarginal. */
+@media (max-width: 768px) {
+  .features-carousel {
+    padding: 0;
+    margin: 0 -1.5rem;
+  }
+
+  .features-track {
+    --gap: 1rem;
+    grid-auto-columns: min(84%, 340px);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    scroll-padding-inline: 1.5rem;
+  }
+
+  .features-arrow {
+    display: none;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+  }
 }
 
 /* Pricing Section */
@@ -897,9 +1008,10 @@ body {
   color: var(--primary-color);
 }
 
+/* Länken ligger i löpande text, inte på egen rad — en rad mindre gör kortet
+   lika högt som de andra i funktionsbandet. nowrap håller ihop pilen. */
 .feature-link {
-  display: block;
-  margin-top: 0.75rem;
+  white-space: nowrap;
   color: var(--primary-color);
   font-weight: 600;
   text-decoration: none;
