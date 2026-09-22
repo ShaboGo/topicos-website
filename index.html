@@ -56,7 +56,7 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <a href="#pricing" class="hero-campaign" data-campaign-only>
+      <a href="#pricing" class="hero-campaign" data-campaign-only hidden>
         <span class="hero-campaign-badge" data-campaign-percent>&minus;50&nbsp;%</span>
         Lanseringserbjudande på Pro
         <span class="hero-campaign-arrow" aria-hidden="true">→</span>
@@ -143,11 +143,11 @@
     <div class="pricing-header">
       <h2 class="section-title">Enkla planer</h2>
 
-      <!-- Kampanjen renderas statiskt här och i Pro-kortet, så priset inte hinner
-           blinka från ordinarie till rabatterat innan skriptet kör. Skriptet
-           skriver om texterna utifrån CAMPAIGN och plockar bort allt som är
-           markerat med data-campaign-only när kampanjen är slut. -->
-      <div class="campaign-banner" data-campaign-only>
+      <!-- Kampanjmarkupen ligger kvar här och i Pro-kortet men speglar AV-läget
+           (hidden, ordinarie pris, lika tunga kort) så inget blinkar när skriptet
+           kör. Sätts CAMPAIGN.active på igen skriver skriptet om texterna och
+           visar allt som är markerat med data-campaign-only. -->
+      <div class="campaign-banner" data-campaign-only hidden>
         <span class="campaign-banner-badge" data-campaign-percent>&minus;50&nbsp;%</span>
         <div class="campaign-banner-text">
           <strong>Lanseringserbjudande</strong>
@@ -168,7 +168,7 @@
         <div class="price-unit">per plats/mån</div>
         <div class="price-yearly-note"></div>
         <!-- Tom motsvarighet till Pros kampanjrad, så knapparna ligger i linje. -->
-        <div class="price-campaign-note" data-campaign-only></div>
+        <div class="price-campaign-note" data-campaign-only hidden></div>
         <a href="https://app.topicos.app" class="plan-cta plan-cta-outline">Kom igång</a>
         <ul class="plan-features">
           <li>Alla samarbetsfunktioner</li>
@@ -186,18 +186,18 @@
       </div>
 
       <!-- Pro -->
-      <div class="plan-card plan-card-featured" id="planPro">
-        <span class="plan-badge" data-campaign-only><span data-campaign-percent>&minus;50&nbsp;%</span> just nu</span>
+      <div class="plan-card" id="planPro">
+        <span class="plan-badge" data-campaign-only hidden><span data-campaign-percent>&minus;50&nbsp;%</span> just nu</span>
         <h3 class="plan-name">Pro</h3>
         <p class="plan-tagline">Det professionella valet för ditt team.</p>
         <div class="plan-price">
-          <span class="price-original" data-monthly="" data-yearly="49">49 kr</span>
-          <span class="price-amount" data-monthly="49" data-yearly="44">24,50</span><span class="price-currency">kr</span>
+          <span class="price-original" data-monthly="" data-yearly="49"></span>
+          <span class="price-amount" data-monthly="49" data-yearly="44">49</span><span class="price-currency">kr</span>
         </div>
         <div class="price-unit">per plats/mån ex. moms</div>
         <div class="price-yearly-note" data-yearly-total="529">faktureras årsvis (529 kr/plats/år)</div>
-        <div class="price-campaign-note" data-campaign-only>&minus;50 % de 3 första månaderna</div>
-        <a href="https://app.topicos.app" class="plan-cta plan-cta-primary">Kom igång</a>
+        <div class="price-campaign-note" data-campaign-only hidden></div>
+        <a href="https://app.topicos.app" class="plan-cta plan-cta-outline">Kom igång</a>
         <ul class="plan-features">
           <li>Alla samarbetsfunktioner</li>
           <li>10 GB lagring per plats</li>
@@ -264,7 +264,7 @@
     // Sätt active: false när kampanjen är slut — då faller banner, badge och
     // kampanjpriser bort av sig själva och ordinarie prisvisning är kvar.
     const CAMPAIGN = {
-      active: true,
+      active: false,
       percentOff: 50,
       endsAt: '2027-02-02T23:59:59+01:00',
       // Varaktighet per intervall — speglar de två Stripe-kupongernas duration.
