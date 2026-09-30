@@ -572,6 +572,8 @@ body {
   color: var(--text-dark);
   cursor: pointer;
   user-select: none;
+  /* Mobilens blå tryckmarkering; switchen visar själv att den slagits om. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .billing-switch .discount-badge {
@@ -584,6 +586,8 @@ body {
   width: 1px;
   height: 1px;
   margin: 0;
+  /* Om webbläsaren ändå ritar den inbyggda rutan ska den vara grön, inte blå. */
+  accent-color: var(--primary-color);
 }
 
 .billing-switch-track {
