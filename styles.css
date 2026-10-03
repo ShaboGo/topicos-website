@@ -315,14 +315,18 @@ body {
 /* App Showcase — ligger efter priserna, som avslutande bild före CTA-bandet. */
 .showcase {
   background: var(--white);
-  padding: 0 2rem 5rem;
+  padding: 0 2rem;
   text-align: center;
 }
 
+/* Bilden står direkt på CTA-bandet: block (ingen baslinjelucka under en
+   inline-bild) och raka nederhörn. */
 .showcase-img {
+  display: block;
   width: 60%;
   height: auto;
-  border-radius: 20px;
+  margin: 0 auto;
+  border-radius: 20px 20px 0 0;
 }
 
 /* Features Section */
@@ -841,7 +845,7 @@ body {
   background: linear-gradient(150deg, #4db8ad 0%, var(--primary-color) 40%, var(--primary-dark) 100%);
   color: var(--white);
   text-align: center;
-  padding: 5rem 2rem;
+  padding: 2.5rem 2rem 5rem;
 }
 
 .cta-band h2 {
@@ -979,12 +983,12 @@ body {
   }
 
   .showcase {
-    padding: 0 1rem 4rem;
+    padding: 0 1rem;
   }
 
   .showcase-img {
     width: 100%;
-    border-radius: 14px;
+    border-radius: 14px 14px 0 0;
   }
 
   .cta-band h2 {
