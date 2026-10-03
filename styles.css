@@ -200,7 +200,7 @@ body {
 /* Hero Section */
 .hero {
   background: var(--white);
-  padding: 9rem 2rem 2.5rem;
+  padding: 9rem 2rem 3rem;
   text-align: center;
 }
 
@@ -312,10 +312,10 @@ body {
   box-shadow: 0 12px 28px rgba(0,0,0,0.18);
 }
 
-/* App Showcase */
+/* App Showcase — ligger efter priserna, som avslutande bild före CTA-bandet. */
 .showcase {
   background: var(--white);
-  padding: 0 2rem;
+  padding: 0 2rem 5rem;
   text-align: center;
 }
 
@@ -326,9 +326,13 @@ body {
 }
 
 /* Features Section */
+/* Funktionsbandet har ingen egen rubrik utan fortsätter direkt under hero-
+   texten, på samma vita bakgrund. scroll-margin så att Funktioner-länken i
+   menyn inte lägger telefonerna under den fasta navbaren. */
 .features {
-  padding: 5rem 2rem;
-  background: var(--bg-light);
+  padding: 0 2rem 5rem;
+  background: var(--white);
+  scroll-margin-top: 5rem;
 }
 
 .section-title {
@@ -501,7 +505,7 @@ body {
 /* Pricing Section */
 .pricing {
   padding: 5rem 2rem;
-  background: var(--white);
+  background: var(--bg-light);
 }
 
 .pricing-header {
@@ -955,7 +959,7 @@ body {
   }
 
   .hero {
-    padding: 7rem 1.5rem 4rem;
+    padding: 7rem 1.5rem 2.5rem;
   }
 
   .hero h1 {
@@ -971,11 +975,11 @@ body {
   }
 
   .features {
-    padding: 4rem 1.5rem;
+    padding: 0 1.5rem 4rem;
   }
 
   .showcase {
-    padding: 0 1rem;
+    padding: 0 1rem 4rem;
   }
 
   .showcase-img {
