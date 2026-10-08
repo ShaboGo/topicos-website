@@ -53,7 +53,7 @@
     <header class="sec-hero">
       <p class="sec-eyebrow">Säkerhet</p>
       <h1>Innehållet stannar hos organisationen</h1>
-      <p class="sec-lead">Topicos lagrar data i EU. Varje organisation kan dessutom slå på end-to-end-kryptering med nycklar som bara organisationen har. Då kan varken Topicos eller våra underleverantörer läsa meddelanden, filer och dokument. Det vi inte kan läsa kan vi inte heller lämna ut.</p>
+      <p class="sec-lead">Topicos lagrar innehållet i EU. Telefonnumret för inloggning hanteras dock i USA. Varje organisation kan dessutom slå på end-to-end-kryptering med nycklar som bara organisationen har. Då kan varken Topicos eller våra underleverantörer läsa meddelanden, filer och dokument. Det vi inte kan läsa kan vi inte heller lämna ut.</p>
     </header>
 
     <!-- Två nivåer -->
@@ -108,6 +108,11 @@
               <td>Google Cloud Storage</td>
               <td>EU, <code>europe-west1</code> (Belgien)</td>
             </tr>
+            <tr>
+              <td>Inloggning: telefonnummer och SMS-kod</td>
+              <td>Google Firebase Authentication</td>
+              <td>USA. Google uppger att tjänsten körs enbart i amerikanska datacenter</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -152,7 +157,7 @@
             <li>Organisationens namn samt medlemmarnas profilnamn och telefonnummer. Kunden är känd via avtal och faktura, och identiteten behövs för inloggning.</li>
             <li>Tidrapporten: stämplingar och frånvaro. Det är löneunderlag som ska kunna granskas.</li>
             <li>Innehåll från före aktiveringen ligger kvar som det var.</li>
-            <li>Metadata: vem som är medlem var, vem som skrivit när och hur mycket, samt push-token.</li>
+            <li>Metadata: vem som är med i samma grupp eller chatt, när och hur mycket någon skrivit samt push-token, men inte gruppernas namn.</li>
           </ul>
         </div>
       </div>
