@@ -15,8 +15,8 @@
     <h1>Säkerhetsbilaga: tekniska och organisatoriska åtgärder</h1>
     <dl class="doc-meta">
       <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.3 c och artikel 32</dd>
-      <dt>Version</dt><dd>0.7, utkast</dd>
-      <dt>Datum</dt><dd>2026-09-21</dd>
+      <dt>Version</dt><dd>0.8, utkast</dd>
+      <dt>Datum</dt><dd>2026-10-08</dd>
       <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Råggywood".</dd>
       <dt>Tjänst</dt><dd>Topicos: appar för iOS och Android samt webbapp på app.topicos.app</dd>
       <dt>Kontakt</dt><dd>kontakt@topicos.app</dd>
@@ -79,6 +79,7 @@
     <li><strong>Autentisering</strong> sker med telefonnummer och engångskod via SMS (Firebase Authentication). Sessionen är knuten till enheten.</li>
     <li><strong>Behörighetsregler i databasen</strong> (Firestore Security Rules) avgör vid varje läsning och skrivning om användaren är medlem i den organisation, grupp, chatt eller privata konversation som posten tillhör. Reglerna körs hos Google och kan inte kringgås från klienten.</li>
     <li><strong>Roller</strong>: superadministratör (en per organisation, kan delegera), administratör och medlem. Bara superadministratören kan slå på och av krypteringen, tidrapporteringen och byta återställningsfras. Attestering av tidrapporter kräver särskild behörighet.</li>
+    <li><strong>Export av chatt</strong>: superadministratören och administratörer kan exportera ett ämne som en zip-fil med meddelanden och valda bilagor, för arkivering eller utlämnande. Exporten görs på enheten, så att innehållet inte passerar Biträdet i läsbar form. Filen är okrypterad och hanteras av organisationen som andra handlingar.</li>
     <li><strong>Bilagor</strong> nås enbart via signerade länkar utfärdade efter behörighetskontroll (3.4).</li>
     <li><strong>Serveranrop</strong> kräver Firebase App Check: Play Integrity (Android), App Attest (iOS) och reCAPTCHA v3 (webb) intygar att anropet kommer från den riktiga Topicos-appen. Alla serverfunktioner avvisar anrop utan giltigt intyg.</li>
     <li><strong>Åtkomsten upphör direkt</strong> när en medlem tas bort ur en grupp eller organisation; i krypterade organisationer roteras dessutom nyckeln.</li>
@@ -181,10 +182,11 @@
       <tr><td>0.5</td><td>2026-09-15</td><td>Avsnitt 6: larm på serverfel (5xx) i Cloud Monitoring med SMS och e-post, påslaget 2026-09-15; markören borttagen.</td></tr>
       <tr><td>0.6</td><td>2026-09-15</td><td>RTO/RPO och ställföreträdare beslutade; markörer borttagna.</td></tr>
       <tr><td>0.7</td><td>2026-09-21</td><td>Avsnitt 11: incidentrutinen publiceras inte längre utan delas vid avtalstecknande; länken borttagen.</td></tr>
+      <tr><td>0.8</td><td>2026-10-08</td><td>Avsnitt 4.1: export av chatt till zip-fil, gjord på enheten.</td></tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.7 (utkast) · 2026-09-21 · kontakt@topicos.app</footer>
+  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.8 (utkast) · 2026-10-08 · kontakt@topicos.app</footer>
 </body>
 </html>
