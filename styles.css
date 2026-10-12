@@ -380,17 +380,12 @@ body {
 /* Funktionsvideo: samma mått och skugga som skärmbilderna. Videon är vanlig
    MP4 med vit bakgrund; telefonens form klipps ut med postern som mask (den
    har genomskinlig bakgrund). Genomskinlig video visade en vit ruta på
-   iPhone. Skuggan ligger på omslaget, eftersom masken annars klipper bort
-   den. Knappen ligger i telefonens nedre hörn. */
+   iPhone. Masken står helt i style-attributet på <video> så att den inte
+   kan hamna ur fas med en cachad stilmall. Skuggan ligger på omslaget,
+   eftersom masken annars klipper bort den. Knappen ligger i telefonens
+   nedre hörn. */
 .feature-video {
   position: relative;
-}
-
-.feature-video video {
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
 }
 
 .feature-video-toggle {
