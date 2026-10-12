@@ -80,7 +80,17 @@
       <div class="features-track">
         <div class="feature-card">
           <div class="feature-shot">
-            <img src="Bilder/funktioner/grupper.webp" alt="Gruppöversikten i Topicos med arbetsytor och grupper" width="431" height="880" loading="lazy" decoding="async">
+            <div class="feature-video">
+              <video muted loop playsinline preload="none" width="434" height="880"
+                     poster="Bilder/funktioner/grupper-poster.webp"
+                     data-webm="Bilder/funktioner/grupper.webm"
+                     data-hevc="Bilder/funktioner/grupper.mov"
+                     aria-label="Video: gruppöversikten med arbetsytor och grupper"></video>
+              <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+              </button>
+            </div>
           </div>
           <h3>Organisation och grupper</h3>
           <p>Dela upp din organisation i arbetsytor och grupper.</p>
@@ -94,7 +104,17 @@
         </div>
         <div class="feature-card">
           <div class="feature-shot">
-            <img src="Bilder/funktioner/chatt.webp" alt="En ämneschatt med en omröstning och svar från kollegor" width="431" height="880" loading="lazy" decoding="async">
+            <div class="feature-video">
+              <video muted loop playsinline preload="none" width="434" height="880"
+                     poster="Bilder/funktioner/chatt-poster.webp"
+                     data-webm="Bilder/funktioner/chatt.webm"
+                     data-hevc="Bilder/funktioner/chatt.mov"
+                     aria-label="Video: en ämneschatt med omröstning och svar från kollegor"></video>
+              <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+              </button>
+            </div>
           </div>
           <h3>Enkel chatt</h3>
           <p>Chatta bekvämt så som du är van med.</p>
@@ -108,7 +128,17 @@
         </div>
         <div class="feature-card">
           <div class="feature-shot">
-            <img src="Bilder/funktioner/dokument.webp" alt="Dokumentvyn med mappar och undermappar" width="431" height="880" loading="lazy" decoding="async">
+            <div class="feature-video">
+              <video muted loop playsinline preload="none" width="434" height="880"
+                     poster="Bilder/funktioner/dokument-poster.webp"
+                     data-webm="Bilder/funktioner/dokument.webm"
+                     data-hevc="Bilder/funktioner/dokument.mov"
+                     aria-label="Video: mappar öppnas i dokumentvyn och ett dokument redigeras"></video>
+              <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+              </button>
+            </div>
           </div>
           <h3>Dokument och mappar</h3>
           <p>Samla viktiga dokument i mappar som teamet hittar direkt. Lås dem till rätt grupp.</p>
@@ -319,6 +349,61 @@
       track.addEventListener('scroll', updateArrows, { passive: true });
       window.addEventListener('resize', updateArrows);
       updateArrows();
+    })();
+
+    // Funktionsvideor: genomskinlig bakgrund kräver två format. Safari (och
+    // alla webbläsare på iPhone, som bygger på WebKit) visar bara alfakanalen
+    // i HEVC, övriga bara i VP9/WebM — och båda påstår sig kunna spela det
+    // andra formatet, så källan väljs här i stället för med <source>.
+    // Videon spelar bara när den syns, står still vid "minska rörelse" och
+    // knappen pausar/startar. Utan skript syns postern som en vanlig bild.
+    (function () {
+      const isWebKit = 'webkitSetPresentationMode' in HTMLVideoElement.prototype;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      document.querySelectorAll('.feature-video').forEach(wrap => {
+        const video = wrap.querySelector('video');
+        const toggle = wrap.querySelector('.feature-video-toggle');
+        let userPaused = reduceMotion;
+        let visible = false;
+
+        video.src = isWebKit ? video.dataset.hevc : video.dataset.webm;
+
+        function render() {
+          const playing = !video.paused;
+          toggle.classList.toggle('is-paused', !playing);
+          toggle.setAttribute('aria-label', playing ? 'Pausa videon' : 'Spela videon');
+        }
+
+        function sync() {
+          if (visible && !userPaused) {
+            // Kan nekas (t.ex. strömsparläge på iPhone) — då står postern kvar
+            // och knappen visar Spela. AbortError betyder bara att pause()
+            // hann före, t.ex. vid snabb scrollning, och ska inte låsa videon.
+            video.play().catch(err => {
+              if (err.name === 'NotAllowedError') { userPaused = true; render(); }
+            });
+          } else {
+            video.pause();
+          }
+        }
+
+        video.addEventListener('play', render);
+        video.addEventListener('pause', render);
+        toggle.addEventListener('click', () => {
+          userPaused = !video.paused;
+          if (!userPaused) visible = true;
+          sync();
+        });
+
+        new IntersectionObserver(entries => {
+          visible = entries[0].isIntersecting;
+          sync();
+        }, { threshold: 0.5 }).observe(video);
+
+        toggle.hidden = false;
+        render();
+      });
     })();
 
     // Lanseringskampanj — MÅSTE spegla CAMPAIGN i billing.html, som i sin tur

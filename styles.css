@@ -359,7 +359,8 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.feature-shot img {
+.feature-shot img,
+.feature-shot video {
   display: block;
   height: 420px;
   width: auto;
@@ -367,8 +368,57 @@ body {
   transition: transform 0.3s;
 }
 
-.feature-card:hover .feature-shot img {
+.feature-card:hover .feature-shot img,
+.feature-card:hover .feature-shot video {
   transform: translateY(-4px);
+}
+
+/* Funktionsvideo: samma mått och skugga som skärmbilderna. Knappen ligger
+   i telefonens nedre hörn och följer inte med i hover-lyftet. */
+.feature-video {
+  position: relative;
+}
+
+.feature-video-toggle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.feature-video-toggle[hidden] {
+  display: none;
+}
+
+.feature-video-toggle:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.feature-video-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.feature-video-toggle .icon-play,
+.feature-video-toggle.is-paused .icon-pause {
+  display: none;
+}
+
+.feature-video-toggle.is-paused .icon-play {
+  display: block;
 }
 
 .feature-card h3 {
@@ -501,7 +551,8 @@ body {
     display: none;
   }
 
-  .feature-shot img {
+  .feature-shot img,
+  .feature-shot video {
     height: 400px;
   }
 }
