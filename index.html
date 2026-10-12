@@ -86,6 +86,7 @@
                      poster="Bilder/funktioner/grupper-poster.webp"
                      style="-webkit-mask: url(Bilder/funktioner/grupper-poster.webp) 0 0 / 100% 100% no-repeat; mask: url(Bilder/funktioner/grupper-poster.webp) 0 0 / 100% 100% no-repeat"
                      aria-label="Video: gruppöversikten med arbetsytor och grupper"></video>
+              <span class="feature-video-poster" style="background-image: url(Bilder/funktioner/grupper-poster.webp)" aria-hidden="true"></span>
               <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
                 <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
@@ -110,6 +111,7 @@
                      poster="Bilder/funktioner/chatt-poster.webp"
                      style="-webkit-mask: url(Bilder/funktioner/chatt-poster.webp) 0 0 / 100% 100% no-repeat; mask: url(Bilder/funktioner/chatt-poster.webp) 0 0 / 100% 100% no-repeat"
                      aria-label="Video: en ämneschatt med omröstning och svar från kollegor"></video>
+              <span class="feature-video-poster" style="background-image: url(Bilder/funktioner/chatt-poster.webp)" aria-hidden="true"></span>
               <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
                 <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
@@ -134,6 +136,7 @@
                      poster="Bilder/funktioner/dokument-poster.webp"
                      style="-webkit-mask: url(Bilder/funktioner/dokument-poster.webp) 0 0 / 100% 100% no-repeat; mask: url(Bilder/funktioner/dokument-poster.webp) 0 0 / 100% 100% no-repeat"
                      aria-label="Video: mappar öppnas i dokumentvyn och ett dokument redigeras"></video>
+              <span class="feature-video-poster" style="background-image: url(Bilder/funktioner/dokument-poster.webp)" aria-hidden="true"></span>
               <button class="feature-video-toggle" type="button" aria-label="Pausa videon" hidden>
                 <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
@@ -381,6 +384,18 @@
             video.pause();
           }
         }
+
+        // Postern ligger som ett eget lager ovanpå tills videon faktiskt har
+        // ritat en bildruta — annars blinkar iPhone till med en tom ruta
+        // mellan poster och första bildrutan. Den första bildrutan är samma
+        // bild som postern, så bytet syns inte.
+        // timeupdate är reserv så att postern aldrig blir kvar över en video
+        // som spelar.
+        function reveal() { wrap.classList.add('is-started'); }
+        if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(reveal);
+        video.addEventListener('timeupdate', function onTime() {
+          if (video.currentTime > 0) { reveal(); video.removeEventListener('timeupdate', onTime); }
+        });
 
         video.addEventListener('play', render);
         video.addEventListener('pause', render);

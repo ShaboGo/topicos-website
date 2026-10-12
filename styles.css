@@ -388,6 +388,19 @@ body {
   position: relative;
 }
 
+/* Postern som eget lager ovanpå videon tills första bildrutan är ritad
+   (skriptet sätter .is-started). */
+.feature-video-poster {
+  position: absolute;
+  inset: 0;
+  background: no-repeat 0 0 / 100% 100%;
+  pointer-events: none;
+}
+
+.feature-video.is-started .feature-video-poster {
+  display: none;
+}
+
 .feature-video-toggle {
   position: absolute;
   right: -6px;
