@@ -358,7 +358,12 @@
     // Videon spelar bara när den syns, står still vid "minska rörelse" och
     // knappen pausar/startar. Utan skript syns postern som en vanlig bild.
     (function () {
-      const isWebKit = 'webkitSetPresentationMode' in HTMLVideoElement.prototype;
+      // Användaragenten, inte en funktionskontroll: webkitSetPresentationMode
+      // saknas på iPhone, som då fick WebM och visade en vit ruta. Chrome,
+      // Edge och Opera har också "AppleWebKit" men även "Chrome"; Chrome på
+      // iPhone heter "CriOS" och är WebKit, precis som Brave och Firefox där.
+      const ua = navigator.userAgent;
+      const isWebKit = /AppleWebKit/.test(ua) && !/Chrome|Chromium|Android/.test(ua);
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       document.querySelectorAll('.feature-video').forEach(wrap => {
