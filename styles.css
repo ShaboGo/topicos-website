@@ -364,19 +364,33 @@ body {
   display: block;
   height: 420px;
   width: auto;
+}
+
+.feature-shot img,
+.feature-video {
   filter: drop-shadow(0 12px 24px rgba(0,0,0,0.12));
   transition: transform 0.3s;
 }
 
 .feature-card:hover .feature-shot img,
-.feature-card:hover .feature-shot video {
+.feature-card:hover .feature-video {
   transform: translateY(-4px);
 }
 
-/* Funktionsvideo: samma mått och skugga som skärmbilderna. Knappen ligger
-   i telefonens nedre hörn och följer inte med i hover-lyftet. */
+/* Funktionsvideo: samma mått och skugga som skärmbilderna. Videon är vanlig
+   MP4 med vit bakgrund; telefonens form klipps ut med postern som mask (den
+   har genomskinlig bakgrund). Genomskinlig video visade en vit ruta på
+   iPhone. Skuggan ligger på omslaget, eftersom masken annars klipper bort
+   den. Knappen ligger i telefonens nedre hörn. */
 .feature-video {
   position: relative;
+}
+
+.feature-video video {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 .feature-video-toggle {
