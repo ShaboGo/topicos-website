@@ -388,12 +388,6 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  /* Följ den synliga ytan (--vv-* sätts från visualViewport i billing.html):
-     när tangentbordet öppnas krymper den, och utan detta hamnar arkets
-     överdel ovanför skärmen utan att gå att scrolla fram. */
-  top: var(--vv-top, 0);
-  bottom: auto;
-  height: var(--vv-height, 100%);
   background: rgba(0,0,0,0.5);
   z-index: 200;
   align-items: flex-end;
@@ -408,7 +402,7 @@ body {
   background: var(--bg);
   width: 100%;
   max-width: 600px;
-  max-height: calc(var(--vv-height, 100vh) * 0.9);
+  max-height: 90vh;
   border-radius: 20px 20px 0 0;
   overflow-y: auto;
   padding: 20px;
@@ -964,6 +958,27 @@ body {
   color: var(--text-tertiary);
 }
 
+/* Fakturaformuläret som egen sida på mobil. Ett långt formulär i ett fast
+   (position: fixed) ark hoppar och tappar överdelen när iOS-tangentbordet
+   öppnas; i vanligt sidflöde sköter Safari tangentbordet själv. */
+@media (max-width: 599px) {
+  body.page-open > header,
+  body.page-open > .section {
+    display: none !important;
+  }
+  .modal-overlay.modal-page.active {
+    position: static;
+    display: block;
+    background: none;
+  }
+  .modal-page .modal-sheet {
+    max-height: none;
+    overflow: visible;
+    border-radius: 0;
+    animation: none;
+  }
+}
+
 /* Responsive */
 @media (min-width: 600px) {
   .modal-overlay {
@@ -971,6 +986,6 @@ body {
   }
   .modal-sheet {
     border-radius: 20px;
-    max-height: calc(var(--vv-height, 100vh) * 0.8);
+    max-height: 80vh;
   }
 }

@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Topicos på laptop och iPhone – chattar, grupper och ämnen">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="stylesheet" href="billing.css?v=2">
+  <link rel="stylesheet" href="billing.css?v=3">
   <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
@@ -165,7 +165,7 @@
   </div>
 
   <!-- Invoice Form Modal -->
-  <div class="modal-overlay" id="invoice-modal">
+  <div class="modal-overlay modal-page" id="invoice-modal">
     <div class="modal-sheet">
       <div class="modal-header">
         <h2>Fakturauppgifter</h2>
@@ -862,24 +862,19 @@
     // Modals
     // =====================================================
     window.closeModal = function(id) {
-      document.getElementById(id).classList.remove('active');
+      const el = document.getElementById(id);
+      el.classList.remove('active');
+      if (el.classList.contains('modal-page')) document.body.classList.remove('page-open');
     };
 
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-
-    // Modalerna följer den synliga ytan (se .modal-overlay i billing.css) så
-    // att formulärets överdel går att nå när tangentbordet är uppe.
-    if (window.visualViewport) {
-      const syncVisualViewport = () => {
-        const vv = window.visualViewport;
-        document.documentElement.style.setProperty('--vv-height', vv.height + 'px');
-        document.documentElement.style.setProperty('--vv-top', vv.offsetTop + 'px');
-      };
-      syncVisualViewport();
-      window.visualViewport.addEventListener('resize', syncVisualViewport);
-      window.visualViewport.addEventListener('scroll', syncVisualViewport);
+      const el = document.getElementById(id);
+      el.classList.add('active');
+      // Sid-läget (mobil) — se .modal-page i billing.css
+      if (el.classList.contains('modal-page')) {
+        document.body.classList.add('page-open');
+        window.scrollTo(0, 0);
+      }
     }
 
     // Servern spärrar ny teckning när en tidigare faktura är obetald och skickar
@@ -914,14 +909,14 @@
         }
         list.appendChild(row);
       });
-      document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+      document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
       openModal('unpaid-modal');
       return true;
     }
 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('active');
+        if (e.target === overlay) closeModal(overlay.id);
       });
     });
 
