@@ -235,6 +235,23 @@
     </div>
   </div>
 
+  <!-- Obetald faktura spärrar ny teckning (UNPAID_INVOICE från servern) -->
+  <div class="modal-overlay" id="unpaid-modal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Obetald faktura</h2>
+        <button class="modal-close" onclick="closeModal('unpaid-modal')">&times;</button>
+      </div>
+      <p style="margin:0 0 16px; line-height:1.5;">
+        Det finns en tidigare faktura som inte är betald. Betala den först – sedan kan du teckna abonnemanget igen.
+      </p>
+      <div id="unpaid-list"></div>
+      <p style="margin:16px 0 0; font-size:13px; opacity:0.7; line-height:1.5;">
+        Har du nyss betalat kan det dröja en stund innan betalningen registreras.
+      </p>
+    </div>
+  </div>
+
   <!-- Storage Addon Modal -->
   <div class="modal-overlay" id="storage-modal">
     <div class="modal-sheet">
@@ -852,6 +869,43 @@
       document.getElementById(id).classList.add('active');
     }
 
+    // Servern spärrar ny teckning när en tidigare faktura är obetald och skickar
+    // med fakturorna i error.details. Visar dem med Stripes betallänk.
+    // Returnerar true om felet var just det.
+    function showUnpaidInvoices(error) {
+      if (!(error?.message || '').includes('UNPAID_INVOICE')) return false;
+      const invoices = error.details?.invoices || [];
+      const list = document.getElementById('unpaid-list');
+      list.innerHTML = '';
+      invoices.forEach(inv => {
+        const row = document.createElement('div');
+        row.className = 'summary-line';
+        row.style.marginBottom = '12px';
+        const amount = (inv.amountDue / 100).toLocaleString('sv-SE', {
+          style: 'currency', currency: (inv.currency || 'sek').toUpperCase(),
+        });
+        const due = inv.dueDate ? ' · förföll ' + new Date(inv.dueDate * 1000).toLocaleDateString('sv-SE') : '';
+        const text = document.createElement('div');
+        text.textContent = 'Faktura ' + (inv.number || '') + ' – ' + amount + due;
+        row.appendChild(text);
+        if (inv.hostedInvoiceUrl) {
+          const link = document.createElement('a');
+          link.className = 'btn btn-primary';
+          link.href = inv.hostedInvoiceUrl;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.textContent = 'Betala faktura';
+          link.style.marginTop = '10px';
+          link.style.textDecoration = 'none';
+          row.appendChild(link);
+        }
+        list.appendChild(row);
+      });
+      document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+      openModal('unpaid-modal');
+      return true;
+    }
+
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.classList.remove('active');
@@ -1132,7 +1186,9 @@
       } catch (error) {
         console.error('Checkout error:', error);
         const msg = error.message || '';
-        if (msg.includes('already-exists')) {
+        if (showUnpaidInvoices(error)) {
+          return;
+        } else if (msg.includes('already-exists')) {
           errorEl.textContent = 'Företaget har redan ett aktivt abonnemang.';
         } else {
           errorEl.textContent = 'Fel: ' + (error.code || error.message || 'Okänt fel') + '. Försök igen.';
@@ -1190,7 +1246,9 @@
         alert(`Abonnemang aktiverat! En faktura skickas till ${details.email} (30 dagar att betala).`);
       } catch (error) {
         console.error('Invoice error:', error);
-        if (error.message?.includes('already-exists')) {
+        if (showUnpaidInvoices(error)) {
+          // visas i egen ruta
+        } else if (error.message?.includes('already-exists')) {
           alert('Företaget har redan ett aktivt abonnemang.');
         } else {
           alert('Något gick fel. Försök igen.');
