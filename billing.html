@@ -242,7 +242,7 @@
         <h2>Obetald faktura</h2>
         <button class="modal-close" onclick="closeModal('unpaid-modal')">&times;</button>
       </div>
-      <p style="margin:0 0 16px; line-height:1.5;">
+      <p id="unpaid-intro" style="margin:0 0 16px; line-height:1.5;">
         Det finns en tidigare faktura som inte är betald. Betala den först – sedan kan du teckna abonnemanget igen.
       </p>
       <div id="unpaid-list"></div>
@@ -883,6 +883,9 @@
     function showUnpaidInvoices(error) {
       if (!(error?.message || '').includes('UNPAID_INVOICE')) return false;
       const invoices = error.details?.invoices || [];
+      document.getElementById('unpaid-intro').textContent = invoices.length > 1
+        ? `Det finns ${invoices.length} tidigare fakturor som inte är betalda. Betala dem först – sedan kan du teckna abonnemanget igen.`
+        : 'Det finns en tidigare faktura som inte är betald. Betala den först – sedan kan du teckna abonnemanget igen.';
       const list = document.getElementById('unpaid-list');
       list.innerHTML = '';
       invoices.forEach(inv => {
