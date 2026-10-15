@@ -236,7 +236,7 @@
   </div>
 
   <!-- Obetald faktura spärrar ny teckning (UNPAID_INVOICE från servern) -->
-  <div class="modal-overlay" id="unpaid-modal">
+  <div class="modal-overlay modal-page" id="unpaid-modal">
     <div class="modal-sheet">
       <div class="modal-header">
         <h2>Obetald faktura</h2>
@@ -889,10 +889,14 @@
         const row = document.createElement('div');
         row.className = 'summary-line';
         row.style.marginBottom = '12px';
+        row.style.background = 'var(--card-bg)';
         const amount = (inv.amountDue / 100).toLocaleString('sv-SE', {
           style: 'currency', currency: (inv.currency || 'sek').toUpperCase(),
         });
-        const due = inv.dueDate ? ' · förföll ' + new Date(inv.dueDate * 1000).toLocaleDateString('sv-SE') : '';
+        const dueMs = inv.dueDate ? inv.dueDate * 1000 : null;
+        const due = dueMs
+          ? (dueMs < Date.now() ? ' · förföll ' : ' · förfaller ') + new Date(dueMs).toLocaleDateString('sv-SE')
+          : '';
         const text = document.createElement('div');
         text.textContent = 'Faktura ' + (inv.number || '') + ' – ' + amount + due;
         row.appendChild(text);
