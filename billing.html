@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Topicos på laptop och iPhone – chattar, grupper och ämnen">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="stylesheet" href="billing.css">
+  <link rel="stylesheet" href="billing.css?v=2">
   <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
@@ -867,6 +867,19 @@
 
     function openModal(id) {
       document.getElementById(id).classList.add('active');
+    }
+
+    // Modalerna följer den synliga ytan (se .modal-overlay i billing.css) så
+    // att formulärets överdel går att nå när tangentbordet är uppe.
+    if (window.visualViewport) {
+      const syncVisualViewport = () => {
+        const vv = window.visualViewport;
+        document.documentElement.style.setProperty('--vv-height', vv.height + 'px');
+        document.documentElement.style.setProperty('--vv-top', vv.offsetTop + 'px');
+      };
+      syncVisualViewport();
+      window.visualViewport.addEventListener('resize', syncVisualViewport);
+      window.visualViewport.addEventListener('scroll', syncVisualViewport);
     }
 
     // Servern spärrar ny teckning när en tidigare faktura är obetald och skickar
