@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Du är inbjuden till en grupp på Topicos.">
+  <title>Gå med i Topicos</title>
+
+  <!-- Inbjudningslänken från appen (topicos.app/join?c=KOD) — också det QR-koden
+       pekar på. Appen fångar topicos://join/KOD; den som saknar appen installerar
+       först och skriver sedan in koden under "Gå med med kod". Koden är
+       hemligheten och visas därför bara här, aldrig i förhandsvisningen. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Topicos">
+  <meta property="og:title" content="Du är inbjuden till Topicos">
+  <meta property="og:description" content="Öppna länken för att gå med i gruppen.">
+  <meta property="og:image" content="https://topicos.app/Bilder/Topicos-showcase-2.png">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .join-page {
+      flex: 1;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 16px 4rem;
+      text-align: center;
+    }
+    .join-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .join-page p {
+      max-width: 28rem;
+      margin: 0 auto 1.5rem;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    .join-page h2 {
+      margin-bottom: 1rem;
+    }
+    .join-code {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      padding: 0.6rem 1.2rem;
+      margin-bottom: 1.5rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      font-variant-numeric: tabular-nums;
+      user-select: all;
+    }
+    .join-open {
+      display: inline-block;
+      padding: 0.9rem 2rem;
+      margin-bottom: 1.75rem;
+      border-radius: 999px;
+      background: #fff;
+      color: #2c7a72;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+    }
+    .join-steps {
+      font-size: 0.95rem;
+    }
+    .join-page .join-web {
+      margin-top: 1.75rem;
+      font-size: 0.95rem;
+    }
+    .join-web a {
+      color: inherit;
+    }
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <main class="cta-band join-page">
+    <img src="logo.png" alt="Topicos" class="join-logo">
+    <h2 data-i18n="title">Du är inbjuden till Topicos</h2>
+
+    <div id="with-code" hidden>
+      <div class="join-code" id="code"></div>
+      <div><a class="join-open" id="open-app" href="#" data-i18n="open">Öppna i appen</a></div>
+      <p class="join-steps" data-i18n="steps">Har du inte appen? Installera den, logga in med ditt telefonnummer och välj ”Gå med med kod” – skriv in koden ovan.</p>
+    </div>
+    <p id="without-code" hidden data-i18n="noCode">Länken saknar en giltig kod. Be den som bjöd in dig om en ny länk – eller installera appen och logga in.</p>
+
+    <div class="app-badges">
+      <a href="https://apps.apple.com/se/app/topicos/id6757752536" class="app-badge" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        App Store
+      </a>
+      <a href="https://play.google.com/store/apps/details?id=com.chattis.ShaboGo" class="app-badge" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c.22.17.49.26.78.26.19 0 .38-.05.56-.14l8.74-4.86-3.3-3.3L3.18 23.49zM.47 2.2C.17 2.6 0 3.15 0 3.8v16.4c0 .65.17 1.2.47 1.6l.04.04 9.2-9.2v-.08L.51 2.16.47 2.2zM20.17 10.13l-3.42-1.94-3.63 3.63 3.63 3.63 3.43-1.94c.98-.55 .98-1.45 0-2l-.01.01v-.01l-.01.01v-.01l.01.01v.01zM13.07 8.44L16.5 6.5 4.89.84c-.35-.2-.72-.27-1.06-.22l9.24 7.82z"/></svg>
+        Google Play
+      </a>
+    </div>
+
+    <p class="join-web" id="web" hidden>
+      <a id="open-web" href="#" data-i18n="web">Eller fortsätt i webbläsaren</a>
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      var texts = {
+        en: {
+          title: "You're invited to Topicos",
+          open: 'Open in the app',
+          steps: "Don't have the app? Install it, sign in with your phone number and choose “Join with code” – enter the code above.",
+          noCode: "The link doesn't contain a valid code. Ask the person who invited you for a new link – or install the app and sign in.",
+          web: 'Or continue in the browser'
+        },
+        es: {
+          title: 'Te han invitado a Topicos',
+          open: 'Abrir en la app',
+          steps: '¿No tienes la app? Instálala, inicia sesión con tu número de teléfono y elige «Unirse con código» – introduce el código de arriba.',
+          noCode: 'El enlace no contiene un código válido. Pide un enlace nuevo a quien te invitó – o instala la app e inicia sesión.',
+          web: 'O continúa en el navegador'
+        }
+      };
+      var lang = (navigator.language || 'sv').slice(0, 2).toLowerCase();
+      var t = texts[lang];
+      if (t) {
+        document.documentElement.lang = lang;
+        document.title = t.title;
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          el.textContent = t[el.getAttribute('data-i18n')];
+        });
+      }
+
+      // Samma normalisering som appen: versaler, bara A–Z och 0–9, exakt 8 tecken.
+      var raw = new URLSearchParams(location.search).get('c') || '';
+      var code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (code.length !== 8) {
+        document.getElementById('without-code').hidden = false;
+        return;
+      }
+      document.getElementById('code').textContent = code.slice(0, 4) + '-' + code.slice(4);
+      document.getElementById('open-app').href = 'topicos://join/' + code;
+      document.getElementById('open-web').href = 'https://app.topicos.app/?join=' + code;
+      document.getElementById('with-code').hidden = false;
+      document.getElementById('web').hidden = false;
+    })();
+  </script>
+</body>
+</html>
