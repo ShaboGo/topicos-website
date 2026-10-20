@@ -155,7 +155,14 @@
         return;
       }
       document.getElementById('code').textContent = code.slice(0, 4) + '-' + code.slice(4);
-      document.getElementById('open-app').href = 'topicos://join/' + code;
+      // Android/Chrome öppnar inte en bar topicos://-länk som inget fångar — det
+      // blir tyst. En intent://-länk går till appen om den kan ta emot länken,
+      // och annars till Google Play i stället för ingenting.
+      var isAndroid = /android/i.test(navigator.userAgent || '');
+      document.getElementById('open-app').href = isAndroid
+        ? 'intent://join/' + code + '#Intent;scheme=topicos;package=com.chattis.ShaboGo;' +
+          'S.browser_fallback_url=' + encodeURIComponent('https://play.google.com/store/apps/details?id=com.chattis.ShaboGo') + ';end'
+        : 'topicos://join/' + code;
       document.getElementById('open-web').href = 'https://app.topicos.app/?join=' + code;
       document.getElementById('with-code').hidden = false;
       document.getElementById('web').hidden = false;
