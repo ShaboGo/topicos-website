@@ -15,8 +15,8 @@
     <h1>Säkerhetsbilaga: tekniska och organisatoriska åtgärder</h1>
     <dl class="doc-meta">
       <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.3 c och artikel 32</dd>
-      <dt>Version</dt><dd>0.8, utkast</dd>
-      <dt>Datum</dt><dd>2026-10-08</dd>
+      <dt>Version</dt><dd>0.9, utkast</dd>
+      <dt>Datum</dt><dd>2026-11-09</dd>
       <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Råggywood".</dd>
       <dt>Tjänst</dt><dd>Topicos: appar för iOS och Android samt webbapp på app.topicos.app</dd>
       <dt>Kontakt</dt><dd>kontakt@topicos.app</dd>
@@ -67,7 +67,7 @@
   <p>Organisationens superadministratör kan slå på end-to-end-kryptering. Från den stunden gäller följande.</p>
   <p><strong>Nyckelmodell.</strong> Varje enhet skapar ett X25519-nyckelpar per användarkonto; den privata nyckeln lagras i enhetens skyddade nyckellager (iOS Keychain, Android Keystore, webbläsarens lagring på webben) och lämnar aldrig enheten. Organisationens innehållsnyckel (256 bitar) finns bara förseglad till varje godkänd enhets publika nyckel (X25519 + HKDF-SHA256 + AES-256-GCM). Innehåll krypteras med AES-256-GCM med bunden tilläggsdata som knyter chiffret till dokument och fält, så att ett chiffer inte kan flyttas till en annan plats. Bilagor får en egen slumpad nyckel per fil som ligger inne i meddelandets chiffer, krypteras i block före uppladdning, och lagras som binära objekt utan filnamn eller filtyp.</p>
   <p><strong>Enhetsgodkännande.</strong> En ny enhet kan inte läsa något förrän en administratör, eller en av användarens redan godkända enheter, har jämfört enhetens verifieringskod och godkänt den. Godkännandet är det som ger enheten nycklarna; servern kan inte utföra det.</p>
-  <p><strong>Rotation.</strong> Innehållsnyckeln byts (ny nyckelepok) när en enhet återkallas, när en medlem tas bort ur organisationen, när återställningsfrasen byts och när krypteringen slås på igen. Enheter som lämnat får inte den nya epoken och kan inte läsa nytt innehåll. Lämnar en medlem själv får administratörerna en notis om att rotera.</p>
+  <p><strong>Rotation.</strong> Innehållsnyckeln byts (ny nyckelepok) när en enhet återkallas, när en medlem tas bort ur organisationen, när återställningsfrasen byts och när krypteringen slås på igen. Enheter som lämnat får inte den nya epoken och kan därför inte öppna innehåll som skapas efter bytet. Lämnar en medlem själv får administratörerna en notis om att byta nyckel.</p>
   <p><strong>Återställningsfras.</strong> När krypteringen slås på visas en fras med 24 ord (BIP39) en enda gång. Ur den härleds ett nyckelpar som varje nyckelepok också förseglas till. Frasen är organisationens huvudnyckel och behövs bara om ingen godkänd enhet finns kvar. Råggywood har inte frasen, ber aldrig om den och kan inte återställa innehåll utan den. Frasen kan bytas från en godkänd superadministratörsenhet, men bara med den gamla frasen i hand.</p>
   <p><strong>Omfång.</strong> Krypteras: meddelanden (text, svar, omröstningar, platsdelning, avsändarnamn), bilagor, dokument och textdokument inklusive bilder, uppgifter med anteckningar och bilagor, kalenderhändelser, notiser, namn på grupper, ämnen och mappar, samt samtal (ljud och datakanal via LiveKits ramkryptering med en samtalsnyckel härledd ur epoknyckeln). I klartext, medvetet: organisationens namn, medlemmarnas profilnamn och telefonnummer, tidrapporten, innehåll från före aktiveringen, och metadata (medlemskap, tidsstämplar, vem som skrivit till vem).</p>
   <p><strong>Vad Råggywood ser.</strong> Krypterat innehåll och metadata. En begäran från myndighet kan bara besvaras med det: chiffer vi inte kan öppna, samt uppgifter om medlemskap och tidpunkter.</p>
@@ -183,10 +183,11 @@
       <tr><td>0.6</td><td>2026-09-15</td><td>RTO/RPO och ställföreträdare beslutade; markörer borttagna.</td></tr>
       <tr><td>0.7</td><td>2026-09-21</td><td>Avsnitt 11: incidentrutinen publiceras inte längre utan delas vid avtalstecknande; länken borttagen.</td></tr>
       <tr><td>0.8</td><td>2026-10-08</td><td>Avsnitt 4.1: export av chatt till zip-fil, gjord på enheten.</td></tr>
+      <tr><td>0.9</td><td>2026-11-09</td><td>Avsnitt 3.5: rotationen beskriven som att enheter som lämnat inte kan öppna innehåll som skapas efter bytet.</td></tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.8 (utkast) · 2026-10-08 · kontakt@topicos.app</footer>
+  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.9 (utkast) · 2026-11-09 · kontakt@topicos.app</footer>
 </body>
 </html>
