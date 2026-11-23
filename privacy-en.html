@@ -56,7 +56,7 @@
 
   <main class="legal-content">
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: 2026-09-09</p>
+    <p class="last-updated">Last updated: 2026-11-23</p>
     <a href="privacy.html" class="lang-switch" hreflang="sv">Läs policyn på svenska →</a>
     <p><em>This is a translation of the Swedish privacy policy. In case of any discrepancy, the Swedish version applies.</em></p>
 
@@ -72,7 +72,7 @@
     <p>Topicos is used by organizations, and responsibility for personal data is shared.</p>
     <ul>
       <li><strong>Your account.</strong> For account data (phone number, name, profile picture, email, technical data about your device) Råggywood AB is the data controller.</li>
-      <li><strong>The organization's content.</strong> For what is created within an organization (messages, files, documents, tasks, calendar events, time reports, member lists) the organization is the data controller and Råggywood AB is the data processor. We process the content only to provide the Service according to the organization's instructions.</li>
+      <li><strong>The organization's content.</strong> For what is created within an organization (messages, files, documents, tasks, calendar events, checklists, deviations, orders, time reports, member lists) the organization is the data controller and Råggywood AB is the data processor. We process the content only to provide the Service according to the organization's instructions.</li>
     </ul>
     <p>Organizations that need a written data processing agreement can contact us at kontakt@topicos.app.</p>
 
@@ -83,8 +83,10 @@
       <li><strong>Communication</strong> – messages (text, images, video, audio, files), reactions, mentions and polls.</li>
       <li><strong>Location data</strong> – your position only when you choose to share it in a chat. We never track your location in the background.</li>
       <li><strong>Links</strong> – when a message contains a link, our server fetches a preview (title, description, image) from the linked page. Your device does not contact the page.</li>
-      <li><strong>Organization data</strong> – the organization's name, group names, topics, folders, roles and memberships. If you invite someone who does not yet have Topicos, their phone number is stored until the invitation is answered, for at most 30 days.</li>
+      <li><strong>Organization data</strong> – the organization's name, workspaces, group names, topics, folders, roles and memberships. If you invite someone who does not yet have Topicos, their phone number is stored until the invitation is answered, for at most 30 days.</li>
+      <li><strong>Guests</strong> – an organization can invite outside people, for example customers, to a guest group. Guests are not members of the organization. For them we process the same account data as for other users, which guest groups they belong to, and what they themselves write or upload there.</li>
       <li><strong>Tasks, calendar and documents</strong> – titles, descriptions, notes, times, participants and attachments.</li>
+      <li><strong>Checklists, deviations and orders</strong> – checklist items and answers (comments, values, photos and places), who answered and when; deviations with description, place, photo, corrective action, comments and history; objects with names and places; order lists with articles and images, and orders. If a checklist is shared with a guest group, the guests can see it, approve it and object to corrective actions.</li>
       <li><strong>Time tracking</strong> – if the organization uses time tracking: clock-in and clock-out times, breaks, absences with a reason code (for example sickness, care of a sick child, vacation, parental leave, leave of absence), approvals and payroll exports. Absence reasons may constitute health data. The organization is responsible for having a legal basis under employment law or collective agreements; we process this data solely as a processor.</li>
       <li><strong>Calls</strong> – participants, start time, duration and whether the call was answered or missed. Audio is relayed in real time and is never recorded.</li>
       <li><strong>Payment</strong> (organization administrators) – the organization's name, your phone number, the invoice recipient's email, company name and company registration number. Card details are handled directly by Stripe and never reach our systems.</li>
@@ -110,7 +112,7 @@
     <h2>4. Purposes and legal basis</h2>
     <ul>
       <li><strong>Provide and maintain the Service</strong> – performance of contract (Art. 6.1 b).</li>
-      <li><strong>Send notifications about messages, tasks, calendar and calls</strong> – performance of contract (Art. 6.1 b).</li>
+      <li><strong>Send notifications about messages, tasks, calendar, checklists, deviations and calls</strong> – performance of contract (Art. 6.1 b).</li>
       <li><strong>Manage accounts, authentication and payment</strong> – performance of contract (Art. 6.1 b).</li>
       <li><strong>Store and display the organization's content, including time reports</strong> – on the organization's instructions as a data processor. The organization's legal basis is normally contract or a legal obligation towards its employees.</li>
       <li><strong>Improve and develop the Service and fix bugs</strong> – legitimate interest (Art. 6.1 f).</li>
@@ -119,11 +121,11 @@
     </ul>
 
     <h2>5. End-to-end encryption</h2>
-    <p>An organization's super administrator can enable end-to-end encryption (the Organization key). New messages, attachments, documents, tasks, calendar events, notifications, names of groups, topics and folders, and calls are then encrypted on the members' devices with keys that only the organization holds. We then store only encrypted content that we cannot read, together with metadata.</p>
+    <p>An organization's super administrator can enable end-to-end encryption (the Organization key). New content is then encrypted on the members' devices with keys that only the organization holds: messages, attachments, documents, tasks, calendar events, checklists, deviations, orders, notifications, names of workspaces, groups, topics and folders, and calls. We then store only encrypted content that we cannot read, together with metadata. Guest groups are encrypted with a key of their own; guests never receive the organization's key.</p>
     <ul>
       <li>We can neither read, moderate, restore nor hand over encrypted content. A request to access such content must be directed to the organization, which holds the keys.</li>
       <li>If the organization's recovery phrase and all approved devices are lost, the content is permanently unreadable. We cannot restore it.</li>
-      <li>Remains in plaintext even with encryption enabled: the organization's name, member names and phone numbers, time tracking data, content from before encryption was enabled, and metadata (who is a member where, who wrote when and how much).</li>
+      <li>Remains in plaintext even with encryption enabled: the organization's name, members' profile info (name, profile picture and phone number), time tracking data, content from before encryption was enabled, and metadata (who is a member where, who wrote when and how much).</li>
     </ul>
     <p>What is encrypted, how keys are managed and what the encryption does not protect against is described on the <a href="sakerhet.html">Security page</a> (in Swedish).</p>
 
@@ -211,13 +213,14 @@
       <li><strong>App updates</strong> – Expo sees that your device fetches updates (device data, no content). Older app versions receive their notifications via Expo; for them, the message preview may pass through Expo in readable form, in organizations with end-to-end encryption only the organization and sender name.</li>
       <li><strong>Payment</strong> – the organization's administrator provides billing details to Stripe (organization name, phone number, email, company name, registration number). Stripe reads them, that is the purpose.</li>
     </ul>
-    <p>The content of chats, files, documents, tasks and calendar is not processed in the USA. It is stored in the EU, and with end-to-end encryption enabled it exists in readable form only on the organization's devices.</p>
+    <p>The content of chats, files, documents, tasks, calendar, checklists and deviations is not processed in the USA. It is stored in the EU, and with end-to-end encryption enabled it exists in readable form only on the organization's devices.</p>
     <p>The legal basis for the transfers is the European Commission's Standard Contractual Clauses in the providers' data processing agreements and, for providers that are certified, the EU–US Data Privacy Framework.</p>
 
     <h2>7. How long we keep data</h2>
     <ul>
       <li><strong>Account data</strong> is kept as long as you have an account.</li>
       <li><strong>Content</strong> is kept until deleted by you, by an administrator or by deletion of the organization. Deleted messages are removed from the database immediately; attachments are deleted when no message refers to them any more. Deleted data may remain for a limited time in backups.</li>
+      <li><strong>Deviations</strong> are normally not deleted. For traceability, administrators void them instead, and they remain with their history until the group or organization is deleted. The super administrator can delete a deviation permanently, for example after a request for deletion. Text, photos, corrective actions and replies are then removed, and only the fact that the deviation existed, who deleted it and why remains.</li>
       <li><strong>Free plan:</strong> messages older than 90 days are hidden in the app but not deleted. They become visible again if the organization upgrades.</li>
       <li><strong>Groups and topics</strong> marked for deletion are deleted automatically with all their content when the grace period has passed.</li>
       <li><strong>Organizations with a cancelled paid subscription:</strong> 90 days after cancellation the organization's files are deleted and the organization is deactivated. The super administrator is warned after 60 and 80 days.</li>
@@ -238,7 +241,7 @@
     <p><strong>What remains:</strong></p>
     <ul>
       <li>Messages and files you sent in group chats and private chats remain with the recipients as part of the organization's data, with your name as sender as it appeared when the message was sent. If you want them removed, contact the organization's administrator.</li>
-      <li>Tasks, calendar events, documents and time reports you created within an organization remain with the organization.</li>
+      <li>Tasks, calendar events, documents, checklist answers, deviations and time reports you created within an organization remain with the organization.</li>
       <li>Payment history at Stripe is kept in accordance with the Bookkeeping Act.</li>
     </ul>
 

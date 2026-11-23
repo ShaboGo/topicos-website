@@ -15,8 +15,8 @@
     <h1>Säkerhetsbilaga: tekniska och organisatoriska åtgärder</h1>
     <dl class="doc-meta">
       <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.3 c och artikel 32</dd>
-      <dt>Version</dt><dd>0.9, utkast</dd>
-      <dt>Datum</dt><dd>2026-11-09</dd>
+      <dt>Version</dt><dd>0.10, utkast</dd>
+      <dt>Datum</dt><dd>2026-11-23</dd>
       <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Råggywood".</dd>
       <dt>Tjänst</dt><dd>Topicos: appar för iOS och Android samt webbapp på app.topicos.app</dd>
       <dt>Kontakt</dt><dd>kontakt@topicos.app</dd>
@@ -24,7 +24,7 @@
   </header>
 
   <h2>1. Tjänsten i korthet</h2>
-  <p>Topicos är en kommunikationstjänst för organisationer: chatt strukturerad i grupper och ämnen, röstsamtal, uppgifter, kalender, dokument och tidrapportering. Organisationen äger sitt innehåll. Varje organisation kan dessutom slå på end-to-end-kryptering (kallad Organisationsnyckeln), varvid innehållet krypteras på medlemmarnas enheter med nycklar som bara organisationen har. Råggywood AB kan då varken läsa, återställa eller lämna ut innehållet.</p>
+  <p>Topicos är en kommunikationstjänst för organisationer: chatt strukturerad i arbetsytor, grupper och ämnen, röstsamtal, uppgifter, kalender, dokument, checklistor med avvikelsehantering, beställningar och tidrapportering. Organisationen kan också bjuda in gäster, till exempel kunder, till gästgrupper. Organisationen äger sitt innehåll. Varje organisation kan dessutom slå på end-to-end-kryptering (kallad Organisationsnyckeln), varvid innehållet krypteras på medlemmarnas enheter med nycklar som bara organisationen har. Råggywood AB kan då varken läsa, återställa eller lämna ut innehållet.</p>
   <p>Den här bilagan beskriver de tekniska och organisatoriska åtgärder som skyddar personuppgifterna, med den detaljnivå en informationssäkerhetsgranskning behöver. En kortare, allmän beskrivning finns på <a href="https://topicos.app/sakerhet.html">topicos.app/sakerhet</a>.</p>
 
   <h2>2. Arkitektur och lagringsplatser</h2>
@@ -33,9 +33,9 @@
     <table>
       <thead><tr><th>Komponent</th><th>Underbiträde och tjänst</th><th>Innehåll</th><th>Plats</th></tr></thead>
       <tbody>
-        <tr><td>Databas</td><td>Google Cloud Firestore</td><td>Meddelanden, dokument, uppgifter, kalender, tidrapporter, medlemskap, notiser, samtalshistorik</td><td>EU, multiregion eur3 (Belgien och Nederländerna, replikerat mellan regionerna)</td></tr>
+        <tr><td>Databas</td><td>Google Cloud Firestore</td><td>Meddelanden, dokument, uppgifter, kalender, checklistor, avvikelser, beställningar, tidrapporter, medlemskap, notiser, samtalshistorik</td><td>EU, multiregion eur3 (Belgien och Nederländerna, replikerat mellan regionerna)</td></tr>
         <tr><td>Serverkod</td><td>Google Cloud Functions (2:a generationen), Node.js 22</td><td>Behandling vid skrivning, notiser, betalning, gallring. 50 funktioner</td><td>EU, europe-west1 (Belgien)</td></tr>
-        <tr><td>Filer och bilagor</td><td>Cloudflare R2</td><td>Bilder, video, ljud, dokument, uppgiftsbilagor</td><td>EU-jurisdiktion (Cloudflares jurisdiktionsbegränsning, inte bara platsledtråd)</td></tr>
+        <tr><td>Filer och bilagor</td><td>Cloudflare R2</td><td>Bilder, video, ljud, dokument, uppgiftsbilagor, foton i checklistor och avvikelser, artikelbilder</td><td>EU-jurisdiktion (Cloudflares jurisdiktionsbegränsning, inte bara platsledtråd)</td></tr>
         <tr><td>Övriga filer</td><td>Google Cloud Storage</td><td>Profilbilder och bilder till länkförhandsvisningar</td><td>EU, europe-west1</td></tr>
         <tr><td>Inloggning</td><td>Google Firebase Authentication</td><td>Telefonnummer, inloggningssession, SMS-utskick</td><td>USA. Google uppger att tjänsten körs enbart i amerikanska datacenter</td></tr>
         <tr><td>Notiser</td><td>Google Firebase Cloud Messaging, Apple Push Notification service</td><td>Push-token; notisinnehåll krypterat till enheten</td><td>Globalt</td></tr>
@@ -67,9 +67,10 @@
   <p>Organisationens superadministratör kan slå på end-to-end-kryptering. Från den stunden gäller följande.</p>
   <p><strong>Nyckelmodell.</strong> Varje enhet skapar ett X25519-nyckelpar per användarkonto; den privata nyckeln lagras i enhetens skyddade nyckellager (iOS Keychain, Android Keystore, webbläsarens lagring på webben) och lämnar aldrig enheten. Organisationens innehållsnyckel (256 bitar) finns bara förseglad till varje godkänd enhets publika nyckel (X25519 + HKDF-SHA256 + AES-256-GCM). Innehåll krypteras med AES-256-GCM med bunden tilläggsdata som knyter chiffret till dokument och fält, så att ett chiffer inte kan flyttas till en annan plats. Bilagor får en egen slumpad nyckel per fil som ligger inne i meddelandets chiffer, krypteras i block före uppladdning, och lagras som binära objekt utan filnamn eller filtyp.</p>
   <p><strong>Enhetsgodkännande.</strong> En ny enhet kan inte läsa något förrän en administratör, eller en av användarens redan godkända enheter, har jämfört enhetens verifieringskod och godkänt den. Godkännandet är det som ger enheten nycklarna; servern kan inte utföra det.</p>
-  <p><strong>Rotation.</strong> Innehållsnyckeln byts (ny nyckelepok) när en enhet återkallas, när en medlem tas bort ur organisationen, när återställningsfrasen byts och när krypteringen slås på igen. Enheter som lämnat får inte den nya epoken och kan därför inte öppna innehåll som skapas efter bytet. Lämnar en medlem själv får administratörerna en notis om att byta nyckel.</p>
+  <p><strong>Rotation.</strong> Innehållsnyckeln byts (ny nyckelepok) när en enhet återkallas, när en medlem tas bort ur organisationen eller en gäst ur en gästgrupp, när återställningsfrasen byts och när krypteringen slås på igen. Enheter som lämnat får inte den nya epoken och kan därför inte öppna innehåll som skapas efter bytet. Lämnar en medlem eller gäst själv får administratörerna en notis om att byta nyckel.</p>
+  <p><strong>Gästgrupper.</strong> En gästgrupp krypteras med en egen nyckel per epok, härledd ur organisationens epoknyckel med HKDF-SHA256 och gruppens id. Härledningen är enkelriktad: gruppens nyckel ger ingen väg till organisationens eller till andra gruppers. Medlemmar räknar fram nyckeln själva. Gäster får aldrig organisationens nyckel, bara gruppens, förseglad till deras enheter på samma sätt som ovan. Gästers enheter förs i ett eget register per gästgrupp och godkänns av en administratör efter jämförd verifieringskod. Vid varje rotation förseglas den nya epokens gruppnyckel till de gäster som är kvar. Direktmeddelanden mellan en gäst och en medlem krypteras med deras gemensamma gästgrupps nyckel.</p>
   <p><strong>Återställningsfras.</strong> När krypteringen slås på visas en fras med 24 ord (BIP39) en enda gång. Ur den härleds ett nyckelpar som varje nyckelepok också förseglas till. Frasen är organisationens huvudnyckel och behövs bara om ingen godkänd enhet finns kvar. Råggywood har inte frasen, ber aldrig om den och kan inte återställa innehåll utan den. Frasen kan bytas från en godkänd superadministratörsenhet, men bara med den gamla frasen i hand.</p>
-  <p><strong>Omfång.</strong> Krypteras: meddelanden (text, svar, omröstningar, platsdelning, avsändarnamn), bilagor, dokument och textdokument inklusive bilder, uppgifter med anteckningar och bilagor, kalenderhändelser, notiser, namn på grupper, ämnen och mappar, samt samtal (ljud och datakanal via LiveKits ramkryptering med en samtalsnyckel härledd ur epoknyckeln). I klartext, medvetet: organisationens namn, medlemmarnas profilnamn och telefonnummer, tidrapporten, innehåll från före aktiveringen, och metadata (medlemskap, tidsstämplar, vem som skrivit till vem).</p>
+  <p><strong>Omfång.</strong> Krypteras: meddelanden (text, svar, omröstningar, platsdelning, avsändarnamn), bilagor, dokument och textdokument inklusive bilder, uppgifter med anteckningar och bilagor, kalenderhändelser, checklistor (punkter, svar, kommentarer, platser och foton), avvikelser (beskrivning, platser, foto, åtgärd, makuleringsskäl och kommentarer), objekt med platser, beställningslistor och beställningar, notiser, namn på arbetsytor, grupper, ämnen och mappar, samt samtal (ljud och datakanal via LiveKits ramkryptering med en samtalsnyckel härledd ur epoknyckeln). I klartext, medvetet: organisationens namn, medlemmarnas profilinfo (namn, profilbild och telefonnummer), tidrapporten, innehåll från före aktiveringen, och metadata (medlemskap, tidsstämplar, vem som skrivit till vem). För checklistor och avvikelser är även status, vem som svarat och när, om en punkt är en avvikelse och fotots lagringsnyckel metadata i klartext, så att servern kan räkna avvikelser, skicka notiser och kontrollera läsbehörighet.</p>
   <p><strong>Vad Råggywood ser.</strong> Krypterat innehåll och metadata. En begäran från myndighet kan bara besvaras med det: chiffer vi inte kan öppna, samt uppgifter om medlemskap och tidpunkter.</p>
   <p><strong>Begränsningar.</strong> Krypteringen skyddar inte mot en upplåst, godkänd enhet; inte mot metadataanalys; och inte mot en manipulerad app, eftersom krypteringen utförs av appens kod (koden är inte öppen, ingen extern granskning är gjord). Sökning sker lokalt på enheten. Länkförhandsvisningar visas inte i krypterade organisationer. Krypterade samtal fungerar i mobilapparna men ännu inte i webbläsaren.</p>
 
@@ -78,11 +79,12 @@
   <ul>
     <li><strong>Autentisering</strong> sker med telefonnummer och engångskod via SMS (Firebase Authentication). Sessionen är knuten till enheten.</li>
     <li><strong>Behörighetsregler i databasen</strong> (Firestore Security Rules) avgör vid varje läsning och skrivning om användaren är medlem i den organisation, grupp, chatt eller privata konversation som posten tillhör. Reglerna körs hos Google och kan inte kringgås från klienten.</li>
-    <li><strong>Roller</strong>: superadministratör (en per organisation, kan delegera), administratör och medlem. Bara superadministratören kan slå på och av krypteringen, tidrapporteringen och byta återställningsfras. Attestering av tidrapporter kräver särskild behörighet.</li>
+    <li><strong>Roller</strong>: superadministratör (en per organisation, kan delegera), administratör, medlem och gäst. Bara superadministratören kan slå på och av krypteringen, tidrapporteringen och byta återställningsfras. Attestering av tidrapporter kräver särskild behörighet.</li>
+    <li><strong>Gäster</strong> är personer utanför organisationen som bjudits in till en gästgrupp. De räknas inte som medlemmar i organisationen. Reglerna ger dem bara chatten i den egna gästgruppen, direktmeddelanden med personer de delar gästgrupp med, och mappar, kalenderhändelser, checklistor och avvikelser som uttryckligen delats med gruppen. Organisationens övriga innehåll, objekt och beställningslistor når de inte.</li>
     <li><strong>Export av chatt</strong>: superadministratören och administratörer kan exportera ett ämne som en zip-fil med meddelanden och valda bilagor, för arkivering eller utlämnande. Exporten görs på enheten, så att innehållet inte passerar Biträdet i läsbar form. Filen är okrypterad och hanteras av organisationen som andra handlingar.</li>
     <li><strong>Bilagor</strong> nås enbart via signerade länkar utfärdade efter behörighetskontroll (3.4).</li>
     <li><strong>Serveranrop</strong> kräver Firebase App Check: Play Integrity (Android), App Attest (iOS) och reCAPTCHA v3 (webb) intygar att anropet kommer från den riktiga Topicos-appen. Alla serverfunktioner avvisar anrop utan giltigt intyg.</li>
-    <li><strong>Åtkomsten upphör direkt</strong> när en medlem tas bort ur en grupp eller organisation; i krypterade organisationer roteras dessutom nyckeln.</li>
+    <li><strong>Åtkomsten upphör direkt</strong> när en medlem eller gäst tas bort ur en grupp eller organisation; i krypterade organisationer roteras dessutom nyckeln.</li>
   </ul>
 
   <h3>4.2 Administrativ åtkomst till produktionsmiljön</h3>
@@ -109,6 +111,7 @@
     <li>Ett larm i Cloud Monitoring (sedan 2026-09-15) utlöses när serverfunktionerna svarar med fler än fem serverfel (HTTP 5xx) under fem minuter, och skickar SMS och e-post till incidentansvarig både när larmet går och när felen upphört. Avvisade App Check-anrop larmar inte men syns i loggarna.</li>
     <li>Stripe för fullständig historik över betalningar och abonnemangsändringar.</li>
     <li>I krypterade organisationer finns en enhetslista per organisation med status, verifieringskod, när enheten begärdes, godkändes eller återkallades och när den senast var aktiv, synlig för administratörerna i appen.</li>
+    <li>Avvikelser har en egen historik i appen, synlig för alla som ser avvikelsen: vem som rapporterade, varje åtgärd som den var (kommentar och foto), när den öppnades igen och av vem, beställarens invändningar och makulering med skäl. Avvikelser raderas inte i vanliga fall utan makuleras och syns kvar. Raderar superadministratören en avvikelse permanent (avsnitt 8) står en markering kvar i appen med att avvikelsen fanns, när och av vem den rapporterades, vilken grupp och lista den hörde till, vem som raderade den, när och skälet. Serverkoden loggar dessutom raderingen med avvikelsens och användarens id.</li>
     <li>Tjänsten har ingen audit-logg för slutanvändare av typen "vem läste vad". Se avsnitt 12.</li>
   </ul>
 
@@ -132,6 +135,7 @@
     <li>Kontoradering (i appen) tar bort profil, telefonnummer, profilbild, inloggning, push-token, enhetsnycklar och medlemskap. Innehåll användaren skapat i organisationer ligger kvar hos organisationen.</li>
     <li>I krypterade organisationer innebär förstörda nycklar att innehållet är oläsligt även om chiffret finns kvar i en säkerhetskopia (kryptografisk radering).</li>
     <li>Gratisplanen döljer meddelanden äldre än 90 dagar men raderar dem inte.</li>
+    <li>Avvikelser makuleras i stället för att raderas, för spårbarhetens skull. Superadministratören kan radera en avvikelse permanent med skäl, till exempel efter en begäran om radering. Text, platser, foton, åtgärder, svar och historik tas då bort direkt, liksom innehållet i checklistans svar när avvikelsen kom från en lista. Kvar står den markering som beskrivs i avsnitt 6. Texten kan finnas kvar i databasens säkerhetskopior i högst 37 dagar (avsnitt 7); fotona har ingen säkerhetskopia och är borta direkt.</li>
   </ul>
 
   <h2>9. Utveckling, förändringshantering och leverans</h2>
@@ -184,10 +188,11 @@
       <tr><td>0.7</td><td>2026-09-21</td><td>Avsnitt 11: incidentrutinen publiceras inte längre utan delas vid avtalstecknande; länken borttagen.</td></tr>
       <tr><td>0.8</td><td>2026-10-08</td><td>Avsnitt 4.1: export av chatt till zip-fil, gjord på enheten.</td></tr>
       <tr><td>0.9</td><td>2026-11-09</td><td>Avsnitt 3.5: rotationen beskriven som att enheter som lämnat inte kan öppna innehåll som skapas efter bytet.</td></tr>
+      <tr><td>0.10</td><td>2026-11-23</td><td>Checklistor, avvikelser, beställningar och arbetsytor tillagda i avsnitt 1, 2 och 3.5. Gästgrupper: nyckelmodell i 3.5 och behörighet i 4.1. Avvikelsernas historik och permanent radering i avsnitt 6 och 8.</td></tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.9 (utkast) · 2026-11-09 · kontakt@topicos.app</footer>
+  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.10 (utkast) · 2026-11-23 · kontakt@topicos.app</footer>
 </body>
 </html>

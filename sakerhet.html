@@ -74,7 +74,7 @@
         </div>
         <div class="sec-box sec-box-accent">
           <h3>Organisationsnyckeln, slås på per organisation</h3>
-          <p>Superadmin slår på end-to-end-kryptering under <strong>Inställningar → Kryptering</strong>. Från den stunden krypteras nytt innehåll på medlemmarnas enheter, med nycklar som skapas där och aldrig lämnar organisationen i läsbar form. Ingår i alla planer, även Free.</p>
+          <p>Superadmin slår på end-to-end-kryptering under <strong>Organisationsinställningar → Kryptering</strong>. Från den stunden krypteras nytt innehåll på medlemmarnas enheter, med nycklar som skapas där och aldrig lämnar organisationen i läsbar form. Ingår i alla planer, även Free.</p>
         </div>
       </div>
     </section>
@@ -89,7 +89,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>Meddelanden, dokument, uppgifter, kalender, medlemskap</td>
+              <td>Meddelanden, dokument, uppgifter, kalender, checklistor, avvikelser, beställningar, medlemskap</td>
               <td>Google Cloud Firestore</td>
               <td>EU, multiregion <code>eur3</code> (Belgien och Nederländerna)</td>
             </tr>
@@ -146,15 +146,17 @@
             <li>Dokument och textdokument, inklusive bilder i dem</li>
             <li>Uppgifter med anteckningar och bilagor</li>
             <li>Kalenderhändelser</li>
+            <li>Checklistor och avvikelser: punkter, svar, kommentarer, platser och foton, liksom objekten och deras platser</li>
+            <li>Beställningslistor och beställningar, inklusive artikelbilder</li>
             <li>Notiser, både i appen och som push</li>
-            <li>Namn på grupper, ämnen och mappar</li>
+            <li>Namn på arbetsytor, grupper, ämnen och mappar</li>
             <li>Samtal: ljud och handuppräckning krypteras mellan deltagarna</li>
           </ul>
         </div>
         <div class="sec-box">
           <h3>Det här krypteras inte, med flit</h3>
           <ul>
-            <li>Organisationens namn samt medlemmarnas profilnamn och telefonnummer. Kunden är känd via avtal och faktura, och identiteten behövs för inloggning.</li>
+            <li>Organisationens namn samt medlemmarnas profilinfo: namn, profilbild och telefonnummer. Kunden är känd via avtal och faktura, och identiteten behövs för inloggning.</li>
             <li>Tidrapporten: stämplingar och frånvaro. Det är löneunderlag som ska kunna granskas.</li>
             <li>Innehåll från före aktiveringen ligger kvar som det var.</li>
             <li>Metadata: vem som är med i samma grupp eller chatt, när och hur mycket någon skrivit samt push-token, men inte gruppernas namn.</li>
@@ -167,6 +169,9 @@
 
       <h3>Av och på</h3>
       <p>Krypteringen kan slås av igen. Nytt innehåll skrivs då okrypterat, medan det som redan krypterats förblir krypterat och bara kan läsas av godkända enheter. Ingenting raderas.</p>
+
+      <h3>Gäster</h3>
+      <p>I en gästgrupp kan organisationen bjuda in personer utifrån, till exempel kunder eller boende. Gäster är inte medlemmar i organisationen och ser bara det som delas med deras grupp. Gästgruppen krypteras med en egen nyckel som härleds ur organisationens. Härledningen går bara åt ena hållet, så gruppens nyckel ger ingen väg till organisationens eller till andra gruppers. En administratör godkänner varje gästs telefon med kod, på samma sätt som för medlemmar. Gästen får bara sin grupps nyckel, aldrig organisationens. När en gäst tas bort byts nyckeln.</p>
 
       <h3>Vad Topicos ser</h3>
       <p>Krypterat innehåll och metadata. Får vi en begäran från en myndighet kan vi bara lämna ut det vi har: chiffer vi inte kan öppna, och uppgifter om vem som är medlem var och när något skickats.</p>
