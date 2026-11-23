@@ -15,7 +15,7 @@
     <h1>Säkerhetsbilaga: tekniska och organisatoriska åtgärder</h1>
     <dl class="doc-meta">
       <dt>Rättslig grund</dt><dd>Dataskyddsförordningen (GDPR) artikel 28.3 c och artikel 32</dd>
-      <dt>Version</dt><dd>0.10, utkast</dd>
+      <dt>Version</dt><dd>0.11, utkast</dd>
       <dt>Datum</dt><dd>2026-11-23</dd>
       <dt>Biträde</dt><dd>Råggywood AB, organisationsnummer 556972-3884, Sverige, som tillhandahåller tjänsten Topicos. Nedan "Råggywood".</dd>
       <dt>Tjänst</dt><dd>Topicos: appar för iOS och Android samt webbapp på app.topicos.app</dd>
@@ -111,7 +111,7 @@
     <li>Ett larm i Cloud Monitoring (sedan 2026-09-15) utlöses när serverfunktionerna svarar med fler än fem serverfel (HTTP 5xx) under fem minuter, och skickar SMS och e-post till incidentansvarig både när larmet går och när felen upphört. Avvisade App Check-anrop larmar inte men syns i loggarna.</li>
     <li>Stripe för fullständig historik över betalningar och abonnemangsändringar.</li>
     <li>I krypterade organisationer finns en enhetslista per organisation med status, verifieringskod, när enheten begärdes, godkändes eller återkallades och när den senast var aktiv, synlig för administratörerna i appen.</li>
-    <li>Avvikelser har en egen historik i appen, synlig för alla som ser avvikelsen: vem som rapporterade, varje åtgärd som den var (kommentar och foto), när den öppnades igen och av vem, beställarens invändningar och makulering med skäl. Avvikelser raderas inte i vanliga fall utan makuleras och syns kvar. Raderar superadministratören en avvikelse permanent (avsnitt 8) står en markering kvar i appen med att avvikelsen fanns, när och av vem den rapporterades, vilken grupp och lista den hörde till, vem som raderade den, när och skälet. Serverkoden loggar dessutom raderingen med avvikelsens och användarens id.</li>
+    <li>Avvikelser har en egen historik i appen, synlig för alla som ser avvikelsen: vem som rapporterade, varje åtgärd som den var (kommentar och foto), när den öppnades igen och av vem, beställarens invändningar och makulering med skäl. Avvikelser raderas inte i vanliga fall utan makuleras och syns kvar. Raderar superadministratören en avvikelse permanent (avsnitt 8) står en markering kvar i appen med att avvikelsen fanns, när och av vem den rapporterades, vilken grupp och lista den hörde till, vem som raderade den, när och skälet. Samma sak gäller en klar checklista som superadministratören raderar permanent: kvar står listans namn och punkter, vem som startade och avslutade den och när, vem som raderade den, när och skälet. Serverkoden loggar raderingen med id för avvikelsen eller listan och användaren.</li>
     <li>Tjänsten har ingen audit-logg för slutanvändare av typen "vem läste vad". Se avsnitt 12.</li>
   </ul>
 
@@ -135,7 +135,7 @@
     <li>Kontoradering (i appen) tar bort profil, telefonnummer, profilbild, inloggning, push-token, enhetsnycklar och medlemskap. Innehåll användaren skapat i organisationer ligger kvar hos organisationen.</li>
     <li>I krypterade organisationer innebär förstörda nycklar att innehållet är oläsligt även om chiffret finns kvar i en säkerhetskopia (kryptografisk radering).</li>
     <li>Gratisplanen döljer meddelanden äldre än 90 dagar men raderar dem inte.</li>
-    <li>Avvikelser makuleras i stället för att raderas, för spårbarhetens skull. Superadministratören kan radera en avvikelse permanent med skäl, till exempel efter en begäran om radering. Text, platser, foton, åtgärder, svar och historik tas då bort direkt, liksom innehållet i checklistans svar när avvikelsen kom från en lista. Kvar står den markering som beskrivs i avsnitt 6. Texten kan finnas kvar i databasens säkerhetskopior i högst 37 dagar (avsnitt 7); fotona har ingen säkerhetskopia och är borta direkt.</li>
+    <li>Avvikelser makuleras i stället för att raderas, för spårbarhetens skull. Superadministratören kan radera en avvikelse permanent med skäl, till exempel efter en begäran om radering. Text, platser, foton, åtgärder, svar och historik tas då bort direkt, liksom innehållet i checklistans svar när avvikelsen kom från en lista. Kvar står den markering som beskrivs i avsnitt 6. En klar checklista som är ett protokoll (har haft avvikelser eller delas med en beställare) kan på samma sätt raderas permanent av superadministratören: alla svar, foton och kommentarer, beställarens kommentar till godkännandet, listans avvikelser, meddelanden där avvikelserna delats i chatten och notiserna om listan tas bort. Texten kan finnas kvar i databasens säkerhetskopior i högst 37 dagar (avsnitt 7); fotona har ingen säkerhetskopia och är borta direkt.</li>
   </ul>
 
   <h2>9. Utveckling, förändringshantering och leverans</h2>
@@ -189,10 +189,11 @@
       <tr><td>0.8</td><td>2026-10-08</td><td>Avsnitt 4.1: export av chatt till zip-fil, gjord på enheten.</td></tr>
       <tr><td>0.9</td><td>2026-11-09</td><td>Avsnitt 3.5: rotationen beskriven som att enheter som lämnat inte kan öppna innehåll som skapas efter bytet.</td></tr>
       <tr><td>0.10</td><td>2026-11-23</td><td>Checklistor, avvikelser, beställningar och arbetsytor tillagda i avsnitt 1, 2 och 3.5. Gästgrupper: nyckelmodell i 3.5 och behörighet i 4.1. Avvikelsernas historik och permanent radering i avsnitt 6 och 8.</td></tr>
+      <tr><td>0.11</td><td>2026-11-23</td><td>Avsnitt 6 och 8: permanent radering av en klar checklista.</td></tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.10 (utkast) · 2026-11-23 · kontakt@topicos.app</footer>
+  <footer class="doc-foot">Råggywood AB · Topicos · Säkerhetsbilaga v0.11 (utkast) · 2026-11-23 · kontakt@topicos.app</footer>
 </body>
 </html>
